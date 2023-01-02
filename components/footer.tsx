@@ -1,9 +1,9 @@
-import React from 'react'
+
 import "tailwindcss/tailwind.css"
 
 function Footer() {
   return (
-    <div>Footer</div>
+    <div className="bg-sky-500 p-4 ">Footer</div>
   )
 }
 

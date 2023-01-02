@@ -1,6 +1,5 @@
 import Head from 'next/head'
-import styles from '../styles/Home.module.css'
-
+import UserContainer from '../components/user/container'
 
 
 export default function Home() {
@@ -12,10 +11,10 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div id="container" className='text-red-500'>
-          <h1>welcome to Exams-platform</h1>
-        </div>
+      <main className='h-full w-full '>
+        
+          <UserContainer />
+        
       </main>
     </>
   )
