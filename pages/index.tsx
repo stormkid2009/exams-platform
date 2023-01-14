@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import UserContainer from '../components/user/container'
+
 
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
       </Head>
       <main className='h-full w-full '>
         
-          <UserContainer />
+          <p>user input data here</p>
         
       </main>
     </>
