@@ -1,14 +1,15 @@
 import "tailwindcss/tailwind.css"
 import Header from "./header"
-import Intro from "./intro"
+import Info from "./info"
 
-function Home() {
+function Intro() {
   return (
     <div>
       <Header />
-      <Intro />
+      <Info />
     </div>
   )
 }
 
-export default Home
+export default Intro
+

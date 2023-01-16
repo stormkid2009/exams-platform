@@ -2,7 +2,7 @@ import React from "react";
 import 'tailwindcss/tailwind.css'
 
 
-function UiHeader() {
+function Header() {
   return (
     <div className="text-center p-4 m-2 ">
       <h1 className="text-2xl p-2">welcome to exams platform</h1>
@@ -11,4 +11,4 @@ function UiHeader() {
   );
 }
 
-export default UiHeader;
+export default Header;

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Intro() {
+function Info() {
   return (
     <div>
         <p>we provide you tests for all the subjects</p>
@@ -9,4 +9,4 @@ function Intro() {
   )
 }
 
-export default Intro
+export default Info

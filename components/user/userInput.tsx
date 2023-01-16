@@ -1,7 +1,7 @@
 
 import "tailwindcss/tailwind.css"
 
-function SessionInput() {
+function UserInput() {
   return (
     <div className='border-2 rounded-md text-center p-2 m-4'>
         <label htmlFor="session-input"className='px-2'>Session id </label>
@@ -17,4 +17,4 @@ function SessionInput() {
   )
 }
 
-export default SessionInput
+export default UserInput

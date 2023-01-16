@@ -1,0 +1,11 @@
+// to navigate to the next question
+
+import React from 'react'
+
+function NextBtn() {
+  return (
+    <div>NextBtn</div>
+  )
+}
+
+export default NextBtn
