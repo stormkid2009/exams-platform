@@ -1,5 +1,5 @@
 import Head from 'next/head'
-
+import Intro from '../components/introduction'
 
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
       </Head>
       <main className='h-full w-full '>
         
-          <p>user input data here</p>
+          <Intro />
         
       </main>
     </>
