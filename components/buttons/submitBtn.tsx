@@ -1,9 +1,11 @@
 // to finish the test and submit the asnwers
-import React from 'react'
+
 
 function SubmitBtn() {
   return (
-    <div>SubmitBtn</div>
+    <div className="bg-slate-900 text-white border rounded-md p-2 w-1/3 text-center">
+      <button>Submit</button>
+    </div>
   )
 }
 

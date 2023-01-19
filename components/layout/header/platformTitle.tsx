@@ -1,8 +1,10 @@
-import "tailwindcss/tailwind.css";
+
 
 function PlatformTitle() {
   return (
-    <div>PlatformTitle</div>
+    <div>
+      <h3>Online Tester</h3>
+    </div>
   )
 }
 

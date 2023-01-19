@@ -2,9 +2,9 @@ import React from 'react'
 
 function Info() {
   return (
-    <div>
-        <p>we provide you tests for all the subjects</p>
-        <p>you can entrain yourself for the final exams</p>
+    <div className='text-xl p-2'>
+        <p>We provide you tests for all the subjects</p>
+        <p>You can train yourself and be ready to the final exams</p>
     </div>
   )
 }

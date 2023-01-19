@@ -5,7 +5,7 @@ import PlatformTitle from './platformTitle'
 
 function Header() {
   return (
-    <div className="flex justify-between bg-sky-500 p-4">
+    <div className="flex justify-between bg-slate-700 text-white p-4">
         <Logo />
         <PlatformTitle />
         <DateDisplay />

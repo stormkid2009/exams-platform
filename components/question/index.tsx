@@ -1,10 +1,20 @@
 // container of the question
 
-import React from 'react'
+import Header from "./header"
+import Content from "./content"
+import Answers from "./answers"
+import NextBtn from "../buttons/nextBtn"
+import PreviousBtn from "../buttons/previousBtn"
+//we will render one of the buttons or both conditionally
+//the type of question determines this.
 
 function Question() {
   return (
-    <div>Question</div>
+    <div>
+      <Header />
+      <Content />
+      <Answers />
+    </div>
   )
 }
 

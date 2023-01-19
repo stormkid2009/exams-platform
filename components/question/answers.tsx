@@ -1,10 +1,12 @@
 // options of the answers to the question
 
-import React from 'react'
+
 
 function Answers() {
   return (
-    <div>Answers</div>
+    <div>
+      the options of answers to the question will be as props here
+    </div>
   )
 }
 

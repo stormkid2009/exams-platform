@@ -4,7 +4,7 @@ import Info from "./info"
 
 function Intro() {
   return (
-    <div>
+    <div className="text-center ">
       <Header />
       <Info />
     </div>

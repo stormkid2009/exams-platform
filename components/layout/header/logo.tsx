@@ -1,15 +1,17 @@
-import "tailwindcss/tailwind.css";
+//display the logo of our platform
+
+
 import Image from 'next/image'
 
 function Logo() {
   return (
-    <div>
+    <div className=' '>
         <Image
           src="/examLogo.jpg"
           alt="exam-logo"
-          width={50}
-          height={50}
-        ></Image>
+          width={30}
+          height={30}
+        />
     </div>
   )
 }

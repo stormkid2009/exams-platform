@@ -1,10 +1,12 @@
 // header of the question
 
-import React from 'react'
+
 
 function Header() {
   return (
-    <div>Header</div>
+    <div>
+      <p>head of the question will be as props here</p>
+    </div>
   )
 }
 

@@ -1,9 +1,9 @@
-import  'tailwindcss/tailwind.css';
+
 import CopyRights from './copyRights'
 
 function Footer() {
   return (
-    <div>
+    <div className='bg-slate-700 text-white'>
         <CopyRights />
     </div>
   )

@@ -4,7 +4,9 @@ import React from 'react'
 
 function Content() {
   return (
-    <div>Content</div>
+    <div>
+      <p>content of the question as props here</p>
+    </div>
   )
 }
 

@@ -1,8 +1,9 @@
 import Head from 'next/head'
 import Intro from '../components/introduction'
-
+import User from '../components/user'
 
 export default function Home() {
+  
   return (
     <>
       <Head>
@@ -14,6 +15,7 @@ export default function Home() {
       <main className='h-full w-full '>
         
           <Intro />
+          <User   />
         
       </main>
     </>

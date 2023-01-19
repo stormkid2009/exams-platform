@@ -1,11 +1,15 @@
 //to generate session test
 
-import React from 'react'
-
-function GenerateBtn() {
-  return (
-    <div>GenerateBtn</div>
-  )
+interface GenerateTestProps {
+  generate:()=>void;
 }
 
-export default GenerateBtn
+function GenerateBtn({generate}:GenerateTestProps) {
+  return (
+    <div className="bg-slate-900 text-white border rounded-md p-2 w-1/3 text-center">
+      <button onClick={generate}>Generate Test</button>
+    </div>
+  );
+}
+
+export default GenerateBtn;

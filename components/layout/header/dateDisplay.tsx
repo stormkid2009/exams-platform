@@ -1,5 +1,5 @@
 import {useState,useEffect} from 'react'
-import "tailwindcss/tailwind.css";
+
 
 
 function DateDisplay() {
@@ -11,7 +11,7 @@ function DateDisplay() {
     },30000)
   },[])
   return (
-    <div>
+    <div className=' border rounded-md p-1'>
         <p>{dateState.toLocaleDateString('en-GB',{
           year: 'numeric',
           month: 'long',

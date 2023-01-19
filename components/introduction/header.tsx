@@ -2,8 +2,8 @@ import React from 'react'
 
 function Header() {
   return (
-    <div>
-        <h1>welcome to Tester Online</h1>
+    <div className='font-mono text-2xl p-2'>
+        <h1>Welcome to Online Tester Platform</h1>
     </div>
   )
 }
