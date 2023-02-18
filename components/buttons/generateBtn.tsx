@@ -6,7 +6,7 @@ interface GenerateTestProps {
 
 function GenerateBtn({generate}:GenerateTestProps) {
   return (
-    <div className="bg-slate-900 text-white border rounded-md p-2 w-1/3 text-center">
+    <div className="bg-slate-900 text-white border rounded-md p-2 m-4  w-1/3 text-center">
       <button onClick={generate}>Generate Test</button>
     </div>
   );
