@@ -1,6 +1,6 @@
 import Instructions from "../../components/instructions"
 import StartBtn from "../../components/buttons/startBtn"
-import Router from 'next/router'
+//import Router from 'next/router'
 
 
 function Test() {
