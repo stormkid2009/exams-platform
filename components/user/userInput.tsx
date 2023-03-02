@@ -1,6 +1,4 @@
 
-
-
 interface GetEmailProps {
   data: string;
   getEmail:(data:string) => void;

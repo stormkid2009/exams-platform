@@ -1,12 +1,11 @@
 
 import {  useState } from 'react'
+//import {IData} from '../../types/index';
 import UserInput from './userInput'
 import Header from './header'
 import GenerateBtn from "../buttons/generateBtn"
 
-interface Data {
-  email: string
-}
+
 
 function User() {
   

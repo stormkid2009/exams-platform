@@ -1,21 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { ISession } from '../../../../types';
 
-type Data = {
-  eMail: string
-}
 
-type Session = {
-    id: string;
-    userEmail: string;
-    testID: string;
-    date:Date;
-    result:"unknown" | "passed" | "failed" 
-}
 
 export default function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Session>
+  res: NextApiResponse<ISession>
 ) {
   res.status(200).json({ 
     id:'001abc123',
