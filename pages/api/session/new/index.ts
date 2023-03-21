@@ -1,18 +1,26 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { ISession } from '../../../../types';
+import mongoose from 'mongoose'
+import { Session,ISessionModel } from '../../../../src/models/session.model'
+import connectToDB from '../../../../src/lib/mongooseClient';
 
 
-
-export default function handler(
+connectToDB();
+export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<ISession>
+  res: NextApiResponse
 ) {
-  res.status(200).json({ 
-    id:'001abc123',
-    userEmail:req.body.userEmail,
-    testID:'123',
-    date: new Date(Date.now()),
-    result:'unknown'
-   })
+  
+  const session = new Session({
+    email:req.body.userEmail,
+    testID:req.body.testId,
+  })
+  try {
+
+    await session.save();
+    res.status(200).json(session)
+  } catch (error) {
+    res.status(500).json({msg:`error creating session`})
+  }
+
 }
