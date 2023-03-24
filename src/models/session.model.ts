@@ -6,10 +6,10 @@ export interface ISessionModel {
 
 }
 
-const SessionSchema:Schema<ISessionModel> = new Schema({
+const sessionSchema:Schema<ISessionModel> = new Schema({
     email:{type:String,required:true},
     testID:{type:String,required:true},
     
 })
 
-export const Session =mongoose.models.Session ||  mongoose.model('Session', SessionSchema);
+export const Session =mongoose.models.Session ||  mongoose.model('Session', sessionSchema);
