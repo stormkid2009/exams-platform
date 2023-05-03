@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function User() {
+function UserForm() {
   const [email, setEmail] = useState<string>("");
 
   
@@ -54,4 +54,4 @@ function User() {
   );
 }
 
-export default User;
+export default UserForm;

@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Intro from '../components/introduction'
-import User from '../components/userForm'
+import UserForm from '../components/userForm'
 
 export default function Home() {
   
@@ -15,7 +15,7 @@ export default function Home() {
       <main className='h-full w-full '>
         
           <Intro />
-          <User   />
+          <UserForm   />
         
       </main>
     </>
