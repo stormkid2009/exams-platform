@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import Intro from '../components/introduction'
-import User from '../components/user'
+import User from '../components/userForm'
 
 export default function Home() {
   

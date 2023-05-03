@@ -1,7 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
-import mongoose from 'mongoose'
-import { Session,ISessionModel } from '../../../../src/models/session.model'
+import { Session } from '../../../../src/models/session.model'
 import connectToDB from '../../../../src/lib/mongooseClient';
 
 
@@ -12,8 +10,8 @@ export default async function handler(
 ) {
   
   const session = new Session({
-    email:req.body.userEmail,
-    testID:req.body.testId,
+    email:req.body.email,
+    
   })
   try {
 

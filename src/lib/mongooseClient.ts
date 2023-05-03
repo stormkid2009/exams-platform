@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI:string | undefined = process.env.MONGODB_LOCAL_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
@@ -22,9 +22,7 @@ if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
 }
 
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+
 
 async function connectToDB() {
   if (cached.conn) {
@@ -35,10 +33,13 @@ async function connectToDB() {
     const opts = {
       bufferCommands: false,
     };
+    // narrowing to avoid typscript error if mongodburi is undefined
+    if(MONGODB_URI){
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+      cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+        return mongoose;
+      });
+    }
   }
   try {
     cached.conn = await cached.promise;
