@@ -31,7 +31,7 @@ async function connectToDB() {
 
   if (!cached.promise) {
     const opts = {
-      bufferCommands: false,
+      bufferCommands: true, // it was false and I updated to true to solve connection delay
     };
     // narrowing to avoid typscript error if mongodburi is undefined
     if(MONGODB_URI){

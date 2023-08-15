@@ -4,33 +4,28 @@ export interface ISession {
 }
 
 type QuestionType = "document" | "situations" | "grammaire" ;
-interface Option {
-    name:'a' | 'b' | 'c' | 'd' | 'e';
-    content: string;
-    isChecked: boolean;
-}
-
-interface ISubQuestion {
-    header: string; // like >>>  ahmed ..... a l'ecole.
-    options: Option[]; 
+// create interface for sub questions
+interface Sub {
+    content: string; // like >>>  ahmed ..... a l'ecole.
+    options: [
+        string,string,string,string
+    ]; //we need fixed number of options 4 in most cases >> we can use tuple for this
     answerIndex:number;// 0 here for the first element in the array of options
-    points:number;  // for example 2 for the right answer
 }
 
-interface ISituationSub extends Omit <ISubQuestion,'answerIndex'>{
+//create interface for the question of situations
+interface SituationsSub extends Omit <Sub,'answerIndex'>{
     answerIndex:number[];
 }
 
-
-interface IQuestion {
+//create interface for the question in general
+interface Question {
     kind:QuestionType;
-    header:string;  // like  >>>  Lis ce document puis reponds aux questions suivantes?
-    subQuestions:ISubQuestion[];
-    
+    subs:Sub[];
 }
 
 
-export interface ILeDocumentModel extends IQuestion {
+export interface DocumentModel extends Question {
     texte :string;
     
 }
@@ -38,14 +33,17 @@ export interface ILeDocumentModel extends IQuestion {
 
 
 // to override properties use Omit<InterfaceName,'propertyName'>
-export interface ISituationsModel extends Omit <IQuestion,'subQuestions'>{
-    subQuestions:ISituationSub;
-    
+export interface SituationsModel extends Omit <Question,'subs'>{
+    subs:SituationsSub[];
 }
 
 
 
 
-export interface IGrammaireModel extends IQuestion {}
+export interface GrammaireModel extends Question {}
 
-// farah anwar is ali 
+export interface Messages {
+    success:string;
+    failure:string;
+    wrongMethod:string;
+  }

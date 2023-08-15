@@ -1,42 +1,23 @@
 import  mongoose,{Schema} from 'mongoose'
-import { ILeDocumentModel } from '../../types'
+import { DocumentModel } from '../../types'
 
 
-const documentSchema:Schema<ILeDocumentModel> = new Schema({
+const documentSchema:Schema<DocumentModel> = new Schema({
     kind:{type:String,required:true},
-    header:{type:String,required:true},
     texte:{type:String,required:true},
-    subQuestions:[
+    subs:[
         {
-            header:{type:String,required:true},
-            options:[
-                {
-                    name:{type:String,required:true},
-                    content:{type:String,required:true},
-                    isChecked:{type:Boolean,required:true},
-                },
-                {
-                    name:{type:String,required:true},
-                    content:{type:String,required:true},
-                    isChecked:{type:Boolean,required:true},
-                },
-                {
-                    name:{type:String,required:true},
-                    content:{type:String,required:true},
-                    isChecked:{type:Boolean,required:true},
-                },
-                {
-                    name:{type:String,required:true},
-                    content:{type:String,required:true},
-                    isChecked:{type:Boolean,required:true},
-                }
-            ],
+            content:{type:String,required:true},
+            options:{
+                type:Array,
+                required:true
+            },
             answerIndex:{type:Number,required:true},
-            points:{type:Number,required:true},
         },
     ]
 })
 
 
-export const LeDocument = mongoose.models.LeDocument || mongoose.model('LeDocument', documentSchema)
+
+export const Document = mongoose.models.Document || mongoose.model('Document', documentSchema)
 
