@@ -1,24 +1,15 @@
 import React, { useState } from "react";
+import { Question } from "../../src/types";
 
-//import SubQuestion from "./subQuestion";
-//  action="api/dashboard/question/new" method="POST"
-// SubQuestion state object should be manipulated by the function which will send it to the api
-// next we have to create the state object and then send it to the function
-interface FormData {
-  content: string;
-  opt1: string;
-  opt2: string;
-  opt3: string;
-  opt4: string;
-  rightAnswer: number;
-}
+// declare Props interface to describe the function passed from the parent component
 interface Props {
-  handleSubmit: (data:FormData)=>void;
+  handleSubmit: (data:Question)=>void;
 }
 
 const QuestionForm:React.FC<Props>=({handleSubmit})=> {
-  
-const [formData,setFormData] = useState<FormData>({
+ // declare the form state 
+const [formData,setFormData] = useState<Question>({
+  kind:'grammaire',
   content:'',
   opt1:'',
   opt2:'',
@@ -26,24 +17,35 @@ const [formData,setFormData] = useState<FormData>({
   opt4:'',
   rightAnswer: 0,
 });
+// handle the input event on change with function
 const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const { name, value } = e.target;
   setFormData({ ...formData, [name]: value });
 };
 
+// handle the submit event with function
 const handler = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
   if(!formData){
     return;
   }
   handleSubmit(formData);
+  setFormData({
+    kind:'grammaire',
+    content:'',
+    opt1:'',
+    opt2:'',
+    opt3:'',
+    opt4:'',
+    rightAnswer: 0,
+  })
 };
 
   
   return (
     <div>
       <h2 className="text-center">after fill the from please click submit</h2>
-      <form  className="flex flex-col items-center"
+      <form  className="flex flex-col items-center"  id="form-submit"
       onSubmit={handler}>
          <div>
       <div className="p-2 m-2">

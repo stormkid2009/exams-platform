@@ -17,10 +17,15 @@ let msg: Messages = {
       res.status(405).send(msg.wrongMethod);
       return;
     }
-    
+    const {kind,content,opt1,opt2,opt3,opt4,rightAnswer} = req.body;
     const question = new Grammaire({
-      kind:"grammaire",
-      subs:req.body.subs,
+      kind:kind,
+      content:content,
+      opt1:opt1,
+      opt2:opt2,
+      opt3:opt3,
+      opt4:opt4,
+      rightAnswer:rightAnswer,
       
     })
     try {

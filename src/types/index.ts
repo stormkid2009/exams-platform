@@ -4,46 +4,42 @@ export interface ISession {
 }
 
 type QuestionType = "document" | "situations" | "grammaire" ;
-// create interface for sub questions
-interface Sub {
-    content: string; // like >>>  ahmed ..... a l'ecole.
-    options: [
-        string,string,string,string
-    ]; //we need fixed number of options 4 in most cases >> we can use tuple for this
-    answerIndex:number;// 0 here for the first element in the array of options
-}
 
-//create interface for the question of situations
-interface SituationsSub extends Omit <Sub,'answerIndex'>{
-    answerIndex:number[];
-}
 
 //create interface for the question in general
-interface Question {
+export interface Question {
     kind:QuestionType;
-    subs:Sub[];
+    content: string;
+    opt1: string;
+    opt2: string;
+    opt3: string;
+    opt4: string;
+    rightAnswer: number;
 }
 
-
-export interface DocumentModel extends Question {
+// create interface for the question of document
+export interface DocumentQuestion  {
     texte :string;
+    questions:Question[];
     
 }
 
 
 
 // to override properties use Omit<InterfaceName,'propertyName'>
-export interface SituationsModel extends Omit <Question,'subs'>{
-    subs:SituationsSub[];
+export interface SituationQuestion  extends Question {
+    opt5:string;
+    rightAnswer2:number;
 }
 
 
 
 
-export interface GrammaireModel extends Question {}
+export interface GrammaireQuestion  extends Question {}
 
 export interface Messages {
     success:string;
     failure:string;
     wrongMethod:string;
   }
+
