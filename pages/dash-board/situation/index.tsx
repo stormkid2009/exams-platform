@@ -1,14 +1,14 @@
 import React from 'react'
-import QuestionForm from "../../components/inputForm/questionForm";
-import { Question } from "../../src/types";
+import SituationForm from "../../../components/inputForm/siutationForm"
+import { SituationQuestion } from "../../../src/types";
 
 
 export default function DashBoard (){
     
-  const handleSubmit = async(data: Question) => {
+  const handleSubmit = async(data: SituationQuestion) => {
     // Handle form submission here
     console.log('Form data submitted:', data);
-    await fetch('/api/questions/category/grammaire', {
+    await fetch('/api/questions/category/situations', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,7 +18,7 @@ export default function DashBoard (){
   };
     return(
         <div>
-            <QuestionForm  handleSubmit={handleSubmit}/>
+            <SituationForm  handleSubmit={handleSubmit}/>
         </div>
     )
 }

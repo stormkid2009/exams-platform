@@ -2,8 +2,7 @@ import { GrammaireQuestion } from "../../types";
 import mongoose,{ Schema } from "mongoose";
 
 
-// we need to change the model here because subs array is not valid for one question only
-// so we can append only the kind of question to the request object
+// we declare schema here for our grammaire question
 const grammaireSchema:Schema<GrammaireQuestion> = new Schema({
     kind:{type:String,required:true},
     content:{type:String,required:true},
@@ -15,5 +14,5 @@ const grammaireSchema:Schema<GrammaireQuestion> = new Schema({
         
 });
 
-
+// we declare and export the model of our schema here
 export const Grammaire = mongoose.models.Grammaire || mongoose.model('Grammaire',grammaireSchema);

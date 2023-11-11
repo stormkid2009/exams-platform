@@ -1,5 +1,5 @@
 import connectToDB from "../../../../src/lib/mongooseClient";
-import { Situations } from "../../../../src/models/questions/situations.model";
+import { Situation } from "../../../../src/models/questions/situations.model";
 import { NextApiRequest,NextApiResponse } from "next";
 import { Messages } from '../../../../src/types';
 
@@ -17,10 +17,17 @@ let msg: Messages = {
       res.status(405).send(msg.wrongMethod);
       return;
     }
-    
-    const question = new Situations({
-      kind:"situations",
-      subs:req.body.subs,
+    const {kind,content,opt1,opt2,opt3,opt4,opt5,rightAnswer,rightAnswer2} = req.body;
+    const question = new Situation({
+      kind:kind,
+      content: content,
+      opt1: opt1,
+      opt2: opt2,
+      opt3: opt3,
+      opt4: opt4,
+      opt5: opt5,
+      rightAnswer: rightAnswer,
+      rightAnswer2: rightAnswer2
       
     })
     try {
