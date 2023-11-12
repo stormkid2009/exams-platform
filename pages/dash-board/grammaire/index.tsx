@@ -1,6 +1,6 @@
 import React from 'react'
-import QuestionForm from "../../../components/inputForm/questionForm";
-import { Question } from "../../../src/types";
+import QuestionForm from "components/inputForm/questionForm";
+import { Question } from "src/types";
 
 
 export default function DashBoard (){

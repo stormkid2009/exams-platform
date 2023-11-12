@@ -1,4 +1,4 @@
-import { GrammaireQuestion } from "../../types";
+import { GrammaireQuestion } from "src/types"
 import mongoose,{ Schema } from "mongoose";
 
 

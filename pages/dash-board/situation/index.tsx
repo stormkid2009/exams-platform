@@ -1,6 +1,6 @@
 import React from 'react'
-import SituationForm from "../../../components/inputForm/siutationForm"
-import { SituationQuestion } from "../../../src/types";
+import SituationForm from "components/inputForm/siutationForm"
+import { SituationQuestion } from "src/types";
 
 
 export default function DashBoard (){

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Question } from "../../src/types";
+import { Question } from "src/types";
 
 // declare Props interface to describe the function passed from the parent component
 interface Props {

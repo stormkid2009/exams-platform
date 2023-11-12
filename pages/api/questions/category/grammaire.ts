@@ -1,7 +1,7 @@
-import connectToDB from "../../../../src/lib/mongooseClient";
-import { Grammaire } from "../../../../src/models/questions/grammaire.model";
+import connectToDB from "src/lib/mongooseClient";
+import { Grammaire } from "src/models/questions/grammaire.model";
 import { NextApiRequest,NextApiResponse } from "next";
-import { Messages } from '../../../../src/types';
+import { Messages } from 'src/types';
 
 
 let msg: Messages = {

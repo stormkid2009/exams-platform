@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Session } from '../../../../src/models/session.model'
-import connectToDB from '../../../../src/lib/mongooseClient';
+import { Session } from 'src/models/session.model'
+import connectToDB from 'src/lib/mongooseClient';
 
 
 connectToDB();

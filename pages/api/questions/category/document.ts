@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Document } from '../../../../src/models/questions/document.model'
-import connectToDB from '../../../../src/lib/mongooseClient'
-import { Messages } from '../../../../src/types';
+import { Document } from 'src/models/questions/document.model'
+import connectToDB from 'src/lib/mongooseClient'
+import { Messages } from 'src/types';
 
 
 

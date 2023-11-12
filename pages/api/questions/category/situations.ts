@@ -1,7 +1,8 @@
-import connectToDB from "../../../../src/lib/mongooseClient";
-import { Situation } from "../../../../src/models/questions/situations.model";
+// Now we can use the absolute path by adding baseUrl options to the tsconfig.json file
+import connectToDB from 'src/lib/mongooseClient'
+import { Situation } from "src/models/questions/situations.model";
 import { NextApiRequest,NextApiResponse } from "next";
-import { Messages } from '../../../../src/types';
+import { Messages } from 'src/types';
 
 
 let msg: Messages = {

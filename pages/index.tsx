@@ -1,10 +1,10 @@
 import Head from 'next/head'
-import Intro from '../components/introduction'
-import UserForm from '../components/userForm'
-import question from '../src/models/questions/example'
+import Intro from 'components/introduction'
+import UserForm from 'components/userForm'
+
 
 export default function Home() {
-  //console.log(question)
+  
   return (
     <>
       <Head>

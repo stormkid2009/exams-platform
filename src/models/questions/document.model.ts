@@ -1,11 +1,11 @@
 import  mongoose,{Schema} from 'mongoose'
-import { DocumentModel } from '../../types'
+import { DocumentQuestion } from 'src/types'
 
-
-const documentSchema:Schema<DocumentModel> = new Schema({
-    kind:{type:String,required:true},
+// we need to add kind property one time and omit it from questions array
+const documentSchema:Schema<DocumentQuestion> = new Schema({
+    
     texte:{type:String,required:true},
-    subs:[
+    questions:[
         {
             content:{type:String,required:true},
             options:{
