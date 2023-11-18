@@ -17,10 +17,13 @@ export interface Question {
     rightAnswer: number;
 }
 
+// create interface for the question in document
+export interface DocQuestion extends  Omit<Question,"kind">{}
 // create interface for the question of document
 export interface DocumentQuestion  {
+    kind:QuestionType;
     texte :string;
-    questions:Question[];
+    questions:DocQuestion[];
     
 }
 

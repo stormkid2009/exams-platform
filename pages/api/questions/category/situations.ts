@@ -10,34 +10,38 @@ let msg: Messages = {
     failure:'Failed to create  new  question ',
     wrongMethod:'This method is not allowed'
   };
+
+  
   export default async function handler(
-    req: NextApiRequest,
+    req : NextApiRequest,
     res: NextApiResponse
-  ) {
+  ):Promise<void> {
     if (req.method !== "POST") {
       res.status(405).send(msg.wrongMethod);
       return;
     }
     const {kind,content,opt1,opt2,opt3,opt4,opt5,rightAnswer,rightAnswer2} = req.body;
+    // as properties have the same name we don't have to repeat them
+
     const question = new Situation({
-      kind:kind,
-      content: content,
-      opt1: opt1,
-      opt2: opt2,
-      opt3: opt3,
-      opt4: opt4,
-      opt5: opt5,
-      rightAnswer: rightAnswer,
-      rightAnswer2: rightAnswer2
+      kind,
+      content,
+      opt1,
+      opt2,
+      opt3,
+      opt4,
+      opt5,
+      rightAnswer,
+      rightAnswer2
       
     })
     try {
       connectToDB();
       await question.save();
       res.status(200).json(msg.success)
-    } catch (error) {
-      console.log(error);
-      res.status(500).json(msg.failure)
+    } catch (error:any) {
+      console.error("Error saving question:", error.message);
+      res.status(500).json({ error: msg.failure });
     }
   
   } 
