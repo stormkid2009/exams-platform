@@ -9,11 +9,11 @@ interface InputFieldProps {
 
 // create reusable input field component
 const InputField: React.FC<InputFieldProps>=({name, value,onChange,validate})=>{
-    const [error,setErro] = useState('');
+    const [error,setError] = useState('');
     const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
         const newValue = e.target.value;
         const error = validate(name, newValue);
-        setErro(error);
+        setError(error);
         if(!error) {
             onChange(name, newValue);
         }
@@ -29,7 +29,7 @@ const InputField: React.FC<InputFieldProps>=({name, value,onChange,validate})=>{
                     type='text'
                     name={name}
                     value={value}
-                    onChange={(e)=>onChange(name, e.target.value)}
+                    onChange={handleChange}
                     className='m-2 p-2'
                 />
             </label>

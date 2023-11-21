@@ -21,8 +21,19 @@ const Form:React.FC<FormProps>=({fields,handler})=>{
     const validate = (name: string, value: string) => {
         if (value.trim() === '') {
           return `${name} is required`;
+        };
+        // Check if the field is 'rightAnswer' and if it's numerical
+        if (name === 'rightAnswer') {
+          if (isNaN(Number(value))) {
+            return `${name} should be a number`;
+          }
         }
         // Add more validation logic here based on the field name if needed
+        if(name === 'content'){
+            if(value.length< 20){
+                return `${name} should be at least 20   characters`;
+            }
+        }
         return '';
       };
 
