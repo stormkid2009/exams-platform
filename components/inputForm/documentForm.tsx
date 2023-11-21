@@ -23,10 +23,7 @@ const [formData,setFormData] = useState<DocumentQuestion>({
 const [childData,setchildData] = useState<DocQuestion[]>([])
 
 useEffect(() => {
-  setFormData({
-    ...formData,
-    questions:childData
-  })
+  setFormData(prevState => ({ ...prevState, questions: childData }));
   console.log(formData);
 }, [childData]);
 

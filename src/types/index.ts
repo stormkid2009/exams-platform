@@ -7,8 +7,10 @@ type QuestionType = "document" | "situations" | "grammaire" ;
 
 
 //create interface for the question in general
+// we omit the property of kind from the Question interface try to manipulate this with all components deals with it
+// to correct to errors that will appear
 export interface Question {
-    kind:QuestionType;
+    //kind:QuestionType;
     content: string;
     opt1: string;
     opt2: string;
