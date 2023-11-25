@@ -44,7 +44,7 @@ const Form:React.FC<FormProps>=({fields,handler})=>{
         handler({content, opt1, opt2, opt3, opt4, rightAnswer:Number(rightAnswer)});
       };
     return(
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className='text-center m-2 p-2'>
             {fields.map(
                 (field)=>(
                     <InputField 
@@ -56,7 +56,9 @@ const Form:React.FC<FormProps>=({fields,handler})=>{
                     />
                 )
             )}
-            <button type='submit'>Submit</button>
+            <button type='submit'
+             className='text-white m-2 p-2 bg-slate-700 w-1/3 border-2 '
+             >Submit</button>
         </form>
     );
 };

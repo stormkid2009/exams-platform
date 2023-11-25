@@ -10,6 +10,7 @@ interface InputFieldProps {
 // create reusable input field component
 const InputField: React.FC<InputFieldProps>=({name, value,onChange,validate})=>{
     const [error,setError] = useState('');
+    const inputStyle =`w-5/6  border rounded-md`
     const handleChange=(e:React.ChangeEvent<HTMLInputElement>)=>{
         const newValue = e.target.value;
         const error = validate(name, newValue);
@@ -22,18 +23,18 @@ const InputField: React.FC<InputFieldProps>=({name, value,onChange,validate})=>{
     }
 
     return (
-        <div>
-            <label>
-                <span>{name}</span>
+        <div className='text-center m-2 border rounded-md'>
+            <label className='w-full flex justify-between items-center'>
+                <span className='m-2 p-2 w-1/6'>{name}</span>
                 <input 
                     type='text'
                     name={name}
                     value={value}
                     onChange={handleChange}
-                    className='m-2 p-2'
+                    className={name==='rightAnswer' ?`w-4/6  border rounded` :inputStyle}
                 />
             </label>
-            {error && <div className='text-red'><span>{error}</span></div>}
+            {error && <div className='text-red-700'><span>{error}</span></div>}
         </div>
     );
 }

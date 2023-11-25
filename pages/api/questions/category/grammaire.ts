@@ -19,7 +19,8 @@ export default async function handler(
     res.status(405).send(msg.wrongMethod);
     return;
   }
-  const { kind, content, opt1, opt2, opt3, opt4, rightAnswer } = req.body;
+  const {  content, opt1, opt2, opt3, opt4, rightAnswer } = req.body;
+  const kind='grammaire';
 
   // as properties have the same name we don't have to repeat them
   const question = new Grammaire({
@@ -34,6 +35,8 @@ export default async function handler(
   try {
     connectToDB();
     await question.save();
+    // if u need the question object send it in the response
+    //res.status(200).json(question);
     res.status(200).json(msg.success);
   } catch (error: any) {
     //Consider providing more informative error messages in the response when an error occurs.
