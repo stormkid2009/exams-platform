@@ -20,7 +20,8 @@ let msg: Messages = {
       res.status(405).send(msg.wrongMethod);
       return;
     }
-    const {kind,content,opt1,opt2,opt3,opt4,opt5,rightAnswer,rightAnswer2} = req.body;
+    const {content,opt1,opt2,opt3,opt4,opt5,rightAnswer,rightAnswer2} = req.body;
+    const kind = "situations"
     // as properties have the same name we don't have to repeat them
 
     const question = new Situation({

@@ -9,7 +9,7 @@ interface FormProps {
  handler:(data:Question)=>void;
 }
 
-const Form:React.FC<FormProps>=({fields,handler})=>{
+const FormV2:React.FC<FormProps>=({fields,handler})=>{
     const [values,setValues] = useState<{[key:string]:string}>({});
 
     const handleChange = (name:string,value:string) => {
@@ -40,14 +40,14 @@ const Form:React.FC<FormProps>=({fields,handler})=>{
       const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         // Handle form submission here
-        const {content, opt1, opt2, opt3, opt4, rightAnswer } = values;
+        const {content, opt1, opt2, opt3, opt4,opt5, rightAnswer,rightAnswer2 } = values;
         //we need to check the values variables if they are empty string
         console.log(values);
-        if(!content || !opt1 || !opt2 || !opt3 || !opt4 || !rightAnswer){
+        if(!content || !opt1 || !opt2 || !opt3 || !opt4 || !rightAnswer || !opt5 || !rightAnswer2){
           console.log(`all fields are required`);
           return;
         }
-        handler({content, opt1, opt2, opt3, opt4, rightAnswer:Number(rightAnswer)});
+        handler({content, opt1, opt2, opt3, opt4,opt5, rightAnswer:Number(rightAnswer),rightAnswer2:Number(rightAnswer2)});
         //empty the object of values to rerender and refresh the input field  
         setValues({})
       };
@@ -71,5 +71,5 @@ const Form:React.FC<FormProps>=({fields,handler})=>{
     );
 };
 
-export default Form;
+export default FormV2;
 
