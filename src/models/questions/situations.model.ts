@@ -1,4 +1,4 @@
-import { SituationQuestion } from "../../types";
+import { SituationQuestion } from "src/types";
 import mongoose,{Schema} from "mongoose";
 
 // we declare schema for the situation question here

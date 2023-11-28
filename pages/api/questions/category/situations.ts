@@ -38,6 +38,7 @@ let msg: Messages = {
     })
     try {
       connectToDB();
+      console.log(question);
       await question.save();
       res.status(200).json(msg.success)
     } catch (error:any) {

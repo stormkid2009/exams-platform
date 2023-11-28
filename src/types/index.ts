@@ -15,11 +15,14 @@ export interface Question {
     opt2: string;
     opt3: string;
     opt4: string;
-    opt5?: string;
     rightAnswer: number;
-    rightAnswer2?: number;
 }
 
+
+export interface SubQuestion extends Question {
+    opt5: string;
+    rightAnswer2: number;
+}
 // create interface for the question in document
 export interface DocQuestion extends  Question{
     kind:QuestionType;
@@ -50,9 +53,8 @@ export interface DocumentQuestion  {
 
 
 // to override properties use Omit<InterfaceName,'propertyName'>
-export interface SituationQuestion  extends Question {
+export interface SituationQuestion  extends SubQuestion {
     kind:QuestionType;
-    
 }
 
 

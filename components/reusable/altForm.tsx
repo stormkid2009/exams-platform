@@ -1,15 +1,15 @@
 import React,{useState} from 'react';
 import InputField from './inputField';
-import { Question } from 'src/types';
+import { SubQuestion } from 'src/types';
 
 
   
 interface FormProps {
  fields:string[];
- handler:(data:Question)=>void;
+ handler:(data:SubQuestion)=>void;
 }
 
-const FormV2:React.FC<FormProps>=({fields,handler})=>{
+const AltForm:React.FC<FormProps>=({fields,handler})=>{
     const [values,setValues] = useState<{[key:string]:string}>({});
 
     const handleChange = (name:string,value:string) => {
@@ -28,6 +28,12 @@ const FormV2:React.FC<FormProps>=({fields,handler})=>{
           return `${name} should be a number`;
         }
       }
+
+      if (name === 'rightAnswer2') {
+        if (isNaN(Number(value))) {
+          return `${name} should be a number`;
+        }
+      }
       // Add more validation logic here based on the field name if needed
       if(name === 'content'){
           if(value.length< 20){
@@ -42,7 +48,7 @@ const FormV2:React.FC<FormProps>=({fields,handler})=>{
         // Handle form submission here
         const {content, opt1, opt2, opt3, opt4,opt5, rightAnswer,rightAnswer2 } = values;
         //we need to check the values variables if they are empty string
-        console.log(values);
+        //console.log(values);
         if(!content || !opt1 || !opt2 || !opt3 || !opt4 || !rightAnswer || !opt5 || !rightAnswer2){
           console.log(`all fields are required`);
           return;
@@ -71,5 +77,5 @@ const FormV2:React.FC<FormProps>=({fields,handler})=>{
     );
 };
 
-export default FormV2;
+export default AltForm;
 

@@ -1,24 +1,20 @@
 import React from 'react'
-import QuestionForm from "components/inputForm/questionForm";
+import GrammaireForm from 'components/inputForm/grammaireForm';
 import { Question } from "src/types";
-
+import fetcher from 'src/lib/helpers/fetcher';
 
 export default function DashBoard (){
-    
+  // declare constant for api path
+  const path = `/api/questions/category/grammaire`;
+
+  //declare our submit function which take the form data as argument and pass it to the fetcher
   const handleSubmit = async(data: Question) => {
-    // Handle form submission here
-    console.log('Form data submitted:', data);
-    await fetch('/api/questions/category/grammaire', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    });
+    // call fetcher to send data to our api endpoint
+    fetcher(data,path);
   };
     return(
         <div>
-            <QuestionForm  handleSubmit={handleSubmit}/>
+            <GrammaireForm  handleSubmit={handleSubmit}/>
         </div>
     )
 }
