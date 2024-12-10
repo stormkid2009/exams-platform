@@ -1,7 +1,8 @@
-export interface ISession {
+export interface IUserModel {
     email: string;
-    testIdex: number;
-}
+    password: string;
+    createdAt: Date;
+  }
 
 type QuestionType = "document" | "situations" | "grammaire" ;
 
