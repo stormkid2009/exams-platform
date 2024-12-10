@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { User } from 'src/models/session.model';
+import { User } from 'src/models/user.model';
 import connectToDB from 'src/lib/mongooseClient';
 import jwt from 'jsonwebtoken';
 
