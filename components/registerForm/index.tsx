@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useRouter } from 'next/router';
+import { useAuthStore } from '../../src/store/authStore';
+import Link from 'next/link';
 
 function RegisterForm() {
   const [email, setEmail] = useState<string>("");
@@ -6,6 +9,9 @@ function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+
+  const router = useRouter();
+  const login = useAuthStore((state) => state.login);
 
   const handleRegister = async () => {
     try {
@@ -33,13 +39,11 @@ function RegisterForm() {
         throw new Error(data.message || "Registration failed");
       }
 
-      // Handle successful registration
-      console.log("Registration successful:", data);
-      // You might want to:
-      // 1. Store the token in localStorage
-      localStorage.setItem("token", data.token);
-      // 2. Redirect to dashboard/home
-      // 3. Update global auth state if you're using any state management
+      // Update auth store
+      login(data.user, data.token);
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
 
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
@@ -57,7 +61,6 @@ function RegisterForm() {
     <div className="h-full flex flex-col items-center border-2 p-4 m-4">
       <form onSubmit={onSubmit} className="w-full max-w-md">
         <div className="p-2 m-4 text-center">
-          <h2 className="text-xl font-bold mb-4">Register</h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
         </div>
 
@@ -122,9 +125,9 @@ function RegisterForm() {
 
         <p className="mt-4 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-500 hover:text-blue-700">
+          <Link href="/login" className="text-blue-500 hover:text-blue-700">
             Login here
-          </a>
+          </Link>
         </p>
       </form>
     </div>
