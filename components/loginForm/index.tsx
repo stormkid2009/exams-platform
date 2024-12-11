@@ -1,16 +1,22 @@
 import { useState } from "react";
+import { useRouter } from 'next/router';
+import { useAuthStore } from '../../src/store/authStore';
+import Link from 'next/link';
 
 function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
+  
+  const router = useRouter();
+  const login = useAuthStore((state) => state.login);
 
   const handleLogin = async () => {
     try {
       setLoading(true);
       setError("");
-      const url = "http://localhost:3000/api/auth/login";
+      const url = "/api/auth/login";
       const reqOptions = {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -23,9 +29,11 @@ function LoginForm() {
         throw new Error(data.message || "Login failed");
       }
       
-      // Handle successful login here
-      console.log("Login successful:", data);
-      // You might want to store the token or redirect the user
+      // Update auth store
+      login(data.user, data.token);
+      
+      // Redirect to dashboard
+      router.push('/dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
@@ -46,10 +54,9 @@ function LoginForm() {
     <div className="h-full flex flex-col items-center border-2 p-4 m-4">
       <form onSubmit={onSubmit} className="w-full max-w-md">
         <div className="p-2 m-4 text-center">
-          <h2 className="text-xl font-bold mb-4">Login</h2>
           {error && <p className="text-red-500 mb-4">{error}</p>}
         </div>
-        
+
         <div className="mb-4">
           <label htmlFor="user-email" className="block mb-2">
             Email
@@ -67,7 +74,7 @@ function LoginForm() {
           />
         </div>
 
-        <div className="mb-4">
+        <div className="mb-6">
           <label htmlFor="user-password" className="block mb-2">
             Password
           </label>
@@ -84,13 +91,20 @@ function LoginForm() {
           />
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+
+        <p className="mt-4 text-center text-sm text-gray-600">
+          Don not have an account?{" "}`
+          <Link href="/register" className="text-blue-500 hover:text-blue-700">
+            Register here
+          </Link>
+        </p>
       </form>
     </div>
   );
