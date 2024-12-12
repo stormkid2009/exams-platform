@@ -2,6 +2,13 @@ import { useState } from "react";
 import { useRouter } from 'next/router';
 import { useAuthStore } from '../../src/store/authStore';
 import Link from 'next/link';
+import fetcher from '../../src/lib/helpers/fetcher';
+
+interface RegisterResponse {
+  user: any;
+  token: string;
+  message?: string;
+}
 
 function RegisterForm() {
   const [email, setEmail] = useState<string>("");
@@ -20,33 +27,44 @@ function RegisterForm() {
 
       // Client-side validation
       if (!email || !password || !confirmPassword) {
-        throw new Error("All fields are required");
+        throw new Error("Please fill in all required fields");
       }
 
       if (password !== confirmPassword) {
-        throw new Error("Passwords do not match");
+        throw new Error("The passwords you entered don't match. Please try again");
       }
 
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await fetcher<RegisterResponse>(
+        { email, password },
+        "/api/auth/register"
+      );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
+      if (response.error || !response.data) {
+        // Map HTTP status codes to user-friendly messages
+        switch (response.status) {
+          case 409:
+            throw new Error("This email is already registered. Please try signing in instead");
+          case 400:
+            throw new Error(response.error || "Please check your email and password");
+          case 500:
+            throw new Error("We're experiencing technical difficulties. Please try again later");
+          default:
+            throw new Error(response.error || "Unable to create your account. Please try again");
+        }
       }
 
       // Update auth store
-      login(data.user, data.token);
+      login(response.data.user, response.data.token);
       
       // Redirect to dashboard
       router.push('/dashboard');
 
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Registration failed");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("We encountered an unexpected error. Please try again later");
+      }
     } finally {
       setLoading(false);
     }

@@ -1,37 +1,44 @@
-
-
 // Create a new function that will fetch data from an api endpoint
 // we give the function generic type or placeholder for incoming data which we dont know 
 // what type it will be
 
+interface FetcherResponse<T> {
+  data: T | null;
+  error: string | null;
+  status: number;
+}
 
+const fetcher = async <T>(data: unknown, path: string): Promise<FetcherResponse<T>> => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-const fetcher = async<T>(data:T,path:string) => {
-    
-    // handle the response to take care of errors and issues
-    // we gonna use try catch block for this goal
-    try {
-      const response = await fetch(path, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-    
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-    
-      // You can use the response here if needed
-      //const submittedData = await response.json()
-      //console.log('Form data submitted:', submittedData);
-    
-    } catch (error) {
-      console.error('There was a problem with the fetch operation: ', error);
-    }
-    
-  };
+  try {
+    const response = await fetch(path, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+      signal: controller.signal,
+    });
 
+    clearTimeout(timeoutId);
+    const responseData = await response.json();
 
-  export default fetcher;
+    return {
+      data: response.ok ? (responseData as T) : null,
+      error: response.ok ? null : responseData.message || `HTTP error! status: ${response.status}`,
+      status: response.status,
+    };
+  } catch (error) {
+    clearTimeout(timeoutId);
+    
+    return {
+      data: null,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      status: 500,
+    };
+  }
+};
+
+export default fetcher;
