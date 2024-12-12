@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI:string | undefined = process.env.MONGODB_URI;
+// Get the MongoDB connection string from the environment variable.
+// This is a string that identifies the MongoDB instance that we should connect to.
+// If the environment variable is not defined, this will be undefined.
+const MONGODB_URI: string | undefined = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(
