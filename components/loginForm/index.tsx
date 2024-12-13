@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from 'next/router';
 import { useAuthStore } from '../../src/store/authStore';
 import Link from 'next/link';
+import fetcher from '../../src/lib/helpers/fetcher';
 
 function LoginForm() {
   const [email, setEmail] = useState<string>("");
@@ -16,21 +17,18 @@ function LoginForm() {
     try {
       setLoading(true);
       setError("");
-      const url = "/api/auth/login";
-      const reqOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      };
-      const response = await fetch(url, reqOptions);
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.message || "Login failed");
+
+      const response = await fetcher<{ user: any; token: string }>(
+        { email, password },
+        "/api/auth/login"
+      );
+
+      if (response.error || !response.data) {
+        throw new Error(response.error || "Login failed");
       }
-      
+
       // Update auth store
-      login(data.user, data.token);
+      login(response.data.user, response.data.token);
       
       // Redirect to dashboard
       router.push('/dashboard');
@@ -100,7 +98,7 @@ function LoginForm() {
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don not have an account?{" "}`
+          Don not have an account?{" "}
           <Link href="/register" className="text-blue-500 hover:text-blue-700">
             Register here
           </Link>
