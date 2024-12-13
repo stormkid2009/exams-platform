@@ -7,11 +7,12 @@ function Logo() {
   return (
     <div className=' '>
         <Image
-          src="/examLogo.jpg"
-          alt="exam-logo"
+          src="/platformLogo.jpg"
+          alt="Platform Logo" 
           width={30}
           height={30}
         />
+
     </div>
   )
 }
