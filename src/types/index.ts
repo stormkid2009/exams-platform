@@ -1,4 +1,3 @@
-
 // User interface
 export interface IUserModel {
     email: string;
@@ -11,7 +10,7 @@ export interface IUserModel {
 //Multi-MCQ: Multiple Choice Question with multiple correct answers
 //Open-Ended: Free-form question
 
-type QuestionType = "MCQ" | "Multi-MCQ" | "Open-Ended";
+export type QuestionType = "MCQ" | "Multi-MCQ" | "Open-Ended";
 
 // Base interface for all questions
 export interface BaseQuestion {
@@ -20,6 +19,13 @@ export interface BaseQuestion {
     options?: string[]; // Array of options (optional for open-ended questions)
     rightAnswers?: number[]; // Array of indices for correct answers (optional for open-ended questions)
     type: QuestionType; // Type of the question
+}
+
+// Interface for Grammaire questions - Multiple choice with exactly 4 options and 1 correct answer
+export interface GrammaireQuestion extends BaseQuestion {
+    type: "MCQ";
+    options: [string, string, string, string]; // Tuple of exactly 4 strings
+    rightAnswers: [number]; // Tuple of exactly 1 number (index)
 }
 
 // Interface for a passage with related questions
@@ -34,4 +40,3 @@ export interface Messages {
     failure:string;
     wrongMethod:string;
   }
-
