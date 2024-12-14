@@ -36,7 +36,8 @@ export interface PassageQuestion {
 }
 
 export interface Messages {
-    success:string;
-    failure:string;
-    wrongMethod:string;
-  }
+    success: string;
+    failure: string;
+    wrongMethod: string;
+    invalidData: string;
+}
