@@ -22,6 +22,12 @@ export interface BaseQuestion {
     type: QuestionType; // Type of the question
 }
 
+// Interface for a passage with related questions
+export interface PassageQuestion {
+    id: string; // Unique identifier for the passage
+    passage: string; // The text of the passage
+    relatedQuestions: BaseQuestion[]; // Array of questions related to the passage
+}
 
 export interface Messages {
     success:string;
