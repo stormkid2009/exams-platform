@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,19 +23,37 @@ interface Props {
 }
 
 const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
+  const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const {
     register,
     handleSubmit: formSubmit,
     formState: { errors },
+    reset
   } = useForm<GrammaireFormData>({
     resolver: zodResolver(grammaireSchema)
   });
+
+  const onSubmit = async (data: GrammaireFormData) => {
+    try {
+      await handleSubmit(data);
+      setMessage({ type: 'success', text: 'Question created successfully!' });
+      reset(); // Reset form fields
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Failed to create question. Please try again.' });
+    }
+  };
 
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h2 className="text-xl font-bold text-center mb-6">Create Grammar Question</h2>
       
-      <form onSubmit={formSubmit(handleSubmit)} className="space-y-4">
+      {message && (
+        <div className={`p-4 mb-4 rounded ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          {message.text}
+        </div>
+      )}
+      
+      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
         <div>
           <label className="block mb-1">Question Content</label>
           <textarea
