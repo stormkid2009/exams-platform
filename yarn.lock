@@ -126,11 +126,6 @@
   dependencies:
     glob "7.1.7"
 
-"@next/font@13.5.7":
-  version "13.5.7"
-  resolved "https://registry.npmjs.org/@next/font/-/font-13.5.7.tgz"
-  integrity sha512-uzYv8ZGvVA9Ju2TyzrQ6WWb+XU45whWFdkfSS7tQ+ShggiHWUKIW94wCYUodGwR8oNv11lTwvVFXtcIL7DhKpA==
-
 "@next/swc-linux-x64-gnu@13.5.7":
   version "13.5.7"
   resolved "https://registry.npmjs.org/@next/swc-linux-x64-gnu/-/swc-linux-x64-gnu-13.5.7.tgz"
