@@ -4,7 +4,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Messages } from "src/types";
 import { randomUUID } from "crypto";
 
-let msg: Messages = {
+const msg: Messages = {
   success: "Success to create new question",
   failure: "Failed to create new question",
   wrongMethod: "This method is not allowed",
@@ -14,21 +14,18 @@ let msg: Messages = {
 // Type for the expected request body
 type GrammaireRequestBody = {
   content: string;
-  opt1: string;
-  opt2: string;
-  opt3: string;
-  opt4: string;
+  options: [string, string, string, string];
   rightAnswer: number;
 };
 
 // Validate request body fields
 function validateRequestBody(body: any): body is GrammaireRequestBody {
   return (
-    typeof body.content === 'string' && body.content.trim().length > 0 &&
-    typeof body.opt1 === 'string' && body.opt1.trim().length > 0 &&
-    typeof body.opt2 === 'string' && body.opt2.trim().length > 0 &&
-    typeof body.opt3 === 'string' && body.opt3.trim().length > 0 &&
-    typeof body.opt4 === 'string' && body.opt4.trim().length > 0 &&
+    typeof body.content === 'string' && 
+    body.content.trim().length > 0 &&
+    Array.isArray(body.options) &&
+    body.options.length === 4 &&
+    body.options.every((opt: any) => typeof opt === 'string' && opt.trim().length > 0) &&
     typeof body.rightAnswer === 'number' && 
     body.rightAnswer >= 0 && 
     body.rightAnswer <= 3
@@ -40,7 +37,10 @@ export default async function handler(
   res: NextApiResponse
 ): Promise<void> {
   if (req.method !== "POST") {
-    res.status(405).send(msg.wrongMethod);
+    res.status(405).json({ 
+      error: msg.wrongMethod,
+      details: "Only POST method is allowed"
+    });
     return;
   }
 
@@ -48,31 +48,34 @@ export default async function handler(
   if (!validateRequestBody(req.body)) {
     res.status(400).json({ 
       error: msg.invalidData,
-      details: "All fields are required. Options must be non-empty strings and rightAnswer must be a number between 0 and 3."
+      details: "Request must include: content (string), options (array of 4 strings), and rightAnswer (number between 0-3)"
     });
     return;
   }
 
-  const { content, opt1, opt2, opt3, opt4, rightAnswer } = req.body;
+  const { content, options, rightAnswer } = req.body;
 
   // Transform the data to match GrammaireQuestion interface
   const question = new Grammaire({
     id: randomUUID(),
     type: "MCQ",
     content,
-    options: [opt1, opt2, opt3, opt4],
+    options,
     rightAnswers: [rightAnswer]
   });
 
   try {
     await connectToDB();
     await question.save();
-    res.status(200).json(msg.success);
+    res.status(200).json({ 
+      message: msg.success,
+      questionId: question.id 
+    });
   } catch (error: any) {
     console.error("Error saving question:", error.message);
     res.status(500).json({ 
       error: msg.failure,
-      details: error.message // Adding error details for better debugging
+      details: error.message
     });
   }
 }

@@ -1,27 +1,33 @@
 import React from 'react'
 import GrammaireForm from 'components/inputForm/grammaireForm';
 import fetcher from 'src/lib/helpers/fetcher';
+import { GrammaireQuestion } from 'src/types';
+import { randomUUID } from 'crypto';
 
 // Type for form data
 type GrammaireFormData = {
   content: string;
-  opt1: string;
-  opt2: string;
-  opt3: string;
-  opt4: string;
+  options: string[];
   rightAnswer: number;
 };
 
 export default function DashBoard() {
   const path = `/api/questions/category/grammaire`;
 
-  const handleSubmit = async(data: GrammaireFormData) => {
+  const handleSubmit = async (formData: GrammaireFormData) => {
     try {
-      const response = await fetcher(data, path);
-      // Handle success (you might want to show a success message or redirect)
+      // Transform form data to match the API's expected format
+      const questionData: GrammaireQuestion = {
+        id: randomUUID(),
+        type: "MCQ",
+        content: formData.content,
+        options: formData.options as [string, string, string, string],
+        rightAnswers: [formData.rightAnswer]
+      };
+
+      const response = await fetcher(questionData, path);
       console.log('Question created successfully:', response);
     } catch (error) {
-      // Handle error (you might want to show an error message)
       console.error('Error creating question:', error);
     }
   };

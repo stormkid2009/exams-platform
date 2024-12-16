@@ -3,39 +3,41 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "../ui/Toast";
+import { SituationQuestion } from "src/types";
 
 // Validation schema
-const grammaireSchema = z.object({
+const situationSchema = z.object({
   content: z.string().min(1, "Question content is required"),
-  options: z.array(z.string().min(1, "Option is required")).length(4, "Exactly 4 options are required"),
-  rightAnswer: z.number()
+  options: z.array(z.string().min(1, "Option is required")).length(5, "Exactly 5 options are required"),
+  rightAnswers: z.array(z.number()
     .int()
-    .min(0, "Answer index must be between 0 and 3")
-    .max(3, "Answer index must be between 0 and 3"),
+    .min(0, "Answer index must be between 0 and 4")
+    .max(4, "Answer index must be between 0 and 4")
+  ).length(2, "Exactly 2 correct answers are required")
 });
 
-type GrammaireFormData = z.infer<typeof grammaireSchema>;
+type SituationFormData = z.infer<typeof situationSchema>;
 
 interface Props {
-  handleSubmit: (data: GrammaireFormData) => void;
+  handleSubmit: (data: SituationFormData) => void;
 }
 
-const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
+const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
   const [toast, setToast] = useState<{ type: 'success' | 'error', text: string } | null>(null);
   const {
     register,
     handleSubmit: formSubmit,
     formState: { errors },
     reset
-  } = useForm<GrammaireFormData>({
-    resolver: zodResolver(grammaireSchema),
+  } = useForm<SituationFormData>({
+    resolver: zodResolver(situationSchema),
     defaultValues: {
-      options: ['', '', '', ''], // Initialize empty options array
-      rightAnswer: 0
+      options: ['', '', '', '', ''], // Initialize empty options array
+      rightAnswers: [0, 1] // Default right answers
     }
   });
 
-  const onSubmit = async (data: GrammaireFormData) => {
+  const onSubmit = async (data: SituationFormData) => {
     try {
       await handleSubmit(data);
       setToast({ type: 'success', text: 'Question created successfully!' });
@@ -47,7 +49,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
 
   return (
     <div className="max-w-2xl mx-auto p-4">
-      <h2 className="text-xl font-bold text-center mb-6">Create Grammar Question</h2>
+      <h2 className="text-xl font-bold text-center mb-6">Create Situation Question</h2>
       
       {toast && (
         <Toast
@@ -73,7 +75,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
           </div>
         </div>
 
-        {[0, 1, 2, 3].map((index) => (
+        {[0, 1, 2, 3, 4].map((index) => (
           <div key={index} className="flex items-center gap-4">
             <label className="w-1/4">Option {index + 1}</label>
             <div className="w-3/4">
@@ -91,18 +93,34 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
         ))}
 
         <div className="flex items-center gap-4">
-          <label className="w-1/4">Correct Answer Index (0-3)</label>
-          <div className="w-3/4">
-            <input
-              type="number"
-              {...register("rightAnswer", { valueAsNumber: true })}
-              className="w-full p-2 border rounded"
-              min={0}
-              max={3}
-            />
-            {errors.rightAnswer && (
-              <p className="text-red-500 text-sm">{errors.rightAnswer.message}</p>
-            )}
+          <label className="w-1/4">Correct Answer Indices (0-4)</label>
+          <div className="w-3/4 flex gap-2">
+            <div className="flex-1">
+              <input
+                type="number"
+                {...register("rightAnswers.0", { valueAsNumber: true })}
+                className="w-full p-2 border rounded"
+                min={0}
+                max={4}
+                placeholder="First correct answer"
+              />
+              {errors.rightAnswers?.[0] && (
+                <p className="text-red-500 text-sm">{errors.rightAnswers[0].message}</p>
+              )}
+            </div>
+            <div className="flex-1">
+              <input
+                type="number"
+                {...register("rightAnswers.1", { valueAsNumber: true })}
+                className="w-full p-2 border rounded"
+                min={0}
+                max={4}
+                placeholder="Second correct answer"
+              />
+              {errors.rightAnswers?.[1] && (
+                <p className="text-red-500 text-sm">{errors.rightAnswers[1].message}</p>
+              )}
+            </div>
           </div>
         </div>
 
@@ -119,4 +137,4 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
   );
 };
 
-export default GrammaireForm;
+export default SituationForm;
