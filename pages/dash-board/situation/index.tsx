@@ -25,7 +25,7 @@ export default function DashBoard() {
   };
 
   return (
-    <div>
+    <div className="overflow-y-auto max-h-[calc(100vh-2rem)]">
       <SituationForm handleSubmit={handleSubmit} />
     </div>
   );

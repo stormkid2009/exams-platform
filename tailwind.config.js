@@ -14,7 +14,10 @@ module.exports = {
       },
       animation: {
         'fade-in': 'fade-in 0.3s ease-out'
-      }
+      },
+      height: {
+        'screen-minus-2rem': 'calc(100vh - 2rem)',
+      },
     },
   },
   plugins: [],

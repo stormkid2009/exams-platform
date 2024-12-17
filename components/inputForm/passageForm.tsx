@@ -84,7 +84,7 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Side Navigation */}
-      <div className="w-64 bg-white shadow-md p-4">
+      <div className="w-64 bg-white shadow-md p-4 h-screen-minus-2rem overflow-y-auto ">
         <h3 className="text-lg font-semibold mb-4">Questions</h3>
         <div className="space-y-2">
           {fields.map((field, index) => (
@@ -110,7 +110,7 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
       </div>
 
       {/* Main Form */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 overflow-y-auto max-h-[calc(100vh-2rem)]">
         <h2 className="text-2xl font-bold text-center mb-6">Create Passage Questions</h2>
         <form onSubmit={formSubmit(onSubmit)} className="space-y-6">
           {/* Passage Text */}
@@ -166,12 +166,7 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
                 <label className="block text-sm font-medium text-gray-700">Options</label>
                 {[0, 1, 2, 3].map((optionIndex) => (
                   <div key={optionIndex} className="flex items-center space-x-2">
-                    <input
-                      type="radio"
-                      {...register(`relatedQuestions.${activeQuestionIndex}.rightAnswer`)}
-                      value={optionIndex}
-                      className="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300"
-                    />
+                    <label className="text-sm font-medium text-gray-700">Option {optionIndex + 1}</label>
                     <input
                       type="text"
                       {...register(`relatedQuestions.${activeQuestionIndex}.options.${optionIndex}`)}
@@ -204,8 +199,8 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
         {toast && (
           <Toast
             type={toast.type}
-            text={toast.text}
-            onClose={() => setToast(null)}
+            message={toast.text}
+            onDismiss={() => setToast(null)}
           />
         )}
       </div>
