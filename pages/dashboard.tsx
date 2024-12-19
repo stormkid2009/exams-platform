@@ -1,6 +1,6 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useAuthStore } from '../src/store/authStore';
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useAuthStore } from "../src/store/authStore";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -8,13 +8,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push('/login');
+      router.push("/login");
     }
   }, [isAuthenticated, router]);
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push("/login");
   };
 
   if (!isAuthenticated || !user) {
@@ -45,8 +45,33 @@ export default function Dashboard() {
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
           <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 p-4">
-            <h2 className="text-2xl font-bold mb-4">Welcome to your Dashboard</h2>
+            <h2 className="text-2xl font-bold mb-4">
+              Welcome to your Dashboard
+            </h2>
             <p>You are logged in as {user.email}</p>
+            <p className="mb-4">
+              You can now create and manage your questions. Use the buttons below to navigate to different forms:
+            </p>
+            <div className="flex space-x-4">
+              <button
+                onClick={() => router.push("/dash-board/grammaire")}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Grammaire Form
+              </button>
+              <button
+                onClick={() => router.push("/dash-board/situation")}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Situation Form
+              </button>
+              <button
+                onClick={() => router.push("/dash-board/passage")}
+                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              >
+                Passage Form
+              </button>
+            </div>
           </div>
         </div>
       </main>
