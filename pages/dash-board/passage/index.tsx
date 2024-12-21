@@ -1,7 +1,7 @@
-import React from 'react'
-import PassageForm from 'components/inputForm/passageForm'
-import { PassageQuestion } from 'src/types'
-import fetcher from 'src/lib/helpers/fetcher'
+import React from "react";
+import PassageForm from "components/inputForm/passageForm";
+import { PassageQuestion } from "src/types";
+import fetcher from "src/helpers/fetcher";
 
 export default function DashBoard() {
   const path = `/api/questions/category/passage`;
@@ -9,9 +9,9 @@ export default function DashBoard() {
   const handleSubmit = async (data: PassageQuestion) => {
     try {
       const response = await fetcher(data, path);
-      console.log('Passage question created successfully:', response);
+      console.log("Passage question created successfully:", response);
     } catch (error) {
-      console.error('Error creating passage question:', error);
+      console.error("Error creating passage question:", error);
     }
   };
 

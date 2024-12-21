@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useRouter } from 'next/router';
-import { useAuthStore } from '../../src/store/authStore';
-import Link from 'next/link';
-import fetcher from '../../src/lib/helpers/fetcher';
+import { useRouter } from "next/router";
+import { useAuthStore } from "../../src/store/authStore";
+import Link from "next/link";
+import fetcher from "../../src/helpers/fetcher";
 
 interface RegisterResponse {
   user: any;
@@ -31,7 +31,9 @@ function RegisterForm() {
       }
 
       if (password !== confirmPassword) {
-        throw new Error("The passwords you entered don't match. Please try again");
+        throw new Error(
+          "The passwords you entered don't match. Please try again"
+        );
       }
 
       const response = await fetcher<RegisterResponse>(
@@ -43,22 +45,30 @@ function RegisterForm() {
         // Map HTTP status codes to user-friendly messages
         switch (response.status) {
           case 409:
-            throw new Error("This email is already registered. Please try signing in instead");
+            throw new Error(
+              "This email is already registered. Please try signing in instead"
+            );
           case 400:
-            throw new Error(response.error || "Please check your email and password");
+            throw new Error(
+              response.error || "Please check your email and password"
+            );
           case 500:
-            throw new Error("We're experiencing technical difficulties. Please try again later");
+            throw new Error(
+              "We're experiencing technical difficulties. Please try again later"
+            );
           default:
-            throw new Error(response.error || "Unable to create your account. Please try again");
+            throw new Error(
+              response.error ||
+                "Unable to create your account. Please try again"
+            );
         }
       }
 
       // Update auth store
       login(response.data.user, response.data.token);
-      
-      // Redirect to dashboard
-      router.push('/dashboard');
 
+      // Redirect to dashboard
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);

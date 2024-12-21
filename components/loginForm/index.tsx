@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { useRouter } from 'next/router';
-import { useAuthStore } from '../../src/store/authStore';
-import Link from 'next/link';
-import fetcher from '../../src/lib/helpers/fetcher';
+import { useRouter } from "next/router";
+import { useAuthStore } from "../../src/store/authStore";
+import Link from "next/link";
+import fetcher from "../../src/helpers/fetcher";
 
 function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  
+
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
 
@@ -29,9 +29,9 @@ function LoginForm() {
 
       // Update auth store
       login(response.data.user, response.data.token);
-      
+
       // Redirect to dashboard
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {
