@@ -1,59 +1,93 @@
-// src/hes/logger.ts
-
+// src/helpers/logger.ts
 import fs from "fs";
 import path from "path";
 
 // Define log levels
 enum LogLevel {
-  INFO = "INFO",
-  WARN = "WARN",
   ERROR = "ERROR",
+  INFO = "INFO",
+}
+
+// API specific error interface
+interface ApiError {
+  path: string;
+  method: string;
+  statusCode: number;
+  errorName: string;
+  errorMessage: string;
+  stack?: string;
+  requestBody?: unknown;
+}
+
+interface LogEntry {
+  timestamp: string;
+  level: LogLevel;
+  message: string;
+  error?: ApiError;
 }
 
 // Get log file path
-const LOG_FILE_PATH = path.resolve("logs", "app.log");
+const LOG_FILE_PATH = path.resolve("logs", "api-errors.log");
 
 // Ensure logs directory exists
 if (!fs.existsSync(path.dirname(LOG_FILE_PATH))) {
   fs.mkdirSync(path.dirname(LOG_FILE_PATH), { recursive: true });
 }
 
-// Define types for log entry and error
-interface LogEntry {
-  timestamp: string;
-  level: LogLevel;
-  message: string;
-  error?: {
-    name: string;
-    message: string;
-    stack?: string;
-  } | null;
-}
-
-// Log message to file
-function writeLog(level: LogLevel, message: string, error: Error | null = null): void {
+// Log API errors
+export function logApiError(
+  message: string,
+  error: Error,
+  {
+    path,
+    method,
+    statusCode,
+    requestBody,
+  }: {
+    path: string;
+    method: string;
+    statusCode: number;
+    requestBody?: unknown;
+  }
+): void {
   const timestamp = new Date().toISOString();
+  
   const logEntry: LogEntry = {
     timestamp,
-    level,
+    level: LogLevel.ERROR,
     message,
-    error: error ? { name: error.name, message: error.message, stack: error.stack } : null,
+    error: {
+      path,
+      method,
+      statusCode,
+      errorName: error.name,
+      errorMessage: error.message,
+      stack: error.stack,
+      requestBody,
+    },
   };
 
-  const logString = JSON.stringify(logEntry) + "\n";
-  fs.appendFileSync(LOG_FILE_PATH, logString, "utf8");
+  // Write to log file
+  fs.appendFileSync(LOG_FILE_PATH, JSON.stringify(logEntry) + "\n", "utf8");
 }
 
-// Exported logError function for centralized error handling
+// Regular error logging for non-API errors
 export function logError(message: string, error: Error): void {
-  writeLog(LogLevel.ERROR, message, error);
-}
+  const timestamp = new Date().toISOString();
+  
+  const logEntry: LogEntry = {
+    timestamp,
+    level: LogLevel.ERROR,
+    message,
+    error: {
+      path: '',
+      method: '',
+      statusCode: 500,
+      errorName: error.name,
+      errorMessage: error.message,
+      stack: error.stack,
+    },
+  };
 
-// Export additional logging functions if needed
-export function logInfo(message: string): void {
-  writeLog(LogLevel.INFO, message);
-}
-
-export function logWarn(message: string): void {
-  writeLog(LogLevel.WARN, message);
+  fs.appendFileSync(LOG_FILE_PATH, JSON.stringify(logEntry) + "\n", "utf8");
 }
