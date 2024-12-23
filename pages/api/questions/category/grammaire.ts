@@ -61,7 +61,7 @@ const handler: ValidatedApiHandler<GrammaireRequest> = async (
         "Failed to create grammar question",
         error,
         {
-          path: req.url || '/api/grammaire',
+          path: req.url || '/api/questions/category/grammaire',
           method: req.method,
           statusCode: error.name === "MongoNetworkError" ? 503 : 500,
           requestBody: req.body
