@@ -5,6 +5,7 @@ import { grammaireSchema, type GrammaireRequest } from "src/helpers/zodValidatio
 import { validateBodyMiddleware, type ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
 import { Grammaire } from "src/models/questions/grammaire.model";
 import connectToDB from "src/lib/mongooseClient";
+import { ApiResponse } from "src/types";
 
 // Response messages
 const msg = {
@@ -13,13 +14,7 @@ const msg = {
   wrongMethod: "This method is not allowed",
 } as const;
 
-// API Response type
-interface ApiResponse {
-  status: 'success' | 'error';
-  message: string;
-  data: any | null;
-  details: string | null;
-}
+
 
 const handler: ValidatedApiHandler<GrammaireRequest> = async (
   req: NextApiRequest, 
@@ -90,7 +85,7 @@ const handler: ValidatedApiHandler<GrammaireRequest> = async (
       "Unknown error occurred",
       new Error("Unknown error"),
       {
-        path: req.url || '/api/grammaire',
+        path: req.url || '/api/questions/category/grammaire',
         method: req.method,
         statusCode: 500,
         requestBody: req.body

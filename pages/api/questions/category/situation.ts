@@ -1,9 +1,13 @@
 // Now we can use the absolute path by adding baseUrl options to the tsconfig.json file
+
+import {validateBodyMiddleware , type ValidatedApiHandler} from 'src/middleware/validateBodyMiddleware'
 import connectToDB from 'src/lib/mongooseClient'
 import { Situation } from "src/models/questions/situation.model";
 import { NextApiRequest, NextApiResponse } from "next";
-import { Messages, SituationQuestion } from 'src/types';
+import { Messages , ApiResponse} from 'src/types';
+import { logApiError } from 'src/helpers/logger';
 import { randomUUID } from 'crypto';
+import { situationSchema , type SituationRequest } from 'src/helpers/zodValidation';
 
 const msg: Messages = {
     success: 'Success to create new question',
@@ -12,76 +16,96 @@ const msg: Messages = {
     invalidData: 'Invalid question data provided'
 };
 
-// Type for the expected request body
-type SituationRequestBody = {
-    content: string;
-    options: [string, string, string, string, string];
-    rightAnswers: [number, number];
-};
 
-// Validate request body fields
-function validateRequestBody(body: any): body is SituationRequestBody {
-    return (
-        typeof body.content === 'string' && 
-        body.content.trim().length > 0 &&
-        Array.isArray(body.options) &&
-        body.options.length === 5 &&
-        body.options.every((opt: any) => typeof opt === 'string' && opt.trim().length > 0) &&
-        Array.isArray(body.rightAnswers) &&
-        body.rightAnswers.length === 2 &&
-        body.rightAnswers.every((index: any) => 
-            typeof index === 'number' && 
-            index >= 0 && 
-            index < 5
-        )
-    );
-}
 
-export default async function handler(
+const handler: ValidatedApiHandler<SituationRequest> = async (
     req: NextApiRequest,
-    res: NextApiResponse
-): Promise<void> {
+    res: NextApiResponse<ApiResponse>
+) => {
     if (req.method !== "POST") {
-        res.status(405).json({ 
-            error: msg.wrongMethod,
+        return res.status(405).json({ 
+            status: "error",
+            message: msg.wrongMethod,
+            data: null,
             details: "Only POST method is allowed"
         });
-        return;
     }
 
-    // Validate request body
-    if (!validateRequestBody(req.body)) {
-        res.status(400).json({ 
-            error: msg.invalidData,
-            details: "Request must include: content (string), options (array of 5 strings), and rightAnswers (array of 2 numbers between 0-4)"
-        });
-        return;
-    }
+    
 
-    const { content, options, rightAnswers } = req.body;
-
-    // Transform the data to match SituationQuestion interface
-    const question: SituationQuestion = {
-        id: randomUUID(),
-        type: "Multi-MCQ",
-        content,
-        options,
-        rightAnswers
-    };
-
+    
     try {
+        const { content, options, rightAnswers } = req.body;
+    
+        // Transform the data to match SituationQuestion interface
+        const question = new Situation(
+            {
+                id: randomUUID(),
+                type: "Multi-MCQ",
+                content,
+                options,
+                rightAnswers
+            }
+        ) 
+
         await connectToDB();
-        const situationDoc = new Situation(question);
-        await situationDoc.save();
-        res.status(200).json({ 
+        await question.save();
+        return res.status(200).json({ 
+            status: "success",
             message: msg.success,
-            questionId: question.id 
+            data: {questionId: question.id},
+            details: null 
         });
-    } catch (error: any) {
-        console.error("Error saving question:", error.message);
-        res.status(500).json({ 
-            error: msg.failure,
+    } catch (error) {
+        if (error instanceof Error) {
+          // Log the error with API context
+          logApiError(
+            "Failed to create situation question",
+            error,
+            {
+              path: req.url || '/api/questions/category/situation',
+              method: req.method,
+              statusCode: error.name === "MongoNetworkError" ? 503 : 500,
+              requestBody: req.body
+            }
+          );
+    
+          if (error.name === "MongoNetworkError") {
+            return res.status(503).json({ 
+              status: "error",
+              message: "Service Unavailable",
+              data: null,
+              details: "Database connection error, please try again later."
+            });
+          }
+          
+          return res.status(500).json({ 
+            status: "error",
+            message: msg.failure,
+            data: null,
             details: error.message
+          });
+        }
+    
+        // For unknown errors
+        logApiError(
+          "Unknown error occurred",
+          new Error("Unknown error"),
+          {
+            path: req.url || '/api/questions/category/situation',
+            method: req.method,
+            statusCode: 500,
+            requestBody: req.body
+          }
+        );
+    
+        return res.status(500).json({ 
+          status: "error",
+          message: msg.failure,
+          data: null,
+          details: "An unexpected error occurred"
         });
-    }
-}
+      }
+    };
+    
+    export default validateBodyMiddleware(situationSchema)(handler);

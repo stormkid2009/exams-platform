@@ -48,3 +48,11 @@ export interface Messages {
     wrongMethod: string;
     invalidData: string;
 }
+
+
+export interface ApiResponse {
+    status: 'success' | 'error';
+    message: string;
+    data: any | null;
+    details: string | null;
+  }
