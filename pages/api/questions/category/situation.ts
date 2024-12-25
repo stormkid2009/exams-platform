@@ -7,7 +7,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { Messages , ApiResponse} from 'src/types';
 import { logApiError } from 'src/helpers/logger';
 import { randomUUID } from 'crypto';
-import { situationSchema , type SituationRequest } from 'src/helpers/zodValidation';
+import { situationSchema , type SituationRequest } from 'src/zodValidation/situationSchema';
 
 const msg: Messages = {
     success: 'Success to create new question',

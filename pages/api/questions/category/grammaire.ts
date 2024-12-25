@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { randomUUID } from "crypto";
 import { logApiError } from "src/helpers/logger";
-import { grammaireSchema, type GrammaireRequest } from "src/helpers/zodValidation";
+import { grammaireSchema, type GrammaireRequest } from "src/zodValidation/grammaireSchema";
 import { validateBodyMiddleware, type ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
 import { Grammaire } from "src/models/questions/grammaire.model";
 import connectToDB from "src/lib/mongooseClient";
