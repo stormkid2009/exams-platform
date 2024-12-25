@@ -4,6 +4,10 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "../ui/Toast";
 
+
+// we duplication in grammaireSchema as we defined it in zodValidation for api validation
+// we need to take alook on types as we duplicate the types of questions after we used zod which can do the job
+//what we have to do : clean the mess up and focus on using zod for cleaner code  
 // Validation schema
 const grammaireSchema = z.object({
   content: z.string().min(1, "Question content is required"),
