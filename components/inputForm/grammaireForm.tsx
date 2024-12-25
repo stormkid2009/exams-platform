@@ -3,7 +3,9 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "../ui/Toast";
-
+import ContentInput from '../inputs/contentInput';
+import OptionInput from '../inputs/optionInput';
+import AnswerInput from '../inputs/answerInput';
 
 // we duplication in grammaireSchema as we defined it in zodValidation for api validation
 // we need to take alook on types as we duplicate the types of questions after we used zod which can do the job
@@ -63,52 +65,27 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
       )}
       
       <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
-        <div className="flex items-center gap-4">
-          <label className="w-1/4">Question Content</label>
-          <div className="w-3/4">
-            <textarea
-              {...register("content")}
-              className="w-full p-2 border rounded"
-              rows={3}
-            />
-            {errors.content && (
-              <p className="text-red-500 text-sm">{errors.content.message}</p>
-            )}
-          </div>
-        </div>
+        <ContentInput
+          register={register}
+          name="content"
+          label="Question Content"
+          placeholder="Enter question content"
+          errorMessage={errors.content?.message}
+        />
 
-        {[0, 1, 2, 3].map((index) => (
-          <div key={index} className="flex items-center gap-4">
-            <label className="w-1/4">Option {index + 1}</label>
-            <div className="w-3/4">
-              <input
-                {...register(`options.${index}`)}
-                className="w-full p-2 border rounded"
-              />
-              {errors.options?.[index] && (
-                <p className="text-red-500 text-sm">
-                  {errors.options[index]?.message}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
+{[0, 1, 2, 3].map((index) => (
+  <OptionInput
+    key={index}
+    register={register}
+    index={index}
+    errorMessage={errors.options?.[index]?.message}
+  />
+))}
 
-        <div className="flex items-center gap-4">
-          <label className="w-1/4">Correct Answer Index (0-3)</label>
-          <div className="w-3/4">
-            <input
-              type="number"
-              {...register("rightAnswer", { valueAsNumber: true })}
-              className="w-full p-2 border rounded"
-              min={0}
-              max={3}
-            />
-            {errors.rightAnswer && (
-              <p className="text-red-500 text-sm">{errors.rightAnswer.message}</p>
-            )}
-          </div>
-        </div>
+<AnswerInput
+  register={register}
+  errorMessage={errors.rightAnswer?.message}
+/>
 
         <div className="flex justify-end">
           <button

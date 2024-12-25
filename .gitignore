@@ -37,3 +37,6 @@ next-env.d.ts
 
 # test refactor interface
 example.ts
+
+# validation error logs
+/logs
