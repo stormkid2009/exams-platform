@@ -21,3 +21,6 @@ export const grammaireSchema = z.object({
 
 // Export type for use in handlers
 export type GrammaireRequest = z.infer<typeof grammaireSchema>;
+
+// Export type for use in grammaireForm
+export type GrammaireFormData = z.infer<typeof grammaireSchema>;
