@@ -74,6 +74,7 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
           [0, 1].map((index) => (
             <AnswerInput
               register={register}
+              name={`rightAnswers[${index}]`} // Ensure the correct name is used
               key={index}
               errorMessage={errors.rightAnswers?.[index]?.message}
             />

@@ -1,22 +1,15 @@
 import React from "react";
 import SituationForm from "components/inputForm/situationForm";
-import { SituationQuestion } from "src/types";
 import fetcher from "src/helpers/fetcher";
-import { randomUUID } from "crypto";
+import { type SituationFormData } from "src/zodValidation/situationSchema"; 
 
 export default function DashBoard() {
   const path = `/api/questions/category/situation`;
 
-  const handleSubmit = async (formData: {
-    content: string;
-    options: string[];
-    rightAnswers: number[];
-  }) => {
+  const handleSubmit = async (formData: SituationFormData) => {
     try {
       // Transform form data to match the API's expected format
-      const questionData: SituationQuestion = {
-        id: randomUUID(),
-        type: "Multi-MCQ",
+      const questionData: SituationFormData = {
         content: formData.content,
         options: formData.options as [string, string, string, string, string],
         rightAnswers: formData.rightAnswers as [number, number],
