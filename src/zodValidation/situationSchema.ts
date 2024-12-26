@@ -13,3 +13,6 @@ export const situationSchema = z.object({
 
 // Export type for use in handlers
 export type SituationRequest = z.infer<typeof situationSchema>;
+
+// Export type for use in situationForm
+export type SituationFormData = z.infer<typeof situationSchema>;
