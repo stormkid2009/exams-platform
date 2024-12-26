@@ -35,6 +35,14 @@ export interface SituationQuestion extends BaseQuestion {
     rightAnswers: [number, number]; // Tuple of exactly 2 numbers (indices)
 }
 
+// interface for open-ended questions
+export interface OpenEndedQuestion  {
+    content: string;
+    type: "Open-Ended";
+    answer: string;
+}
+
+
 // Interface for a passage with related questions
 export interface PassageQuestion {
     // Unique identifier for the passage will be generated automatically by MongoDB
