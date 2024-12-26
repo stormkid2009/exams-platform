@@ -1,4 +1,3 @@
-
 import { z } from "zod";
 
 // Define all your validation schemas here
@@ -11,13 +10,10 @@ export const grammaireSchema = z.object({
       (options) => options.every((opt) => opt.trim().length > 0),
       "All options must be non-empty strings"
     ),
-  rightAnswer: z
-    .number()
-    .int()
-    .min(0, "Right answer index must be 0 or greater")
-    .max(3, "Right answer index must be 3 or less"),
+  rightAnswers: z
+    .array(z.number().int().min(0, "Right answer index must be 0 or greater").max(3, "Right answer index must be 3 or less"))
+    .length(1, "Must provide exactly 1 right answer index"),
 });
-
 
 // Export type for use in handlers
 export type GrammaireRequest = z.infer<typeof grammaireSchema>;
