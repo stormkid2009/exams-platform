@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "../ui/Toast";
 import ContentInput from '../inputs/contentInput';
@@ -24,7 +23,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
     resolver: zodResolver(grammaireSchema),
     defaultValues: {
       options: ['', '', '', ''], // Initialize empty options array
-      rightAnswer: 0
+      rightAnswers: [0]
     }
   });
 
@@ -70,8 +69,9 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
 ))}
 
 <AnswerInput
+  name="rightAnswers"
   register={register}
-  errorMessage={errors.rightAnswer?.message}
+  errorMessage={errors.rightAnswers?.message}
 />
 
         <div className="flex justify-end">
