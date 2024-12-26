@@ -13,8 +13,7 @@ const validateRelatedQuestions = (questions: any[]): boolean => questions.length
 
 // Schema for related questions (similar to grammaire questions)
 const relatedQuestionSchema = new Schema({
-    // Unique identifier for each related question
-    id: { type: String, required: true },
+    
 
     // Type of the related question (currently only "MCQ" is supported)
     type: { 
@@ -52,8 +51,7 @@ const relatedQuestionSchema = new Schema({
 
 // Schema for the passage question document
 const passageSchema = new Schema<PassageQuestion>({
-    // Unique identifier for each passage
-    id: { type: String, required: true, unique: true },
+
 
     // The passage content
     passage: { type: String, required: true },

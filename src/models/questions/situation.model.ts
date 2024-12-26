@@ -10,8 +10,7 @@ const validateRightAnswers = (answers: number[]): boolean =>
 
 // Schema for the situation question that matches the SituationQuestion interface
 const situationSchema = new Schema<SituationQuestion>({
-    // Unique identifier for each question
-    id: { type: String, required: true, unique: true },
+    
 
     // The type of the question (currently only "Multi-MCQ" is supported)
     type: { 

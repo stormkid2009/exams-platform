@@ -10,9 +10,7 @@ const validateRightAnswers = (answers: number[]): boolean =>
 
 // Define the schema for grammaire question
 const grammaireSchema = new Schema<GrammaireQuestion>({
-    // Unique identifier for each question
-    id: { type: String, required: true, unique: true },
-
+    
     // The type of the question (currently only "MCQ" is supported)
     type: { 
         type: String, 
