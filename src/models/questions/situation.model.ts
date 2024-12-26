@@ -1,6 +1,8 @@
 import { SituationQuestion } from "src/types"; // Import TypeScript definitions for type safety
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
+const MODEL_NAME = 'Situation';
+
 // Utility function to validate that the options array has exactly 5 elements
 const validateOptionsLength = (options: string[]): boolean => options.length === 5;
 
@@ -50,4 +52,4 @@ const situationSchema = new Schema<SituationQuestion>({
 situationSchema.index({ id: 1 });
 
 // Export the model, ensuring we don't redefine it if already declared
-export const Situation = mongoose.models.Situation || mongoose.model('Situation', situationSchema);
+export const Situation = mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, situationSchema);

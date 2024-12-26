@@ -1,6 +1,7 @@
 import mongoose, { Schema } from 'mongoose'; // Import mongoose for schema and model management
 import { PassageQuestion, QuestionType } from 'src/types'; // Import TypeScript types for type safety
 
+const MODEL_NAME = 'Passage';
 // Utility function to validate that options array has exactly 4 elements
 const validateOptionsLength = (options: string[]): boolean => options.length === 4;
 
@@ -72,4 +73,4 @@ const passageSchema = new Schema<PassageQuestion>({
 passageSchema.index({ id: 1 });
 
 // Export the model, ensuring we don't redefine it if already declared
-export const Passage = mongoose.models.Passage || mongoose.model('Passage', passageSchema);
+export const Passage = mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, passageSchema);
