@@ -39,6 +39,7 @@ export interface SituationQuestion extends BaseQuestion {
 export interface OpenEndedQuestion  {
     content: string;
     type: "Open-Ended";
+    elements: string[];
     answer: string;
 }
 
