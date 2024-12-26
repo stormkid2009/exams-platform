@@ -6,7 +6,6 @@ import { Situation } from "src/models/questions/situation.model";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Messages , ApiResponse} from 'src/types';
 import { logApiError } from 'src/helpers/logger';
-import { randomUUID } from 'crypto';
 import { situationSchema , type SituationRequest } from 'src/zodValidation/situationSchema';
 
 const msg: Messages = {
@@ -40,7 +39,6 @@ const handler: ValidatedApiHandler<SituationRequest> = async (
         // Transform the data to match SituationQuestion interface
         const question = new Situation(
             {
-                id: randomUUID(),
                 type: "Multi-MCQ",
                 content,
                 options,

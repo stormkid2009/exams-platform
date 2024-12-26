@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { randomUUID } from "crypto";
 import { logApiError } from "src/helpers/logger";
 import { grammaireSchema, type GrammaireRequest } from "src/zodValidation/grammaireSchema";
 import { validateBodyMiddleware, type ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
@@ -33,7 +32,6 @@ const handler: ValidatedApiHandler<GrammaireRequest> = async (
     const { content, options, rightAnswer } = req.body;
 
     const question = new Grammaire({
-      id: randomUUID(),
       type: "MCQ",
       content,
       options,

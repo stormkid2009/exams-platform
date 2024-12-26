@@ -5,7 +5,6 @@ import { logApiError } from "src/helpers/logger";
 import { PassageRequestBody, PassageSchema } from "src/zodValidation/passageSchema";
 import { validateBodyMiddleware, ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
 import { Messages } from 'src/types';
-import { randomUUID } from 'crypto';
 import { ApiResponse, BaseQuestion } from "src/types";
 
 // Response messages
@@ -41,10 +40,8 @@ const  handler: ValidatedApiHandler<PassageRequestBody> = async (
         // Transform the request data to match our model
         const passageData = new Passage(
             {
-                id: randomUUID(),
                 passage,
                 relatedQuestions: relatedQuestions.map((q: BaseQuestion) =>  ({
-                    id: randomUUID(),
                     type: "MCQ" as const,
                     content: q.content,
                     options: q.options,
