@@ -14,7 +14,7 @@ export type QuestionType = "MCQ" | "Multi-MCQ" | "Open-Ended";
 
 // Base interface for all questions
 export interface BaseQuestion {
-    id: string; // Unique identifier
+    // Unique identifier will be generated automatically by MongoDB
     content: string; // Main question text
     options?: string[]; // Array of options (optional for open-ended questions)
     rightAnswers?: number[]; // Array of indices for correct answers (optional for open-ended questions)
@@ -37,7 +37,7 @@ export interface SituationQuestion extends BaseQuestion {
 
 // Interface for a passage with related questions
 export interface PassageQuestion {
-    id: string; // Unique identifier for the passage
+    // Unique identifier for the passage will be generated automatically by MongoDB
     passage: string; // The text of the passage
     relatedQuestions: BaseQuestion[]; // Array of questions related to the passage
 }
