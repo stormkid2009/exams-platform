@@ -1,100 +1,117 @@
 import connectToDB from 'src/lib/mongooseClient'
 import { Passage } from 'src/models/questions/passage.model'
 import { NextApiRequest, NextApiResponse } from "next";
+import { logApiError } from "src/helpers/logger";
+import { PassageRequestBody, PassageSchema } from "src/zodValidation/passageSchema";
+import { validateBodyMiddleware, ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
 import { Messages } from 'src/types';
 import { randomUUID } from 'crypto';
+import { ApiResponse, BaseQuestion } from "src/types";
 
+// Response messages
 const msg: Messages = {
     success: "Success to create new passage question",
     failure: "Failed to create new passage question",
     wrongMethod: "This method is not allowed",
     invalidData: "Invalid request data"
-};
+} as const;
 
-// Type for the expected request body
-type PassageRequestBody = {
-    passage: string;
-    relatedQuestions: Array<{
-        content: string;
-        options: [string, string, string, string];
-        rightAnswer: number;
-    }>;
-};
 
-// Validate request body fields
-function validateRequestBody(body: any): body is PassageRequestBody {
-    // Check if passage exists and is non-empty string
-    if (typeof body.passage !== 'string' || body.passage.trim().length === 0) {
-        return false;
-    }
 
-    // Check if relatedQuestions is an array and not empty
-    if (!Array.isArray(body.relatedQuestions) || body.relatedQuestions.length === 0) {
-        return false;
-    }
 
-    // Validate each question in relatedQuestions
-    return body.relatedQuestions.every(question => 
-        typeof question.content === 'string' && 
-        question.content.trim().length > 0 &&
-        Array.isArray(question.options) &&
-        question.options.length === 4 &&
-        question.options.every((opt: any) => typeof opt === 'string' && opt.trim().length > 0) &&
-        typeof question.rightAnswer === 'number' && 
-        question.rightAnswer >= 0 && 
-        question.rightAnswer <= 3
-    );
-}
 
-export default async function handler(
+const  handler: ValidatedApiHandler<PassageRequestBody> = async (
     req: NextApiRequest,
-    res: NextApiResponse
-): Promise<void> {
+    res: NextApiResponse<ApiResponse>
+) => {
     if (req.method !== "POST") {
-        res.status(405).json({ 
-            error: msg.wrongMethod,
+        return res.status(405).json({ 
+            status: "error",
+            message: msg.wrongMethod,
+            data: null,
             details: "Only POST method is allowed"
         });
-        return;
     }
 
-    // Validate request body
-    if (!validateRequestBody(req.body)) {
-        res.status(400).json({ 
-            error: msg.invalidData,
-            details: "Request must include: passage (string) and relatedQuestions (array of questions with content, options[4], and rightAnswer)"
-        });
-        return;
-    }
+    
 
     try {
         await connectToDB();
-
+        const {passage,relatedQuestions} = req.body;
         // Transform the request data to match our model
-        const passageData = {
-            id: randomUUID(),
-            passage: req.body.passage,
-            relatedQuestions: req.body.relatedQuestions.map(q => ({
+        const passageData = new Passage(
+            {
                 id: randomUUID(),
-                type: "MCQ" as const,
-                content: q.content,
-                options: q.options,
-                rightAnswers: [q.rightAnswer] // Convert single rightAnswer to array format
-            }))
-        };
+                passage,
+                relatedQuestions: relatedQuestions.map((q: BaseQuestion) =>  ({
+                    id: randomUUID(),
+                    type: "MCQ" as const,
+                    content: q.content,
+                    options: q.options,
+                    rightAnswers: q.rightAnswers // Convert single rightAnswer to array format
+                }))
+            }
+        );
 
-        const passageDoc = new Passage(passageData);
-        await passageDoc.save();
+        await connectToDB();
+        await passageData.save();
 
-        res.status(200).json({ 
+        return res.status(200).json({
+            status: "success", 
             message: msg.success,
-            questionId: passageData.id
+            data:{questionId: passageData.id},
+            details:null
         });
-    } catch (error: any) {
-        console.error("Error creating passage question:", error);
-        res.status(500).json({ 
-            error: msg.failure,
-            details: error.message
+    } catch (error) {
+        if (error instanceof Error) {
+            logApiError(
+                "Failed to create passage question",
+                error,
+                {
+                    path: req.url || '/api/questions/category/passage',
+                    method: req.method,
+                    statusCode: error.name === "MongoNetworkError" ? 503 : 500,
+                    requestBody: req.body
+                }
+            );
+
+            if (error.name === "MongoNetworkError") {
+                return res.status(503).json({ 
+                    status: "error",
+                    message: "Service Unavailable",
+                    data: null,
+                    details: "Database connection error, please try again later."
+                });
+            }
+
+            return res.status(500).json({ 
+                status: "error",
+                message: msg.failure,
+                data: null,
+                details: error.message
+            });
+        }
+
+        // For unknown errors
+        logApiError(
+            "Unknown error occurred",
+            new Error("Unknown error"),
+            {
+                path: req.url || '/api/questions/category/passage',
+                method: req.method,
+                statusCode: 500,
+                requestBody: req.body
+            }
+        );
+
+        return res.status(500).json({ 
+            status: "error",
+            message: msg.failure,
+            data: null,
+            details: "An unexpected error occurred"
         });
     }
-}
+};
+
+// Export the handler wrapped with the validateBodyMiddleware
+export default validateBodyMiddleware(PassageSchema)(handler);
