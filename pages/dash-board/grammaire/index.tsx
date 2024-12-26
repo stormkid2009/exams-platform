@@ -1,15 +1,9 @@
 import React from "react";
 import GrammaireForm from "components/inputForm/grammaireForm";
 import fetcher from "src/helpers/fetcher";
-import { GrammaireQuestion } from "src/types";
-import { randomUUID } from "crypto";
+import {  type GrammaireFormData } from "src/zodValidation/grammaireSchema";
 
-// Type for form data
-type GrammaireFormData = {
-  content: string;
-  options: string[];
-  rightAnswer: number;
-};
+
 
 export default function DashBoard() {
   const path = `/api/questions/category/grammaire`;
@@ -17,12 +11,10 @@ export default function DashBoard() {
   const handleSubmit = async (formData: GrammaireFormData) => {
     try {
       // Transform form data to match the API's expected format
-      const questionData: GrammaireQuestion = {
-        id: randomUUID(),
-        type: "MCQ",
+      const questionData: GrammaireFormData = {
         content: formData.content,
         options: formData.options as [string, string, string, string],
-        rightAnswers: [formData.rightAnswer],
+        rightAnswer: formData.rightAnswer,
       };
 
       const response = await fetcher(questionData, path);
