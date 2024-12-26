@@ -3,20 +3,11 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "../ui/Toast";
-import { SituationQuestion } from "src/types";
+import { situationSchema , type SituationFormData} from 'src/zodValidation/situationSchema';
+import ContentInput from '../inputs/contentInput';
+import OptionInput from '../inputs/optionInput';
+import AnswerInput from '../inputs/answerInput';
 
-// Validation schema
-const situationSchema = z.object({
-  content: z.string().min(1, "Question content is required"),
-  options: z.array(z.string().min(1, "Option is required")).length(5, "Exactly 5 options are required"),
-  rightAnswers: z.array(z.number()
-    .int()
-    .min(0, "Answer index must be between 0 and 4")
-    .max(4, "Answer index must be between 0 and 4")
-  ).length(2, "Exactly 2 correct answers are required")
-});
-
-type SituationFormData = z.infer<typeof situationSchema>;
 
 interface Props {
   handleSubmit: (data: SituationFormData) => void;
@@ -61,68 +52,33 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
       )}
       
       <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
-        <div className="flex items-center gap-4">
-          <label className="w-1/4">Question Content</label>
-          <div className="w-3/4">
-            <textarea
-              {...register("content")}
-              className="w-full p-2 border rounded"
-              rows={3}
-            />
-            {errors.content && (
-              <p className="text-red-500 text-sm">{errors.content.message}</p>
-            )}
-          </div>
-        </div>
+        <ContentInput
+          register={register}
+          placeholder="Enter question content"
+          name="content"
+          label="Content"
+          errorMessage={errors.content?.message}
+        />
 
         {[0, 1, 2, 3, 4].map((index) => (
-          <div key={index} className="flex items-center gap-4">
-            <label className="w-1/4">Option {index + 1}</label>
-            <div className="w-3/4">
-              <input
-                {...register(`options.${index}`)}
-                className="w-full p-2 border rounded"
-              />
-              {errors.options?.[index] && (
-                <p className="text-red-500 text-sm">
-                  {errors.options[index]?.message}
-                </p>
-              )}
-            </div>
-          </div>
+          <OptionInput
+            register={register}
+            key={index}
+            index={index}
+            errorMessage={errors.options?.[index]?.message}
+          />
         ))}
 
-        <div className="flex items-center gap-4">
-          <label className="w-1/4">Correct Answer Indices (0-4)</label>
-          <div className="w-3/4 flex gap-2">
-            <div className="flex-1">
-              <input
-                type="number"
-                {...register("rightAnswers.0", { valueAsNumber: true })}
-                className="w-full p-2 border rounded"
-                min={0}
-                max={4}
-                placeholder="First correct answer"
-              />
-              {errors.rightAnswers?.[0] && (
-                <p className="text-red-500 text-sm">{errors.rightAnswers[0].message}</p>
-              )}
-            </div>
-            <div className="flex-1">
-              <input
-                type="number"
-                {...register("rightAnswers.1", { valueAsNumber: true })}
-                className="w-full p-2 border rounded"
-                min={0}
-                max={4}
-                placeholder="Second correct answer"
-              />
-              {errors.rightAnswers?.[1] && (
-                <p className="text-red-500 text-sm">{errors.rightAnswers[1].message}</p>
-              )}
-            </div>
-          </div>
-        </div>
+
+        {
+          [0, 1].map((index) => (
+            <AnswerInput
+              register={register}
+              key={index}
+              errorMessage={errors.rightAnswers?.[index]?.message}
+            />
+          ))
+        }
 
         <div className="flex justify-end">
           <button
