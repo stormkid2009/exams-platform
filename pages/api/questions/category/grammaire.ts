@@ -1,19 +1,16 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { logApiError } from "src/helpers/logger";
-import { grammaireSchema, type GrammaireRequest } from "src/zodValidation/grammaireSchema";
+import { GrammaireService } from "src/services/grammaire.service";
+import { grammaireSchema, type GrammaireRequest } from "src/shared/schemas/grammaire.schema";
 import { validateBodyMiddleware, type ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
-import { Grammaire } from "src/models/questions/grammaire.model";
-import connectToDB from "src/lib/mongooseClient";
-import { ApiResponse } from "src/types";
+import { ApiResponse, Messages } from "src/types";
 
 // Response messages
-const msg = {
+const msg: Messages = {
   success: "Success to create new question",
   failure: "Failed to create new question",
   wrongMethod: "This method is not allowed",
+  invalidData: "Invalid question data provided"
 } as const;
-
-
 
 const handler: ValidatedApiHandler<GrammaireRequest> = async (
   req: NextApiRequest, 
@@ -28,75 +25,29 @@ const handler: ValidatedApiHandler<GrammaireRequest> = async (
     });
   }
 
-  try {
-    const { content, options, rightAnswer } = req.body;
-
-    const question = new Grammaire({
-      type: "MCQ",
-      content,
-      options,
-      rightAnswers: [rightAnswer]
-    });
-
-    await connectToDB();
-    await question.save();
-    
-    return res.status(200).json({ 
-      status: "success",
-      message: msg.success,
-      data: { questionId: question.id },
-      details: null
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      // Log the error with API context
-      logApiError(
-        "Failed to create grammar question",
-        error,
-        {
-          path: req.url || '/api/questions/category/grammaire',
-          method: req.method,
-          statusCode: error.name === "MongoNetworkError" ? 503 : 500,
-          requestBody: req.body
-        }
-      );
-
-      if (error.name === "MongoNetworkError") {
-        return res.status(503).json({ 
-          status: "error",
-          message: "Service Unavailable",
-          data: null,
-          details: "Database connection error, please try again later."
-        });
-      }
-      
-      return res.status(500).json({ 
-        status: "error",
-        message: msg.failure,
-        data: null,
-        details: error.message
-      });
-    }
-
-    // For unknown errors
-    logApiError(
-      "Unknown error occurred",
-      new Error("Unknown error"),
-      {
+  const result = await GrammaireService.createQuestion(
+    req.body,
+    {
         path: req.url || '/api/questions/category/grammaire',
-        method: req.method,
-        statusCode: 500,
-        requestBody: req.body
-      }
-    );
+        method: req.method
+    }
+  );
 
-    return res.status(500).json({ 
-      status: "error",
-      message: msg.failure,
-      data: null,
-      details: "An unexpected error occurred"
+  if (!result.success) {
+    return res.status(result.error!.code).json({
+        status: "error",
+        message: result.error!.message,
+        data: null,
+        details: result.error!.details
     });
   }
+
+  return res.status(200).json({
+    status: "success",
+    message: msg.success,
+    data: { questionId: result.questionId },
+    details: null
+  });
 };
 
 export default validateBodyMiddleware(grammaireSchema)(handler);

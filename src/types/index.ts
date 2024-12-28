@@ -63,5 +63,5 @@ export interface ApiResponse {
     status: 'success' | 'error';
     message: string;
     data: any | null;
-    details: string | null;
+    details: string | null | undefined;
   }
