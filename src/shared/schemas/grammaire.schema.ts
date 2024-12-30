@@ -10,9 +10,10 @@ export const grammaireSchema = z.object({
       (options) => options.every((opt) => opt.trim().length > 0),
       "All options must be non-empty strings"
     ),
-  rightAnswers: z
-    .array(z.number().int().min(0, "Right answer index must be 0 or greater").max(3, "Right answer index must be 3 or less"))
-    .length(1, "Must provide exactly 1 right answer index"),
+    rightAnswers: z.number()
+    .int()
+    .min(0, "Right answer index must be 0 or greater")
+    .max(3, "Right answer index must be 3 or less"),
 });
 
 // Export type for use in handlers

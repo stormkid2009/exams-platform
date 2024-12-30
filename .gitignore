@@ -40,3 +40,4 @@ example.ts
 
 # validation error logs
 /logs
+/logs/*.log
