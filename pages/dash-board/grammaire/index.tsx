@@ -1,7 +1,7 @@
 import React from "react";
 import GrammaireForm from "components/inputForm/grammaireForm";
 import fetcher from "src/helpers/fetcher";
-import {  type GrammaireFormData } from "src/zodValidation/grammaireSchema";
+import {  type GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 
 
 
@@ -14,7 +14,7 @@ export default function DashBoard() {
       const questionData: GrammaireFormData = {
         content: formData.content,
         options: formData.options as [string, string, string, string],
-        rightAnswer: formData.rightAnswer,
+        rightAnswers: formData.rightAnswers,
       };
 
       const response = await fetcher(questionData, path);
