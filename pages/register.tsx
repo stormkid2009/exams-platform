@@ -1,7 +1,7 @@
-import RegisterForm from '../components/registerForm';
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
-import { useAuthStore } from '../src/store/authStore';
+import RegisterForm from "src/components/forms/user/registerForm";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
+import { useAuthStore } from "../src/store/authStore";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -9,7 +9,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push('/dashboard'); // or wherever you want to redirect authenticated users
+      router.push("/dashboard"); // or wherever you want to redirect authenticated users
     }
   }, [isAuthenticated, router]);
 

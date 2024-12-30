@@ -1,5 +1,5 @@
 import React from "react";
-import GrammaireForm from "components/inputForm/grammaireForm";
+import GrammaireForm from "src/components/forms/question/grammaireForm";
 import fetcher from "src/helpers/fetcher";
 import {  type GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 

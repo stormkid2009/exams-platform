@@ -1,7 +1,7 @@
 import React from "react";
-import SituationForm from "components/inputForm/situationForm";
+import SituationForm from "src/components/forms/question/situationForm";
 import fetcher from "src/helpers/fetcher";
-import { type SituationFormData } from "src/zodValidation/situationSchema"; 
+import { type SituationFormData } from "src/shared/schemas/situation.schema"; 
 
 export default function DashBoard() {
   const path = `/api/questions/category/situation`;

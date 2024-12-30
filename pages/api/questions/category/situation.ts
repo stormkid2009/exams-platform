@@ -6,7 +6,7 @@ import { Situation } from "src/models/questions/situation.model";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Messages , ApiResponse} from 'src/types';
 import { logApiError } from 'src/helpers/logger';
-import { situationSchema , type SituationRequest } from 'src/zodValidation/situationSchema';
+import { situationSchema , type SituationRequest } from 'src/shared/schemas/situation.schema';
 
 const msg: Messages = {
     success: 'Success to create new question',

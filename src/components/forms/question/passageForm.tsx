@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Toast from "../ui/Toast";
+import Toast from "src/components/ui/Toast";
 
 // Validation schema for each question
 const questionSchema = z.object({

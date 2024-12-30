@@ -2,7 +2,7 @@ import connectToDB from 'src/lib/mongooseClient'
 import { Passage } from 'src/models/questions/passage.model'
 import { NextApiRequest, NextApiResponse } from "next";
 import { logApiError } from "src/helpers/logger";
-import { PassageRequestBody, PassageSchema } from "src/zodValidation/passageSchema";
+import { PassageRequestBody, PassageSchema } from "src/shared/schemas/passage.schema";
 import { validateBodyMiddleware, ValidatedApiHandler } from "src/middleware/validateBodyMiddleware";
 import { Messages } from 'src/types';
 import { ApiResponse, BaseQuestion } from "src/types";

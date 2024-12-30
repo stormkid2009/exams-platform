@@ -1,5 +1,5 @@
 import React from "react";
-import PassageForm from "components/inputForm/passageForm";
+import PassageForm from "src/components/forms/question/passageForm";
 import { PassageQuestion } from "src/types";
 import fetcher from "src/helpers/fetcher";
 

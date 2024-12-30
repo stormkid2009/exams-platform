@@ -1,4 +1,4 @@
-import LoginForm from "../components/loginForm";
+import LoginForm from "src/components/forms/user/loginForm";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuthStore } from "../src/store/authStore";

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Toast from "../ui/Toast";
-import ContentInput from "../inputs/contentInput";
-import OptionInput from "../inputs/optionInput";
-import AnswerInput from "../inputs/answerInput";
+import Toast from "src/components/ui/Toast";
+import ContentInput from "src/components/inputs/contentInput";
+import OptionInput from "src/components/inputs/optionInput";
+import AnswerInput from "src/components/inputs/answerInput";
 import {
   grammaireSchema,
   type GrammaireFormData,

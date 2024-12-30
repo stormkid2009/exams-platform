@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "../../src/store/authStore";
+import { useAuthStore } from "src/store/authStore";
 import Link from "next/link";
-import fetcher from "../../src/helpers/fetcher";
+import fetcher from "src/helpers/fetcher";
 
 function LoginForm() {
   const [email, setEmail] = useState<string>("");
