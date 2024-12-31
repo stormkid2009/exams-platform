@@ -2,13 +2,14 @@ import mongoose, { Schema } from "mongoose"; // Import mongoose for schema and m
 import { PassageQuestion, QuestionType } from "src/types/questions"; // Import TypeScript types for type safety
 
 const MODEL_NAME = "Passage";
+
 // Utility function to validate that options array has exactly 4 elements
 const validateOptionsLength = (options: string[]): boolean =>
   options.length === 4;
 
-// Utility function to validate that rightAnswers array contains exactly 1 valid index (0-3)
-const validateRightAnswers = (answers: number[]): boolean =>
-  answers.length === 1 && answers[0] >= 0 && answers[0] < 4;
+// Utility function to validate that rightAnswer is a valid index between 0 and 3
+const validateRightAnswer = (answer: number): boolean =>
+  answer >= 0 && answer < 4;
 
 // Utility function to validate that there is at least one related question
 const validateRelatedQuestions = (questions: any[]): boolean =>
@@ -32,19 +33,17 @@ const relatedQuestionSchema = new Schema({
     type: [String],
     required: true,
     validate: {
-      // Use utility function for validation
-      validator: validateOptionsLength,
+      validator: validateOptionsLength, // Use utility function for validation
       message: "Each question must have exactly 4 options", // Error message if validation fails
     },
   },
 
-  // Array containing the index of the correct answer (must contain exactly 1 valid index)
-  rightAnswers: {
-    type: [Number],
+  // The index of the correct answer (must be a valid index between 0 and 3)
+  rightAnswer: {
+    type: Number,
     required: true,
     validate: {
-      // Use utility function for validation
-      validator: validateRightAnswers,
+      validator: validateRightAnswer, // Use utility function for validation
       message: "Each question must have exactly 1 right answer (index 0-3)", // Error message if validation fails
     },
   },
@@ -60,8 +59,7 @@ const passageSchema = new Schema<PassageQuestion>({
     type: [relatedQuestionSchema],
     required: true,
     validate: {
-      // Use utility function for validation
-      validator: validateRelatedQuestions,
+      validator: validateRelatedQuestions, // Use utility function for validation
       message: "A passage must have at least one related question", // Error message if validation fails
     },
   },
