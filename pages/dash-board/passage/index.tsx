@@ -1,6 +1,6 @@
 import React from "react";
 import PassageForm from "src/components/forms/question/passageForm";
-import { PassageQuestion } from "src/types";
+import { PassageQuestion } from "src/types/questions";
 import fetcher from "src/helpers/fetcher";
 
 export default function DashBoard() {
