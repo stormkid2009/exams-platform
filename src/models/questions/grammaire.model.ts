@@ -6,9 +6,9 @@ const MODEL_NAME = "Grammaire";
 const validateOptionsLength = (options: string[]): boolean =>
   options.length === 4;
 
-// Utility function to validate that rightAnswers array contains exactly one valid index between 0 and 3
-const validateRightAnswers = (answers: number[]): boolean =>
-  answers.length === 1 && answers[0] >= 0 && answers[0] < 4;
+// Utility function to validate that rightAnswer array contains exactly one valid index between 0 and 3
+const validateRightAnswer = (answer: number): boolean =>
+  answer >= 0 && answer < 4;
 
 // Define the schema for grammaire question
 const grammaireSchema = new Schema<GrammaireQuestion>({
@@ -34,12 +34,12 @@ const grammaireSchema = new Schema<GrammaireQuestion>({
   },
 
   // Array containing the index of the correct answer (must contain exactly 1 valid index)
-  rightAnswers: {
-    type: [Number],
+  rightAnswer: {
+    type: Number,
     required: true,
     validate: {
-      validator: validateRightAnswers, // Use utility function for validation
-      message: "RightAnswers must contain exactly 1 index between 0 and 3", // Error message if validation fails
+      validator: validateRightAnswer, // Use utility function for validation
+      message: "RightAnswer must contain exactly 1 index between 0 and 3", // Error message if validation fails
     },
   },
 });

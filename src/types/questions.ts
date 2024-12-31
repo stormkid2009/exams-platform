@@ -16,14 +16,13 @@ export interface BaseQuestion {
   // Specialized interface for questions with options
   export interface OptionsQuestion extends BaseQuestion {
     options: string[];
-    rightAnswers: number[];
   }
   
   // More specific question types with strict typing
   export interface GrammaireQuestion extends BaseQuestion {
     type: typeof QuestionTypes.MCQ;
     options: [string, string, string, string];
-    rightAnswers: [number];
+    rightAnswer: number;
   }
   
   export interface SituationQuestion extends BaseQuestion {
