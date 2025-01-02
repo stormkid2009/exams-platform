@@ -1,38 +1,35 @@
+import React from 'react';
+import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
+import BaseInput from './baseInput';
 
-import React from "react";
-import { UseFormRegister } from "react-hook-form";
-
-interface ContentInputProps {
-    name: string;
-    register: UseFormRegister<any>;
-    placeholder: string;
-    label: string;
-    errorMessage?: string;
-    rows?: number;
+interface ContentInputProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  name: Path<T>; // Use Path<T> instead of string
+  label: string;
+  placeholder?: string;
+  errorMessage?: string;
+  rows?: number;
 }
 
-const ContentInput: React.FC<ContentInputProps> = ({
-    register,
-    name,
-    label,
-    errorMessage,
-    rows = 3,
-  }) => {
-    return (
-      <div className="flex items-center gap-4">
-        <label className="w-1/4">{label}</label>
-        <div className="w-3/4">
-          <textarea
-            {...register(name)}
-            className="w-full p-2 border rounded"
-            rows={rows}
-          />
-          {errorMessage && (
-            <p className="text-red-500 text-sm">{errorMessage}</p>
-          )}
-        </div>
-      </div>
-    );
-  };
-  
-  export default ContentInput;
+const ContentInput = <T extends FieldValues>({
+  register,
+  name,
+  label,
+  placeholder,
+  errorMessage,
+  rows = 3,
+}: ContentInputProps<T>) => {
+  return (
+    <BaseInput
+      register={register}
+      name={name} // Pass name of type Path<T>
+      label={label}
+      placeholder={placeholder}
+      errorMessage={errorMessage}
+      type="textarea"
+      rows={rows}
+    />
+  );
+};
+
+export default React.memo(ContentInput) as typeof ContentInput;

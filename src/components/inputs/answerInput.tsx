@@ -1,34 +1,37 @@
 import React from 'react';
-import { UseFormRegister } from 'react-hook-form';
+import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
+import BaseInput from './baseInput';
 
-interface AnswerInputProps {
-  register: UseFormRegister<any>; // Adjust the type as needed
-  name: string;
+interface AnswerInputProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  name: Path<T>; // Use Path<T> instead of string
+  label: string;
   errorMessage?: string;
+  maxOptions: number;
 }
 
-const AnswerInput: React.FC<AnswerInputProps> = ({
+const AnswerInput = <T extends FieldValues>({
   register,
-  name, // Ensure name is destructured
+  name,
+  label,
   errorMessage,
-}) => {
+  maxOptions,
+}: AnswerInputProps<T>) => {
   return (
-    <div className="flex items-center gap-4">
-      <label className="w-1/4">Correct Answer Index (0-4)</label>
-      <div className="w-3/4">
-        <input
-          type="number"
-          {...register(name,{valueAsNumber: true})} // Correctly register the input with the name prop
-          className="w-full p-2 border rounded"
-          min={0}
-          max={4}
-        />
-        {errorMessage && (
-          <p className="text-red-500 text-sm">{errorMessage}</p>
-        )}
-      </div>
-    </div>
+    <BaseInput
+      register={register}
+      name={name} // Pass name of type Path<T>
+      label={label}
+      errorMessage={errorMessage}
+      type="number"
+      min={1}
+      max={maxOptions}
+      onChange={(e) => {
+        const value = parseInt(e.target.value, 10);
+        e.target.value = (value - 1).toString();
+      }}
+    />
   );
 };
 
-export default AnswerInput;
+export default React.memo(AnswerInput) as typeof AnswerInput;

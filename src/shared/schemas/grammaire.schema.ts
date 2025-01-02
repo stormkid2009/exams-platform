@@ -19,4 +19,9 @@ export const grammaireSchema = z.object({
 export type GrammaireRequest = z.infer<typeof grammaireSchema>;
 
 // Export type for use in grammaireForm
-export type GrammaireFormData = z.infer<typeof grammaireSchema>;
+export type GrammaireFormData = z.infer<typeof grammaireSchema>& {
+  "options.0": string; // Explicitly define nested paths
+  "options.1": string;
+  "options.2": string;
+  "options.3": string;
+};

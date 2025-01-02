@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm ,Path} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "src/components/ui/Toast";
 import ContentInput from "src/components/inputs/contentInput";
@@ -28,7 +28,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
     resolver: zodResolver(grammaireSchema),
     defaultValues: {
       options: ["", "", "", ""], // Initialize empty options array
-      rightAnswers: 0,
+      rightAnswer: 0,
     },
   });
 
@@ -64,7 +64,8 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
       )}
 
       <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
-        <ContentInput
+        {/* Content Input */}
+        <ContentInput<GrammaireFormData>
           register={register}
           name="content"
           label="Question Content"
@@ -72,19 +73,24 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
           errorMessage={errors.content?.message}
         />
 
+        {/* Option Inputs */}
         {[0, 1, 2, 3].map((index) => (
-          <OptionInput
+          <OptionInput<GrammaireFormData>
             key={index}
             register={register}
-            index={index}
+            name={`options.${index}` as Path<GrammaireFormData>} // Explicitly type the name prop
+            label={`Option ${index + 1}`}
             errorMessage={errors.options?.[index]?.message}
           />
         ))}
 
-        <AnswerInput
-          name="rightAnswers"
+        {/* Answer Input */}
+        <AnswerInput<GrammaireFormData>
           register={register}
-          errorMessage={errors.rightAnswers?.message}
+          name="rightAnswer"
+          label="Correct Answer Index (1-4)"
+          errorMessage={errors.rightAnswer?.message}
+          maxOptions={4} // 4 options (1-4)
         />
 
         <div className="flex justify-end">

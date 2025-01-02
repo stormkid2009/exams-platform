@@ -1,32 +1,29 @@
+import React from 'react';
+import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
+import BaseInput from './baseInput';
 
-import React from "react";
-import { UseFormRegister } from "react-hook-form";
-
-interface OptionInputProps {
-    register: UseFormRegister<any>;
-    index: number;
-    errorMessage?: string;
+interface OptionInputProps<T extends FieldValues> {
+  register: UseFormRegister<T>;
+  name: Path<T>; // Use Path<T> for type safety
+  label: string;
+  errorMessage?: string;
 }
 
-const OptionInput: React.FC<OptionInputProps> = ({
-    register,
-    index,
-    errorMessage,
-  }) => {
-    return (
-      <div className="flex items-center gap-4">
-        <label className="w-1/4">Option {index + 1}</label>
-        <div className="w-3/4">
-          <input
-            {...register(`options.${index}`)}
-            className="w-full p-2 border rounded"
-          />
-          {errorMessage && (
-            <p className="text-red-500 text-sm">{errorMessage}</p>
-          )}
-        </div>
-      </div>
-    );
-  };
-  
-  export default OptionInput;
+const OptionInput = <T extends FieldValues>({
+  register,
+  name,
+  label,
+  errorMessage,
+}: OptionInputProps<T>) => {
+  return (
+    <BaseInput
+      register={register}
+      name={name}
+      label={label}
+      errorMessage={errorMessage}
+      type="text"
+    />
+  );
+};
+
+export default React.memo(OptionInput) as typeof OptionInput;
