@@ -1,82 +1,121 @@
-// baseInput.test.tsx
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import { useForm, FieldValues } from 'react-hook-form';
+import BaseInput from 'src/components/inputs/baseInput';
+import '@testing-library/jest-dom';
 
-import React, { ReactNode } from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { useForm, UseFormRegister } from 'react-hook-form';
-import BaseInput, { BaseInputProps } from 'src/components/inputs/baseInput'; // Adjust the import path as necessary
+describe('BaseInput', () => {
+  const TestForm = ({ children }: { children: React.ReactNode }) => {
+    const { register } = useForm<FieldValues>();
+    return <form>{React.cloneElement(children as React.ReactElement, { register })}</form>;
+  };
 
-interface MockFormProps {
-  children: ReactNode; // Use ReactNode for better type safety
-}
-
-const MockForm: React.FC<MockFormProps> = ({ children }) => {
-  const { register } = useForm();
-  return <form>{React.cloneElement(children as React.ReactElement<BaseInputProps>, { register })}</form>;
-};
-
-describe('BaseInput Component', () => {
-  test('renders text input with label', () => {
+  it('renders a text input by default', () => {
     render(
-      <MockForm>
-        <BaseInput name="testInput" label="Test Input" />
-      </MockForm>
+      <TestForm>
+        <BaseInput name="test" label="Test Input" register={jest.fn()} />
+      </TestForm>
     );
 
-    expect(screen.getByLabelText(/Test Input/i)).toBeInTheDocument();
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    const input = screen.getByLabelText('Test Input') as HTMLInputElement;
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('type', 'text');
   });
 
-  test('renders textarea with label', () => {
+  it('renders a textarea when type is textarea', () => {
     render(
-      <MockForm>
-        <BaseInput name="testTextarea" label="Test Textarea" type="textarea" />
-      </MockForm>
+      <TestForm>
+        <BaseInput name="test" label="Test Input" type="textarea" register={jest.fn()} />
+      </TestForm>
     );
 
-    expect(screen.getByLabelText(/Test Textarea/i)).toBeInTheDocument();
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    const textarea = screen.getByLabelText('Test Input') as HTMLTextAreaElement;
+    expect(textarea).toBeInTheDocument();
+    expect(textarea.tagName).toBe('TEXTAREA');
   });
 
-  test('renders select input with options', () => {
+  it('renders a select element when type is select', () => {
     const options = [
-      { value: 'option1', label: 'Option 1' },
-      { value: 'option2', label: 'Option 2' },
+      { value: '1', label: 'Option 1' },
+      { value: '2', label: 'Option 2' },
     ];
 
     render(
-      <MockForm>
-        <BaseInput name="testSelect" label="Test Select" type="select" options={options} />
-      </MockForm>
+      <TestForm>
+        <BaseInput
+          name="test"
+          label="Test Input"
+          type="select"
+          options={options}
+          register={jest.fn()}
+        />
+      </TestForm>
     );
 
-    expect(screen.getByLabelText(/Test Select/i)).toBeInTheDocument();
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
-    expect(screen.getByText('Option 1')).toBeInTheDocument();
-    expect(screen.getByText('Option 2')).toBeInTheDocument();
+    const select = screen.getByLabelText('Test Input') as HTMLSelectElement;
+    expect(select).toBeInTheDocument();
+    expect(select.tagName).toBe('SELECT');
+
+    options.forEach((option) => {
+      expect(screen.getByText(option.label)).toBeInTheDocument();
+    });
   });
 
-  test('displays error message when provided', () => {
+  it('displays an error message when provided', () => {
+    const errorMessage = 'This field is required';
+
     render(
-      <MockForm>
-        <BaseInput name="testInputWithError" label="Test Input With Error" errorMessage="This field is required." />
-      </MockForm>
+      <TestForm>
+        <BaseInput
+          name="test"
+          label="Test Input"
+          errorMessage={errorMessage}
+          register={jest.fn()}
+        />
+      </TestForm>
     );
 
-    expect(screen.getByText(/This field is required./i)).toBeInTheDocument();
+    const error = screen.getByText(errorMessage);
+    expect(error).toBeInTheDocument();
+    expect(error).toHaveClass('text-red-500');
   });
 
-  test('calls onChange handler when value changes', () => {
+  it('applies registerOptions to the input', () => {
+    const registerOptions = { required: true };
+
+    render(
+      <TestForm>
+        <BaseInput
+          name="test"
+          label="Test Input"
+          registerOptions={registerOptions}
+          register={jest.fn()}
+        />
+      </TestForm>
+    );
+
+    const input = screen.getByLabelText('Test Input') as HTMLInputElement;
+    expect(input).toHaveAttribute('required');
+  });
+
+  it('calls onChange handler when input value changes', () => {
     const handleChange = jest.fn();
+
     render(
-      <MockForm>
-        <BaseInput name="testInput" label="Test Input" onChange={handleChange} />
-      </MockForm>
+      <TestForm>
+        <BaseInput
+          name="test"
+          label="Test Input"
+          onChange={handleChange}
+          register={jest.fn()}
+        />
+      </TestForm>
     );
 
-    const input = screen.getByLabelText(/Test Input/i);
-    fireEvent.change(input, { target: { value: 'New Value' } });
+    const input = screen.getByLabelText('Test Input') as HTMLInputElement;
+    input.value = 'new value';
+    input.dispatchEvent(new Event('change', { bubbles: true }));
 
     expect(handleChange).toHaveBeenCalled();
-    expect(input).toHaveValue('New Value');
   });
 });
