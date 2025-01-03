@@ -1,18 +1,19 @@
 import React from 'react';
-import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
+import { UseFormRegister, FieldValues, Path, RegisterOptions } from 'react-hook-form';
 
 interface BaseInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
-  name: Path<T>; // The name of the input field
-  label: string; // The label for the input
-  errorMessage?: string; // Optional error message
-  type?: 'text' | 'textarea' | 'number' | 'select'; // Add 'select' as a type
-  rows?: number; // Optional number of rows for textarea
-  min?: number; // Optional minimum value for number inputs
-  max?: number; // Optional maximum value for number inputs
-  placeholder?: string; // Optional placeholder text
-  options?: { value: string; label: string }[]; // Options for the dropdown list
-  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void; // Optional onChange handler
+  name: Path<T>;
+  label: string;
+  errorMessage?: string;
+  type?: 'text' | 'textarea' | 'number' | 'select';
+  rows?: number;
+  min?: number;
+  max?: number;
+  placeholder?: string;
+  options?: { value: string; label: string }[];
+  registerOptions?: RegisterOptions; // Add registerOptions prop
+  onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 
 const BaseInput = <T extends FieldValues>({
@@ -25,7 +26,8 @@ const BaseInput = <T extends FieldValues>({
   min,
   max,
   placeholder,
-  options = [], // Default to an empty array for options
+  options = [],
+  registerOptions, // Destructure registerOptions
   onChange,
 }: BaseInputProps<T>) => {
   return (
@@ -34,7 +36,7 @@ const BaseInput = <T extends FieldValues>({
       <div className="w-3/4">
         {type === 'textarea' ? (
           <textarea
-            {...register(name)}
+            {...register(name, registerOptions)} // Pass registerOptions
             className="w-full p-2 border rounded"
             rows={rows}
             placeholder={placeholder}
@@ -44,7 +46,7 @@ const BaseInput = <T extends FieldValues>({
           />
         ) : type === 'select' ? (
           <select
-            {...register(name)}
+            {...register(name, registerOptions)} // Pass registerOptions
             className="w-full p-2 border rounded"
             aria-label={label}
             aria-describedby={errorMessage ? `${name}-error` : undefined}
@@ -58,7 +60,7 @@ const BaseInput = <T extends FieldValues>({
           </select>
         ) : (
           <input
-            {...register(name)}
+            {...register(name, registerOptions)} // Pass registerOptions
             type={type}
             className="w-full p-2 border rounded"
             min={min}

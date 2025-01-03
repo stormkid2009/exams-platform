@@ -1,12 +1,12 @@
 import React from 'react';
 import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
-import BaseInput from './baseInput';
+import BaseInput from './baseInput'; // Import the BaseInput component
 
 interface OptionInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
-  name: Path<T>; // Use Path<T> for type safety
-  label: string;
-  errorMessage?: string;
+  name: Path<T>; // The name of the input field
+  label: string; // The label for the input
+  errorMessage?: string; // Optional error message
 }
 
 const OptionInput = <T extends FieldValues>({

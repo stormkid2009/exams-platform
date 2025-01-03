@@ -1,35 +1,35 @@
 import React from 'react';
 import { UseFormRegister, FieldValues, Path } from 'react-hook-form';
-import BaseInput from './baseInput';
+import BaseInput from './baseInput'; // Import the BaseInput component
 
 interface AnswerInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
-  name: Path<T>; // Use Path<T> instead of string
-  label: string;
-  errorMessage?: string;
-  maxOptions: number;
+  name: Path<T>; // The name of the input field
+  errorMessage?: string; // Optional error message
+  maxOptions: number; // The maximum number of options (4 or 5)
 }
 
 const AnswerInput = <T extends FieldValues>({
   register,
   name,
-  label,
   errorMessage,
   maxOptions,
 }: AnswerInputProps<T>) => {
+  // Generate dynamic options for the dropdown list with alphabetic labels
+  const options = Array.from({ length: maxOptions }, (_, index) => ({
+    value: (index + 1).toString(), // Values start from 1
+    label: String.fromCharCode(65 + index), // Labels start from "A" (ASCII 65)
+  }));
+
   return (
     <BaseInput
       register={register}
-      name={name} // Pass name of type Path<T>
-      label={label}
+      name={name}
+      label="Correct Answer" // Set the label to "Correct Answer"
       errorMessage={errorMessage}
-      type="number"
-      min={1}
-      max={maxOptions}
-      onChange={(e) => {
-        const value = parseInt(e.target.value, 10);
-        e.target.value = (value - 1).toString();
-      }}
+      type="select" // Use "select" type for dropdown list
+      options={options} // Pass the dynamic options
+      registerOptions={{ valueAsNumber: true }} // Convert the value to a number
     />
   );
 };
