@@ -1,7 +1,7 @@
 import React from 'react';
 import { UseFormRegister, FieldValues, Path, RegisterOptions } from 'react-hook-form';
 
-interface BaseInputProps<T extends FieldValues> {
+export interface BaseInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
   name: Path<T>;
   label: string;
