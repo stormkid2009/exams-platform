@@ -19,11 +19,11 @@ export default function DashBoard() {
         ] as [string, string, string, string], // Ensure it's a tuple
         rightAnswer: formData.rightAnswer,
       };
-
       const response = await fetcher(questionData, path);
-      console.log("Question created successfully:", response);
+
     } catch (error) {
       console.error("Error creating question:", error);
+      throw error; // Propagate error to form
     }
   };
 

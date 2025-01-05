@@ -12,7 +12,7 @@ export interface BaseInputProps<T extends FieldValues> {
   max?: number;
   placeholder?: string;
   options?: { value: string; label: string }[];
-  registerOptions?: RegisterOptions; // Add registerOptions prop
+  registerOptions?: RegisterOptions<T>; // Add registerOptions prop
   onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 }
 

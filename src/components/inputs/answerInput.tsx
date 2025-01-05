@@ -17,7 +17,7 @@ const AnswerInput = <T extends FieldValues>({
 }: AnswerInputProps<T>) => {
   // Generate dynamic options for the dropdown list with alphabetic labels
   const options = Array.from({ length: maxOptions }, (_, index) => ({
-    value: (index + 1).toString(), // Values start from 1
+    value: index.toString(), // Values start from 1
     label: String.fromCharCode(65 + index), // Labels start from "A" (ASCII 65)
   }));
 

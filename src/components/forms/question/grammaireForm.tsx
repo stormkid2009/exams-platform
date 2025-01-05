@@ -31,14 +31,13 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
       "options.1": "",
       "options.2": "",
       "options.3": "",
-      rightAnswer: 0,
+      rightAnswer: 1,
     },
   });
 
   const onSubmit = async (data: GrammaireFormData) => {
+    
     try {
-      console.log("Form Data:", data); // Debug form data
-    console.log("Form Errors:", errors); // Debug validation errors
       // Call the handleSubmit with the modified data
       await handleSubmit(data);
 
@@ -79,14 +78,16 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
 
         {/* Option Inputs */}
         {[0, 1, 2, 3].map((index) => (
-  <OptionInput<GrammaireFormData>
-    key={index}
-    register={register}
-    name={`options.${index}` as Path<GrammaireFormData>}
-    label={`Option ${String.fromCharCode(65 + index)}`} // Use alphabetic labels
-    errorMessage={errors[`options.${index}` as keyof typeof errors]?.message} // Use type assertion
-  />
-))}
+          <OptionInput<GrammaireFormData>
+            key={index}
+            register={register}
+            name={`options.${index}` as Path<GrammaireFormData>}
+            label={`Option ${String.fromCharCode(65 + index)}`} // Use alphabetic labels
+            errorMessage={
+              errors[`options.${index}` as keyof typeof errors]?.message
+            } // Use type assertion
+          />
+        ))}
 
         {/* Answer Input */}
         <AnswerInput<GrammaireFormData>
@@ -105,6 +106,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
           </button>
         </div>
       </form>
+      
     </div>
   );
 };
