@@ -22,6 +22,7 @@ const OptionInput = <T extends FieldValues>({
       label={label}
       errorMessage={errorMessage}
       type="text"
+      registerOptions={{ required: true }}
     />
   );
 };

@@ -15,10 +15,12 @@ const AnswerInput = <T extends FieldValues>({
   errorMessage,
   maxOptions,
 }: AnswerInputProps<T>) => {
-  // Generate dynamic options for the dropdown list with alphabetic labels
-  const options = Array.from({ length: maxOptions }, (_, index) => ({
-    value: index.toString(), // Values start from 1
-    label: String.fromCharCode(65 + index), // Labels start from "A" (ASCII 65)
+  const validatedMaxOptions = maxOptions === 5 ? 5 : 4;
+
+  // Generate options based on validatedMaxOptions
+  const options = Array.from({ length: validatedMaxOptions }, (_, index) => ({
+    value: index.toString(), // Values are numeric indices (0, 1, 2, 3, or 4)
+    label: String.fromCharCode(65 + index), // Labels are "A", "B", "C", "D", and "E" (if 5 options)
   }));
 
   return (
@@ -29,7 +31,7 @@ const AnswerInput = <T extends FieldValues>({
       errorMessage={errorMessage}
       type="select" // Use "select" type for dropdown list
       options={options} // Pass the dynamic options
-      registerOptions={{ valueAsNumber: true }} // Convert the value to a number
+      registerOptions={{ required: true }}
     />
   );
 };

@@ -28,6 +28,7 @@ const ContentInput = <T extends FieldValues>({
       errorMessage={errorMessage}
       type="textarea"
       rows={rows}
+      registerOptions={{ required: true }}
     />
   );
 };
