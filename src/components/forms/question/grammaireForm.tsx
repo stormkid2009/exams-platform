@@ -27,11 +27,11 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
   } = useForm<GrammaireFormData>({
     resolver: zodResolver(grammaireSchema),
     defaultValues: {
-      "options.0": "", // Initialize each option field
-      "options.1": "",
-      "options.2": "",
-      "options.3": "",
-      rightAnswer: 1,
+      a: "", // Initialize each option field
+      b: "",
+      c: "",
+      d: "",
+      rightAnswer: "",
     },
   });
 
@@ -40,7 +40,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
     try {
       // Call the handleSubmit with the modified data
       await handleSubmit(data);
-
+      console.log(data);
       setToast({ type: "success", text: "Question created successfully!" });
       reset();
     } catch (error) {
@@ -77,12 +77,12 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
         />
 
         {/* Option Inputs */}
-        {[0, 1, 2, 3].map((index) => (
+        {['a', 'b', 'c', 'd'].map((option,index) => (
           <OptionInput<GrammaireFormData>
             key={index}
             register={register}
-            name={`options.${index}` as Path<GrammaireFormData>}
-            label={`Option ${String.fromCharCode(65 + index)}`} // Use alphabetic labels
+            name={`${option}` as Path<GrammaireFormData>}
+            label={`Option:  ${option}`} 
             errorMessage={
               errors[`options.${index}` as keyof typeof errors]?.message
             } // Use type assertion
