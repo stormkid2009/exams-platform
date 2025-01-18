@@ -1,7 +1,6 @@
 import React from "react";
 import GrammaireForm from "src/components/forms/question/grammaireForm";
 import fetcher from "src/helpers/fetcher";
-import fetchData from "src/helpers/fetchData";
 import { type GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 
 export default function DashBoard() {
