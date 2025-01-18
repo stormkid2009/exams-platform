@@ -2,13 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { GrammaireService } from "src/services/grammaire.service";
 import {
   grammaireSchema,
-  type GrammaireRequest,
+  type GrammaireFormData,
 } from "src/shared/schemas/grammaire.schema";
 import {
   validateBodyMiddleware,
   type ValidatedApiHandler,
 } from "src/middleware/validateBodyMiddleware";
-import { ApiResponse, Messages } from "src/types/questions";
+import { ApiResponse, Messages } from "src/types/common";
 
 // Response messages
 const msg: Messages = {
@@ -18,7 +18,7 @@ const msg: Messages = {
   invalidData: "Invalid question data provided",
 } as const;
 
-const handler: ValidatedApiHandler<GrammaireRequest> = async (
+const handler: ValidatedApiHandler<GrammaireFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) => {
@@ -48,8 +48,7 @@ const handler: ValidatedApiHandler<GrammaireRequest> = async (
   return res.status(200).json({
     status: "success",
     message: msg.success,
-    data: { questionId: result.questionId },
-    details: null,
+    data: null,
   });
 };
 

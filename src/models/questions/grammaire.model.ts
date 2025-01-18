@@ -39,13 +39,12 @@ const grammaireSchema = new Schema<GrammaireQuestion>({
     required: true,
     validate: {
       validator: validateRightAnswer, // Use utility function for validation
-      message: "RightAnswer must contain exactly 1 index between 0 and 3", // Error message if validation fails
+      message: "RightAnswer must to be >= 0 and <=3", // Error message if validation fails
     },
   },
 });
 
-// Add an index to the id field for faster queries (specific to this collection)
-grammaireSchema.index({ id: 1 });
+
 
 // Export the model, ensuring we don't redefine it if already declared
 export const Grammaire =

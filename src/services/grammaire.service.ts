@@ -1,12 +1,11 @@
 
-import { GrammaireRequest } from "src/shared/schemas/grammaire.schema";
+import { GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 import { Grammaire } from "src/models/questions/grammaire.model";
 import { logApiError } from "src/helpers/logger";
 import connectToDB from "src/lib/mongooseClient";
 
 export interface GrammaireServiceResponse {
     success: boolean;
-    questionId?: string;
     error?: {
         message: string;
         code: number;
@@ -16,15 +15,16 @@ export interface GrammaireServiceResponse {
 
 export class GrammaireService {
     static async createQuestion(
-        data: GrammaireRequest,
+        data: GrammaireFormData,
         contextInfo: { path: string; method: string }
     ): Promise<GrammaireServiceResponse> {
         try {
+            const answer = parseInt(data.rightAnswer);
             const question = new Grammaire({
                 type: "MCQ",
                 content: data.content,
-                options: data.options,
-                rightAnswers: [data.rightAnswers]
+                options: [data.a, data.b, data.c, data.d],
+                rightAnswer: answer,
             });
 
             await connectToDB();
@@ -32,7 +32,6 @@ export class GrammaireService {
 
             return {
                 success: true,
-                questionId: question.id
             };
 
         } catch (error) {

@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse, NextApiHandler } from 'next';
 import { z } from 'zod';
 import { logApiError } from "src/helpers/logger";
+import { ApiResponse } from "src/types/common";
+
+/*
+
 
 interface ApiResponse<T = any> {
   status: 'success' | 'error';
@@ -8,6 +12,7 @@ interface ApiResponse<T = any> {
   data: T | null;
   details: any;
 }
+*/
 
 export function validateBodyMiddleware(schema: z.ZodSchema) {
   return function (handler: NextApiHandler) {
@@ -34,10 +39,7 @@ export function validateBodyMiddleware(schema: z.ZodSchema) {
             status: 'error',
             message: 'Validation failed',
             data: null,
-            details: error.errors.map(err => ({
-              field: err.path.join('.'),
-              message: err.message
-            }))
+            details: error.message
           });
         }
         
