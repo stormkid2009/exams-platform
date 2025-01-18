@@ -40,7 +40,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
     try {
       // Call the handleSubmit with the modified data
       await handleSubmit(data);
-      console.log(data);
+      //console.log(data);
       setToast({ type: "success", text: "Question created successfully!" });
       reset();
     } catch (error) {

@@ -1,6 +1,7 @@
 import React from "react";
 import GrammaireForm from "src/components/forms/question/grammaireForm";
 import fetcher from "src/helpers/fetcher";
+import fetchData from "src/helpers/fetchData";
 import { type GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 
 export default function DashBoard() {
@@ -11,18 +12,25 @@ export default function DashBoard() {
       // Transform form data to match the API's expected format
       const questionData = {
         content: formData.content,
-        options: [
-          formData["options.0"], // Access nested paths
-          formData["options.1"],
-          formData["options.2"],
-          formData["options.3"],
-        ] as [string, string, string, string], // Ensure it's a tuple
+          a:formData.a, // Access nested paths
+          b:formData.b,
+          c:formData.c,
+          d:formData.d,
         rightAnswer: formData.rightAnswer,
       };
       const response = await fetcher(questionData, path);
+      console.log(response);
+      // console.log(questionData);
 
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error creating question:", error);
+      if (error instanceof Error) {
+        // If error is an instance of Error, log the message
+        console.error("Error message:", error.message);
+      }
+      if (error && typeof error === 'object' && 'response' in error) {
+        console.error("API Response:", (error as any).response.data); // Log the error response from the API
+      }
       throw error; // Propagate error to form
     }
   };

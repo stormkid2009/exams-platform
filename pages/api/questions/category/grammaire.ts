@@ -37,6 +37,8 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
   });
 
   if (!result.success) {
+    // Log the error for debugging
+    console.log(result.error);
     return res.status(result.error!.code).json({
       status: "error",
       message: result.error!.message,
