@@ -2,7 +2,7 @@
 import { z } from "zod";
 
 // Define the Zod schema for the request body
-export const OpenEndedSchema = z.object({
+export const openEndedSchema = z.object({
   content: z.string().min(1, "Content must be a non-empty string"),
   elements: z
     .array(z.string().min(1, "Each element must be a non-empty string"))
@@ -11,4 +11,4 @@ export const OpenEndedSchema = z.object({
 });
 
 // Export type for use in handlers
-export type OpenEndedRequestBody = z.infer<typeof OpenEndedSchema>;
+export type OpenEndedFormData = z.infer<typeof openEndedSchema>;
