@@ -23,7 +23,7 @@ export class OpenEndedService {
             const question = new OpenEnded({
                 type: "Open-Ended",
                 content: data.content,
-                elements:data.elements,
+                elements:[data.a, data.b],
                 answer: data.answer,
             });
 

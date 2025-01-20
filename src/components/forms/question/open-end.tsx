@@ -27,8 +27,8 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
   } = useForm<OpenEndedFormData>({
     resolver: zodResolver(openEndedSchema),
     defaultValues: {
-      content: "",
-      elements:["","",""],
+      a: "", // Initialize each option field
+      b: "",
       answer: "",
     },
   });
@@ -75,7 +75,7 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
         />
 
         {/* Option Inputs */}
-        {['a', 'b', 'c'].map((option,index) => (
+        {['a', 'b'].map((option,index) => (
           <OptionInput<OpenEndedFormData>
             key={index}
             register={register}
