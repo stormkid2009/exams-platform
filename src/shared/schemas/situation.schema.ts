@@ -1,23 +1,24 @@
 import { z } from "zod";
 
-// Define all your validation schemas here
-export const situationSchema = z.object({
-  content: z.string().min(1, "Content cannot be empty"),
-  options: z.tuple([
-    z.string().min(1, "Option 1 cannot be empty"),
-    z.string().min(1, "Option 2 cannot be empty"),
-    z.string().min(1, "Option 3 cannot be empty"),
-    z.string().min(1, "Option 4 cannot be empty"),
-    z.string().min(1, "Option 5 cannot be empty"),
-  ]),
-  rightAnswers: z.tuple([
-    z.number().int().min(0, "Right answer index must be 0 or greater").max(4, "Right answer index must be 4 or less"),
-    z.number().int().min(0, "Right answer index must be 0 or greater").max(4, "Right answer index must be 4 or less"),
-  ]),
+const answerEnum = z.enum(["a", "b", "c", "d", "e"], {
+  errorMap: () => ({ message: "Answer must be one of: a, b, c, d, or e" })
 });
 
-// Export type for use in handlers
-export type SituationRequest = z.infer<typeof situationSchema>;
+const createOptionSchema = (option: string) => 
+  z.string().min(1, `Option ${option.toUpperCase()} cannot be empty`);
 
-// Export type for use in situationForm
+export const situationSchema = z.object({
+  content: z.string().min(1, "Content cannot be empty"),
+  a: createOptionSchema('a'),
+  b: createOptionSchema('b'),
+  c: createOptionSchema('c'),
+  d: createOptionSchema('d'),
+  e: createOptionSchema('e'),
+  rightAnswers: z.tuple([answerEnum, answerEnum])
+    .refine(
+      (answers) => new Set(answers).size === answers.length,
+      "Duplicate correct answers are not allowed"
+    )
+});
+
 export type SituationFormData = z.infer<typeof situationSchema>;
