@@ -46,7 +46,11 @@ const situationSchema = new Schema<SituationQuestion>({
         "Situation question must have exactly 2 right answers with valid indices (0-4)", // Error message if validation fails
     },
   },
-});
+},
+{
+  timestamps: true,
+}
+);
 
 // Add an index to the id field for faster queries (specific to this collection)
 situationSchema.index({ id: 1 });

@@ -20,11 +20,12 @@ export class OpenEndedService {
         contextInfo: { path: string; method: string }
     ): Promise<OpenEndedServiceResponse> {
         try {
+            const {content,a,b,answer} = data;
             const question = new OpenEnded({
                 type: "Open-Ended",
-                content: data.content,
-                elements:[data.a, data.b],
-                answer: data.answer,
+                content,
+                elements:[a, b],
+                answer,
             });
 
             await connectToDB();
@@ -37,7 +38,7 @@ export class OpenEndedService {
         } catch (error) {
             if (error instanceof Error) {
                 logApiError(
-                    "Failed to create grammar question",
+                    "Failed to create open-ended question",
                     error,
                     {
                         path: contextInfo.path,
