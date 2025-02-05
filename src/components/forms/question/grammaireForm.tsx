@@ -31,7 +31,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
       b: "",
       c: "",
       d: "",
-      rightAnswer: "",
+      rightAnswer: "a",
     },
   });
 

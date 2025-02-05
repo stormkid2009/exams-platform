@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import { useForm ,Path} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "src/components/ui/Toast";
 import { situationSchema , type SituationFormData} from 'src/shared/schemas/situation.schema';
@@ -9,9 +8,13 @@ import OptionInput from 'src/components/inputs/optionInput';
 import AnswerInput from 'src/components/inputs/answerInput';
 
 
+const OPTIONS = ['a', 'b', 'c', 'd', 'e'] as const;
+const ANSWER_COUNT = 2;
+
 interface Props {
   handleSubmit: (data: SituationFormData) => void;
 }
+
 
 const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
   const [toast, setToast] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -23,13 +26,19 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
   } = useForm<SituationFormData>({
     resolver: zodResolver(situationSchema),
     defaultValues: {
-      options: ['', '', '', '', ''], // Initialize empty options array
-      rightAnswers: [0, 1] // Default right answers
+      content: '',
+      a: '',
+      b: '',
+      c: '',
+      d: '',
+      e: '',
+      rightAnswers: [] // Default right answers
     }
   });
 
   const onSubmit = async (data: SituationFormData) => {
     try {
+      console.log(data);
       await handleSubmit(data);
       setToast({ type: 'success', text: 'Question created successfully!' });
       reset();
@@ -60,26 +69,27 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
           errorMessage={errors.content?.message}
         />
 
-        {[0, 1, 2, 3, 4].map((index) => (
-          <OptionInput
+{OPTIONS.map((option) => (
+          <OptionInput<SituationFormData>
+            key={option}
             register={register}
-            key={index}
-            index={index}
-            errorMessage={errors.options?.[index]?.message}
+            label={option.toUpperCase()}
+            name={option as Path<SituationFormData>}
+            errorMessage={errors[option]?.message}
           />
         ))}
 
 
-        {
-          [0, 1].map((index) => (
-            <AnswerInput
-              register={register}
-              name={`rightAnswers[${index}]`} // Ensure the correct name is used
-              key={index}
-              errorMessage={errors.rightAnswers?.[index]?.message}
-            />
-          ))
-        }
+
+{Array.from({ length: ANSWER_COUNT }).map((_, index) => (
+          <AnswerInput<SituationFormData>
+            key={index}
+            register={register}
+            name={`rightAnswers.${index}` as Path<SituationFormData>}
+            maxOptions={OPTIONS.length}
+            errorMessage={errors.rightAnswers?.[index]?.message}
+          />
+        ))}
 
         <div className="flex justify-end">
           <button

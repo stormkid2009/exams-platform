@@ -19,7 +19,7 @@ const AnswerInput = <T extends FieldValues>({
 
   // Generate options based on validatedMaxOptions
   const options = Array.from({ length: validatedMaxOptions }, (_, index) => ({
-    value: index.toString(), // Values are numeric indices (0, 1, 2, 3, or 4)
+    value: String.fromCharCode(97 + index), // Use 97 (ASCII for 'a') to get 'a', 'b', 'c', etc.
     label: String.fromCharCode(65 + index), // Labels are "A", "B", "C", "D", and "E" (if 5 options)
   }));
 
