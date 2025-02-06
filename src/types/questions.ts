@@ -22,7 +22,7 @@ export interface BaseQuestion {
   export interface GrammaireQuestion extends BaseQuestion {
     type: typeof QuestionTypes.MCQ;
     options: [string, string, string, string];
-    rightAnswer: number;
+    rightAnswer: [string];
   }
   
   export interface SituationQuestion extends BaseQuestion {

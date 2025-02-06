@@ -1,14 +1,15 @@
 import { GrammaireQuestion, QuestionType } from "src/types/questions"; // Import TypeScript definitions for type safety
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
-const MODEL_NAME = "Grammaire";
-// Utility function to validate that options array has exactly 4 elements
-const validateOptionsLength = (options: string[]): boolean =>
-  options.length === 4;
 
-// Utility function to validate that rightAnswer array contains exactly one valid index between 0 and 3
-const validateRightAnswer = (answer: number): boolean =>
-  answer >= 0 && answer < 4;
+const MODEL_NAME = "Grammaire";
+const OPTIONS = ['a', 'b', 'c', 'd'];
+const VALID_OPTIONS_NUMBER = 4;
+// Utility function to validate that options array has exactly 4 elements
+const validateOptionsLength = (options: string[]) => options.length === VALID_OPTIONS_NUMBER;
+const validateRightAnswer = (rightAnswer: string[]) => rightAnswer.length === 1 && OPTIONS.includes(rightAnswer[0]);
+
+
 
 // Define the schema for grammaire question
 const grammaireSchema = new Schema<GrammaireQuestion>({
@@ -35,11 +36,11 @@ const grammaireSchema = new Schema<GrammaireQuestion>({
 
   // Array containing the index of the correct answer (must contain exactly 1 valid index)
   rightAnswer: {
-    type: Number,
+    type: [String],
     required: true,
     validate: {
       validator: validateRightAnswer, // Use utility function for validation
-      message: "RightAnswer must to be >= 0 and <=3", // Error message if validation fails
+      message: "RightAnswer must be from ['a','b','c','d'] ", // Error message if validation fails
     },
   },
 });

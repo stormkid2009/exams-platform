@@ -2,10 +2,12 @@ import { SituationQuestion } from "src/types/questions"; // Import TypeScript de
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
 const MODEL_NAME = "Situation";
+const OPTIONS = ['a', 'b', 'c', 'd', 'e'];
+const VALID_OPTIONS_NUMBER = 5;
 
 // Utility function to validate that the options array has exactly 5 elements
 const validateOptionsLength = (options: string[]): boolean =>
-  options.length === 5;
+  options.length === VALID_OPTIONS_NUMBER;
 
 // Utility function to validate that rightAnswers array contains exactly 2 valid indices between 0 and 4
 const validateRightAnswers = (answers: number[]): boolean =>

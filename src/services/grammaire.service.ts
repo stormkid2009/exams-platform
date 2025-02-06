@@ -19,7 +19,7 @@ export class GrammaireService {
         contextInfo: { path: string; method: string }
     ): Promise<GrammaireServiceResponse> {
         try {
-            const answer = parseInt(data.rightAnswer);
+            const answer =[data.rightAnswer];
             const question = new Grammaire({
                 type: "MCQ",
                 content: data.content,
