@@ -1,8 +1,9 @@
 import { SituationQuestion } from "src/types/questions"; // Import TypeScript definitions for type safety
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
+
 const MODEL_NAME = "Situation";
-const OPTIONS = ['a', 'b', 'c', 'd', 'e'];
+const OPTIONS_LABELS = ['a', 'b', 'c', 'd', 'e'];
 const VALID_OPTIONS_NUMBER = 5;
 
 // Utility function to validate that the options array has exactly 5 elements
@@ -10,8 +11,7 @@ const validateOptionsLength = (options: string[]): boolean =>
   options.length === VALID_OPTIONS_NUMBER;
 
 // Utility function to validate that rightAnswers array contains exactly 2 valid indices between 0 and 4
-const validateRightAnswers = (answers: number[]): boolean =>
-  answers.length === 2 && answers.every((num) => num >= 0 && num < 5);
+const validateRightAnswers = (rightAnswers: string[]) => rightAnswers.length === 2 && rightAnswers.every(answer => OPTIONS_LABELS.includes(answer));
 
 // Schema for the situation question that matches the SituationQuestion interface
 const situationSchema = new Schema<SituationQuestion>({
@@ -39,13 +39,13 @@ const situationSchema = new Schema<SituationQuestion>({
 
   // Array containing indices of correct answers (must contain exactly 2 valid indices)
   rightAnswers: {
-    type: [Number],
+    type: [String],
     required: true,
     validate: {
       // Use utility function for validation
       validator: validateRightAnswers,
       message:
-        "Situation question must have exactly 2 right answers with valid indices (0-4)", // Error message if validation fails
+        "Situation question must have exactly 2 right answers from ['a','b','c','d','e'] ", // Error message if validation fails
     },
   },
 },

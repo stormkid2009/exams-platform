@@ -63,7 +63,8 @@ const passageSchema = new Schema<PassageQuestion>({
       message: "A passage must have at least one related question", // Error message if validation fails
     },
   },
-});
+}, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields  
+
 
 // Add an index to the id field for faster queries (specific to this collection)
 passageSchema.index({ id: 1 });

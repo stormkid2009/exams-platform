@@ -43,7 +43,11 @@ const grammaireSchema = new Schema<GrammaireQuestion>({
       message: "RightAnswer must be from ['a','b','c','d'] ", // Error message if validation fails
     },
   },
-});
+},
+{
+  timestamps: true,
+}
+);
 
 
 

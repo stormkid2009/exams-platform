@@ -28,7 +28,7 @@ export interface BaseQuestion {
   export interface SituationQuestion extends BaseQuestion {
     type: typeof QuestionTypes.MULTI_MCQ;
     options: [string, string, string, string, string];
-    rightAnswers: [number, number];
+    rightAnswers: [string, string];
   }
   
   export interface OpenEndedQuestion extends BaseQuestion {
