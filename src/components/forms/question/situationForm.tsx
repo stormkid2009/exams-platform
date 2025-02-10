@@ -10,6 +10,8 @@ import AnswerInput from 'src/components/inputs/answerInput';
 
 const OPTIONS = ['a', 'b', 'c', 'd', 'e'] as const;
 const ANSWER_COUNT = 2;
+const ANSWERS = ['firstAnswer','secondAnswer'];
+
 
 interface Props {
   handleSubmit: (data: SituationFormData) => void;
@@ -32,13 +34,15 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
       c: '',
       d: '',
       e: '',
-      rightAnswers: [] // Default right answers
+     firstAnswer:'a',
+     secondAnswer:'b',    
     }
   });
+console.log("Form errors : ",errors);    //debug line
 
   const onSubmit = async (data: SituationFormData) => {
+	console.log("formData : ", data);
     try {
-      console.log(data);
       await handleSubmit(data);
       setToast({ type: 'success', text: 'Question created successfully!' });
       reset();
@@ -60,7 +64,13 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
         />
       )}
       
-      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={formSubmit(onSubmit)}
+
+
+ className="space-y-4">
+        
+        {/* Content Input */}
+        
         <ContentInput
           register={register}
           placeholder="Enter question content"
@@ -68,6 +78,8 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
           label="Content"
           errorMessage={errors.content?.message}
         />
+
+        {/** Options Inputs */}
 
 {OPTIONS.map((option) => (
           <OptionInput<SituationFormData>
@@ -79,15 +91,15 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
           />
         ))}
 
+        {/** Right Answers Inputs */}
 
-
-{Array.from({ length: ANSWER_COUNT }).map((_, index) => (
+{ANSWERS.map((answer) => (
           <AnswerInput<SituationFormData>
-            key={index}
+            key={answer}
             register={register}
-            name={`rightAnswers.${index}` as Path<SituationFormData>}
+            name={answer as Path<SituationFormData>}
             maxOptions={OPTIONS.length}
-            errorMessage={errors.rightAnswers?.[index]?.message}
+            errorMessage={errors[answer as keyof SituationFormData ]?.message}
           />
         ))}
 

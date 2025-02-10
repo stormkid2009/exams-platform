@@ -1,9 +1,5 @@
 import { z } from "zod";
 
-const answerEnum = z.enum(["a", "b", "c", "d", "e"], {
-  errorMap: () => ({ message: "Answer must be one of: a, b, c, d, or e" })
-});
-
 const createOptionSchema = (option: string) => 
   z.string().min(1, `Option ${option.toUpperCase()} cannot be empty`);
 
@@ -14,11 +10,18 @@ export const situationSchema = z.object({
   c: createOptionSchema('c'),
   d: createOptionSchema('d'),
   e: createOptionSchema('e'),
-  rightAnswers: z.tuple([answerEnum, answerEnum])
-    .refine(
-      (answers) => new Set(answers).size === answers.length,
-      "Duplicate correct answers are not allowed"
-    )
-});
+  firstAnswer: z.enum(['a', 'b', 'c', 'd', 'e'], { 
+    errorMap: () => ({ message: "First answer must be one of: a, b, c, d, or e" }) 
+  }),
+  secondAnswer: z.enum(['a', 'b', 'c', 'd', 'e'], { 
+    errorMap: () => ({ message: "Second answer must be one of: a, b, c, d, or e" }) 
+  })
+}).refine(
+  (data) => data.firstAnswer !== data.secondAnswer,
+  { 
+    message: "First and second answers cannot be the same",
+    path: ["secondAnswer"] // This points to the field where the error should be shown
+  }
+);
 
 export type SituationFormData = z.infer<typeof situationSchema>;

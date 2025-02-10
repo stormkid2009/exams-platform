@@ -20,30 +20,14 @@ export class SituationService {
         contextInfo: { path: string; method: string }
     ): Promise<SituationServiceResponse> {
         try {
-            const {a, b, c, d, e,content, rightAnswers} = data;
-            // Create an array of options and validate that all options are provided
-            const options = [a, b, c, d, e];
-            if (!options.every(Boolean)) {
-                throw new Error("All options (a, b, c, d, e) must be provided.");
-            }
-            // Map the options to their indices
-            const optionMapping = ['a', 'b', 'c', 'd', 'e'];
-
-            // Extract indices of right answers
-            const rightAnswerIndices = rightAnswers
-                .filter((answer) => optionMapping.includes(answer)) // Validate rightAnswers
-                .map((answer) => optionMapping.indexOf(answer)); // Get indices
-
-            if (rightAnswerIndices.length === 0) {
-                throw new Error("No valid right answers provided.");
-            }
-
+            const {a, b, c, d, e,content, firstAnswer, secondAnswer} = data;
+            
             // Create the question object
             const question = new Situation({
                 type: "Multi-MCQ",
                 content,
-                options,
-                rightAnswers: rightAnswerIndices,
+                options: [a, b, c, d, e],
+                rightAnswers: [firstAnswer, secondAnswer],
             });
 
             await connectToDB();

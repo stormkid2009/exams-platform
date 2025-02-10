@@ -20,10 +20,11 @@ export class GrammaireService {
     ): Promise<GrammaireServiceResponse> {
         try {
             const answer =[data.rightAnswer];
+            const {a, b, c, d ,content} = data;
             const question = new Grammaire({
                 type: "MCQ",
-                content: data.content,
-                options: [data.a, data.b, data.c, data.d],
+                content,
+                options: [a, b, c, d],
                 rightAnswer: answer,
             });
 
