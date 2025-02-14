@@ -2,7 +2,8 @@
 export const QuestionTypes = {
     MCQ: 'MCQ',
     MULTI_MCQ: 'Multi-MCQ',
-    OPEN_ENDED: 'Open-Ended'
+    OPEN_ENDED: 'Open-Ended',
+    RC:"RC"      //Reading Comprehension
   } as const;
   
   export type QuestionType = typeof QuestionTypes[keyof typeof QuestionTypes];
@@ -38,15 +39,14 @@ export interface BaseQuestion {
   }
   
   // Now, let's properly extend BaseQuestion for our passage-related questions
-  interface PassageRelatedQuestion extends BaseQuestion {
-    type: typeof QuestionTypes.MCQ;  // More consistent with our type system
-    options: [string, string, string, string];
-    rightAnswer: number;
+  interface PassageRelatedQuestion extends GrammaireQuestion {
+    
   }
 
 
 // Now we can define the complete PassageQuestion structure
 export interface PassageQuestion {
+    type: typeof QuestionTypes.RC;
     passage: string;  // The reading comprehension text
     relatedQuestions: PassageRelatedQuestion[];  // Array of questions about the passage
   }

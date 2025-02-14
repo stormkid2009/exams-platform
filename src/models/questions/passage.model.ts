@@ -1,57 +1,28 @@
 import mongoose, { Schema } from "mongoose"; // Import mongoose for schema and model management
 import { PassageQuestion, QuestionType } from "src/types/questions"; // Import TypeScript types for type safety
+import {grammaireSchema} from "./grammaire.model";
 
 const MODEL_NAME = "Passage";
 
-// Utility function to validate that options array has exactly 4 elements
-const validateOptionsLength = (options: string[]): boolean =>
-  options.length === 4;
 
-// Utility function to validate that rightAnswer is a valid index between 0 and 3
-const validateRightAnswer = (answer: number): boolean =>
-  answer >= 0 && answer < 4;
 
 // Utility function to validate that there is at least one related question
 const validateRelatedQuestions = (questions: any[]): boolean =>
   questions.length > 0;
 
-// Schema for related questions (similar to grammaire questions)
+// Reuse the grammaire schema for related questions
 const relatedQuestionSchema = new Schema({
-  // Type of the related question (currently only "MCQ" is supported)
+  ...grammaireSchema.obj, // Spread all fields from the grammaire schema
+});
+// Schema for the passage question document
+const passageSchema = new Schema<PassageQuestion>({
   type: {
     type: String,
     required: true,
-    enum: ["MCQ"] satisfies QuestionType[], // Restrict to predefined values
-    default: "MCQ", // Default to "MCQ" if not specified
+    enum: ["RC"] satisfies QuestionType[], // Restrict to predefined values in QuestionType
+    default: "RC", // Default to "RC" if not specified
   },
-
-  // The main content of the related question
-  content: { type: String, required: true },
-
-  // Array of possible answers (must contain exactly 4 elements)
-  options: {
-    type: [String],
-    required: true,
-    validate: {
-      validator: validateOptionsLength, // Use utility function for validation
-      message: "Each question must have exactly 4 options", // Error message if validation fails
-    },
-  },
-
-  // The index of the correct answer (must be a valid index between 0 and 3)
-  rightAnswer: {
-    type: Number,
-    required: true,
-    validate: {
-      validator: validateRightAnswer, // Use utility function for validation
-      message: "Each question must have exactly 1 right answer (index 0-3)", // Error message if validation fails
-    },
-  },
-});
-
-// Schema for the passage question document
-const passageSchema = new Schema<PassageQuestion>({
-  // The passage content
+  // The passage content TEXT
   passage: { type: String, required: true },
 
   // Array of related questions (must contain at least one question)

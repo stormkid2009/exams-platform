@@ -12,7 +12,7 @@ const validateRightAnswer = (rightAnswer: string[]) => rightAnswer.length === 1 
 
 
 // Define the schema for grammaire question
-const grammaireSchema = new Schema<GrammaireQuestion>({
+export const grammaireSchema = new Schema<GrammaireQuestion>({
   // The type of the question (currently only "MCQ" is supported)
   type: {
     type: String,
