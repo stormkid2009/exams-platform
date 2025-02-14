@@ -9,6 +9,7 @@ import {
   type ValidatedApiHandler,
 } from "src/middleware/validateBodyMiddleware";
 import { ApiResponse, Messages } from "src/types/common";
+import { logApiError } from "src/helpers/logger"; // Import the logging utility
 
 // Response messages
 const msg: Messages = {
@@ -22,7 +23,22 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) => {
+  const path = req.url || "/api/questions/category/openEnded";
+  const method = req.method || "UNKNOWN";
+
   if (req.method !== "POST") {
+    // Log the error for debugging
+    await logApiError(
+      "Invalid request method",
+      new Error(msg.wrongMethod),
+      {
+        path,
+        method,
+        statusCode: 405,
+        requestBody: req.body,
+      }
+    );
+
     return res.status(405).json({
       status: "error",
       message: msg.wrongMethod,
@@ -31,27 +47,49 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
     });
   }
 
-  const result = await OpenEndedService.createQuestion(req.body, {
-    path: req.url || "/api/questions/category/grammaire",
-    method: req.method,
-  });
+  try{
 
-  if (!result.success) {
-    // Log the error for debugging
-    console.log(result.error);
-    return res.status(result.error!.code).json({
-      status: "error",
-      message: result.error!.message,
+    const result = await OpenEndedService.createQuestion(req.body, {
+      path,
+      method,
+    });
+    
+    if (!result.success) {
+      // Log the error for debugging
+      console.log(result.error);
+      return res.status(result.error!.code).json({
+        status: "error",
+        message: result.error!.message,
+        data: null,
+        details: result.error!.details,
+      });
+    }
+    
+    return res.status(200).json({
+      status: "success",
+      message: msg.success,
       data: null,
-      details: result.error!.details,
+    });
+  }catch(error){
+    // Log unexpected errors
+    await logApiError(
+      "Unexpected error in openEnded handler",
+      error instanceof Error ? error : new Error("Unknown error"),
+      {
+        path,
+        method,
+        statusCode: 500,
+        requestBody: req.body,
+      }
+    );
+
+    return res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+      data: null,
+      details: "An unexpected error occurred",
     });
   }
-
-  return res.status(200).json({
-    status: "success",
-    message: msg.success,
-    data: null,
-  });
 };
 
 export default validateBodyMiddleware(openEndedSchema)(handler);
