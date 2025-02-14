@@ -7,14 +7,12 @@ export default function DashBoard() {
   const path = `/api/questions/category/situation`;
 
   const handleSubmit = async (formData: SituationFormData) => {
+    
     try {
-      // Transform form data to match the API's expected format
       const questionData: SituationFormData = {
-        content: formData.content,
-        options: formData.options as [string, string, string, string, string],
-        rightAnswers: formData.rightAnswers as [number, number],
+        ...formData
       };
-
+      console.log(questionData);
       await fetcher(questionData, path);
     } catch (error) {
       console.error("Error submitting question:", error);

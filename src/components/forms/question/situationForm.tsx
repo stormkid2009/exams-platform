@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useMemo } from "react";
 import { useForm ,Path} from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "src/components/ui/Toast";
@@ -9,7 +9,7 @@ import AnswerInput from 'src/components/inputs/answerInput';
 
 
 const OPTIONS = ['a', 'b', 'c', 'd', 'e'] as const;
-const ANSWER_COUNT = 2;
+// const ANSWER_COUNT = 2;
 const ANSWERS = ['firstAnswer','secondAnswer'];
 
 
@@ -38,10 +38,19 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
      secondAnswer:'b',    
     }
   });
-console.log("Form errors : ",errors);    //debug line
+  const answerOptions = useMemo(
+    () => [
+      { value: 'a', label: 'Option A' },
+      { value: 'b', label: 'Option B' },
+      { value: 'c', label: 'Option C' },
+      { value: 'd', label: 'Option D' },
+      { value: 'e', label: 'Option E' },
+    ],
+    []
+  );
 
   const onSubmit = async (data: SituationFormData) => {
-	console.log("formData : ", data);
+	// console.log("formData : ", data);
     try {
       await handleSubmit(data);
       setToast({ type: 'success', text: 'Question created successfully!' });
@@ -99,6 +108,7 @@ console.log("Form errors : ",errors);    //debug line
             register={register}
             name={answer as Path<SituationFormData>}
             maxOptions={OPTIONS.length}
+            options={answerOptions}
             errorMessage={errors[answer as keyof SituationFormData ]?.message}
           />
         ))}
