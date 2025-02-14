@@ -10,16 +10,10 @@ export default function DashBoard() {
     try {
       // Transform form data to match the API's expected format
       const questionData = {
-        content: formData.content,
-          a:formData.a, // Access nested paths
-          b:formData.b,
-          c:formData.c,
-          d:formData.d,
-        rightAnswer: formData.rightAnswer,
+        ...formData
       };
       const response = await fetcher(questionData, path);
       console.log(response);
-      // console.log(questionData);
 
     } catch (error: unknown) {
       console.error("Error creating question:", error);

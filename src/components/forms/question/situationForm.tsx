@@ -9,7 +9,6 @@ import AnswerInput from 'src/components/inputs/answerInput';
 
 
 const OPTIONS = ['a', 'b', 'c', 'd', 'e'] as const;
-// const ANSWER_COUNT = 2;
 const ANSWERS = ['firstAnswer','secondAnswer'];
 
 

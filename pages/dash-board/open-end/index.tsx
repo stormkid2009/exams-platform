@@ -10,10 +10,7 @@ export default function DashBoard() {
     try {
       // Transform form data to match the API's expected format
       const questionData = {
-        content: formData.content,
-        a: formData.a,
-        b: formData.b,
-        answer: formData.answer,
+        ...formData
       };
       const response = await fetcher(questionData, path);
       // console.log(response);
