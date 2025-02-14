@@ -1,7 +1,7 @@
 
 import {Passage} from "src/models/questions/passage.model";
 import {PassageFormData} from "src/shared/schemas/passage.schema";
-import { logApiError } from "src/helpers/logger";
+import { logError } from "src/helpers/logger";
 import connectToDB from "src/lib/mongooseClient";
 
 export interface PassageServiceResponse {
@@ -14,75 +14,51 @@ export interface PassageServiceResponse {
 }
 
 
+
 export class PassageService {
-    static async createQuestion(
-        data: PassageFormData,
-        contextInfo: { path: string; method: string }
-    ): Promise<PassageServiceResponse> {
-        try {
-            const {passage, relatedQuestions} = data;
-            
-            // Create the question object
-            const question = new Passage({
-                type: "RC",
-                passage,
-                relatedQuestions
-            });
+  static async createQuestion(
+    data: PassageFormData,
+    contextInfo: { path: string; method: string }
+  ): Promise<PassageServiceResponse> {
+    try {
+      const { passage, relatedQuestions } = data;
 
-            await connectToDB();
-            await question.save();
+      // Transform the relatedQuestions to match the schema
+      const transformedQuestions = relatedQuestions.map((question) => ({
+        type: "MCQ", // Ensure the type is set to MCQ
+        content: question.content,
+        options: [question.a, question.b, question.c, question.d], // Convert a, b, c, d to an options array
+        rightAnswer: question.rightAnswer, // Keep the rightAnswer as is
+      }));
 
-            return {
-                success: true,
-            };
+      // Create the question object
+      const question = new Passage({
+        type: "RC",
+        passage,
+        relatedQuestions: transformedQuestions,
+      });
 
-        } catch (error) {
-            if (error instanceof Error) {
-                logApiError(
-                    "Failed to create Passage question",
-                    error,
-                    {
-                        path: contextInfo.path,
-                        method: contextInfo.method,
-                        statusCode: error.name === "MongoNetworkError" ? 503 : 500,
-                        requestBody: data
-                    }
-                );
+      await connectToDB();
+      await question.save();
 
-                return {
-                    success: false,
-                    error: {
-                        message: error.name === "MongoNetworkError" 
-                            ? "Service Unavailable"
-                            : "Failed to create question",
-                        code: error.name === "MongoNetworkError" ? 503 : 500,
-                        details: error.name === "MongoNetworkError"
-                            ? "Database connection error, please try again later."
-                            : error.message
-                    }
-                };
-            }
+      return {
+        success: true,
+      };
+    } catch (error) {
+      // Log the error for debugging
+      await logError(
+        "Failed to create Passage question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
 
-            // Handle unknown errors
-            logApiError(
-                "Unknown error occurred",
-                new Error("Unknown error"),
-                {
-                    path: contextInfo.path,
-                    method: contextInfo.method,
-                    statusCode: 500,
-                    requestBody: data
-                }
-            );
-
-            return {
-                success: false,
-                error: {
-                    message: "Failed to create question",
-                    code: 500,
-                    details: "An unexpected error occurred"
-                }
-            };
-        }
+      return {
+        success: false,
+        error: {
+          message: "Failed to create question",
+          code: 500,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
     }
+  }
 }
