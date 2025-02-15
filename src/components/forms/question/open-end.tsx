@@ -8,7 +8,7 @@ import OpenAnswerInput from "src/components/inputs/openAnswerInput";
 import {
   openEndedSchema,
   type OpenEndedFormData,
-} from "src/shared/schemas/openEnded.schema";
+} from "src/shared/schemas/composition.schema";
 
 interface Props {
   handleSubmit: (data: OpenEndedFormData) => void;
@@ -34,7 +34,6 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
   });
 
   const onSubmit = async (data: OpenEndedFormData) => {
-    
     try {
       // Call the handleSubmit with the modified data
       await handleSubmit(data);
@@ -75,12 +74,12 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
         />
 
         {/* Option Inputs */}
-        {['a', 'b'].map((option,index) => (
+        {["a", "b"].map((option, index) => (
           <OptionInput<OpenEndedFormData>
             key={index}
             register={register}
             name={`${option}` as Path<OpenEndedFormData>}
-            label={`Option:  ${option}`} 
+            label={`Option:  ${option}`}
             errorMessage={
               errors[`options.${index}` as keyof typeof errors]?.message
             } // Use type assertion
@@ -89,10 +88,10 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
 
         {/* Answer Input */}
         <OpenAnswerInput<OpenEndedFormData>
-  register={register}
-  name="answer"
-  errorMessage={errors.answer?.message}
-/>
+          register={register}
+          name="answer"
+          errorMessage={errors.answer?.message}
+        />
 
         <div className="flex justify-end">
           <button
@@ -103,7 +102,6 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
           </button>
         </div>
       </form>
-      
     </div>
   );
 };

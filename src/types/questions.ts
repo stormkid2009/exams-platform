@@ -32,7 +32,7 @@ export interface BaseQuestion {
     rightAnswers: [string, string];
   }
   
-  export interface OpenEndedQuestion extends BaseQuestion {
+  export interface CompositionQuestion extends BaseQuestion {
     type: typeof QuestionTypes.OPEN_ENDED;
     elements: string[];
     answer: string;

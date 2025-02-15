@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { OpenEndedService } from "src/services/openEnded.service";
+import { OpenEndedService } from "src/services/composition.service";
 import {
   openEndedSchema,
   type OpenEndedFormData,
-} from "src/shared/schemas/openEnded.schema";
+} from "src/shared/schemas/composition.schema";
 import {
   validateBodyMiddleware,
   type ValidatedApiHandler,
@@ -28,16 +28,12 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
 
   if (req.method !== "POST") {
     // Log the error for debugging
-    await logApiError(
-      "Invalid request method",
-      new Error(msg.wrongMethod),
-      {
-        path,
-        method,
-        statusCode: 405,
-        requestBody: req.body,
-      }
-    );
+    await logApiError("Invalid request method", new Error(msg.wrongMethod), {
+      path,
+      method,
+      statusCode: 405,
+      requestBody: req.body,
+    });
 
     return res.status(405).json({
       status: "error",
@@ -47,13 +43,12 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
     });
   }
 
-  try{
-
+  try {
     const result = await OpenEndedService.createQuestion(req.body, {
       path,
       method,
     });
-    
+
     if (!result.success) {
       // Log the error for debugging
       console.log(result.error);
@@ -64,13 +59,13 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
         details: result.error!.details,
       });
     }
-    
+
     return res.status(200).json({
       status: "success",
       message: msg.success,
       data: null,
     });
-  }catch(error){
+  } catch (error) {
     // Log unexpected errors
     await logApiError(
       "Unexpected error in openEnded handler",

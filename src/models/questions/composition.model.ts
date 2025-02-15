@@ -1,13 +1,13 @@
-import { OpenEndedQuestion, QuestionType } from "src/types/questions";
+import { CompositionQuestion, QuestionType } from "src/types/questions";
 import mongoose, { Schema } from "mongoose";
 
-const MODEL_NAME = "OpenEnded";
+const MODEL_NAME = "Composition";
 
 // Utility function to validate that elements array is not empty
 const validateElements = (elements: string[]): boolean => elements.length > 0;
 
 // Schema for open-ended questions
-const openEndedSchema = new Schema<OpenEndedQuestion>(
+export const compositionSchema = new Schema<CompositionQuestion>(
   {
     // The main content of the question
     content: { type: String, required: [true, "Content is required"] },
@@ -37,5 +37,5 @@ const openEndedSchema = new Schema<OpenEndedQuestion>(
 );
 
 // Export the model, ensuring we don't redefine it if already declared
-export const OpenEnded =
-  mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, openEndedSchema);
+export const Composition =
+  mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, compositionSchema);

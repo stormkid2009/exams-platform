@@ -1,7 +1,7 @@
 import React from "react";
 import OpenEndedForm from "src/components/forms/question/open-end";
 import fetcher from "src/helpers/fetcher";
-import { type OpenEndedFormData } from "src/shared/schemas/openEnded.schema";
+import { type OpenEndedFormData } from "src/shared/schemas/composition.schema";
 
 export default function DashBoard() {
   const path = `/api/questions/category/openEnded`;
@@ -10,7 +10,7 @@ export default function DashBoard() {
     try {
       // Transform form data to match the API's expected format
       const questionData = {
-        ...formData
+        ...formData,
       };
       const response = await fetcher(questionData, path);
       // console.log(response);
