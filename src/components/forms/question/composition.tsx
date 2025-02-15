@@ -6,15 +6,15 @@ import ContentInput from "src/components/inputs/contentInput";
 import OptionInput from "src/components/inputs/optionInput";
 import OpenAnswerInput from "src/components/inputs/openAnswerInput";
 import {
-  openEndedSchema,
-  type OpenEndedFormData,
+  compositionSchema,
+  type CompositionFormData,
 } from "src/shared/schemas/composition.schema";
 
 interface Props {
-  handleSubmit: (data: OpenEndedFormData) => void;
+  handleSubmit: (data: CompositionFormData) => void;
 }
 
-const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
+const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
   const [toast, setToast] = useState<{
     type: "success" | "error";
     text: string;
@@ -24,8 +24,8 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
     handleSubmit: formSubmit,
     formState: { errors },
     reset,
-  } = useForm<OpenEndedFormData>({
-    resolver: zodResolver(openEndedSchema),
+  } = useForm<CompositionFormData>({
+    resolver: zodResolver(compositionSchema),
     defaultValues: {
       a: "", // Initialize each option field
       b: "",
@@ -33,7 +33,7 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
     },
   });
 
-  const onSubmit = async (data: OpenEndedFormData) => {
+  const onSubmit = async (data: CompositionFormData) => {
     try {
       // Call the handleSubmit with the modified data
       await handleSubmit(data);
@@ -51,7 +51,7 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
   return (
     <div className="max-w-2xl mx-auto p-4 overflow-y-auto max-h-[calc(100vh-2rem)]">
       <h2 className="text-xl font-bold text-center mb-6">
-        Create Grammar Question
+        Create Composition Question
       </h2>
 
       {toast && (
@@ -65,7 +65,7 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
 
       <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
         {/* Content Input */}
-        <ContentInput<OpenEndedFormData>
+        <ContentInput<CompositionFormData>
           register={register}
           name="content"
           label="Question Content"
@@ -75,10 +75,10 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
 
         {/* Option Inputs */}
         {["a", "b"].map((option, index) => (
-          <OptionInput<OpenEndedFormData>
+          <OptionInput<CompositionFormData>
             key={index}
             register={register}
-            name={`${option}` as Path<OpenEndedFormData>}
+            name={`${option}` as Path<CompositionFormData>}
             label={`Option:  ${option}`}
             errorMessage={
               errors[`options.${index}` as keyof typeof errors]?.message
@@ -87,7 +87,7 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
         ))}
 
         {/* Answer Input */}
-        <OpenAnswerInput<OpenEndedFormData>
+        <OpenAnswerInput<CompositionFormData>
           register={register}
           name="answer"
           errorMessage={errors.answer?.message}
@@ -106,4 +106,4 @@ const OpenEndedForm: React.FC<Props> = ({ handleSubmit }) => {
   );
 };
 
-export default OpenEndedForm;
+export default CompositionForm;

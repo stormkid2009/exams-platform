@@ -1,12 +1,12 @@
 import React from "react";
-import OpenEndedForm from "src/components/forms/question/open-end";
+import CompositionForm from "src/components/forms/question/composition";
 import fetcher from "src/helpers/fetcher";
-import { type OpenEndedFormData } from "src/shared/schemas/composition.schema";
+import { type CompositionFormData } from "src/shared/schemas/composition.schema";
 
 export default function DashBoard() {
-  const path = `/api/questions/category/openEnded`;
+  const path = `/api/questions/category/composition`;
 
-  const handleSubmit = async (formData: OpenEndedFormData) => {
+  const handleSubmit = async (formData: CompositionFormData) => {
     try {
       // Transform form data to match the API's expected format
       const questionData = {
@@ -30,7 +30,7 @@ export default function DashBoard() {
 
   return (
     <div className="overflow-y-auto max-h-[calc(100vh-2rem)]">
-      <OpenEndedForm handleSubmit={handleSubmit} />
+      <CompositionForm handleSubmit={handleSubmit} />
     </div>
   );
 }

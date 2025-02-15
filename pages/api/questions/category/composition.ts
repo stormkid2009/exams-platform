@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { OpenEndedService } from "src/services/composition.service";
+import { CompositionService } from "src/services/composition.service";
 import {
-  openEndedSchema,
-  type OpenEndedFormData,
+  compositionSchema,
+  type CompositionFormData,
 } from "src/shared/schemas/composition.schema";
 import {
   validateBodyMiddleware,
@@ -19,7 +19,7 @@ const msg: Messages = {
   invalidData: "Invalid question data provided",
 } as const;
 
-const handler: ValidatedApiHandler<OpenEndedFormData> = async (
+const handler: ValidatedApiHandler<CompositionFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) => {
@@ -44,7 +44,7 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
   }
 
   try {
-    const result = await OpenEndedService.createQuestion(req.body, {
+    const result = await CompositionService.createQuestion(req.body, {
       path,
       method,
     });
@@ -87,4 +87,4 @@ const handler: ValidatedApiHandler<OpenEndedFormData> = async (
   }
 };
 
-export default validateBodyMiddleware(openEndedSchema)(handler);
+export default validateBodyMiddleware(compositionSchema)(handler);
