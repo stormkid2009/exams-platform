@@ -8,6 +8,7 @@ interface AnswerInputProps<T extends FieldValues> {
   errorMessage?: string; // Optional error message
   maxOptions: 4 | 5; // Maximum number of options (only 4 or 5 allowed)
   label?: string; // Optional label
+  placeholder?: string; // Optional placeholder
   options?: { value: string; label: string }[]; // Optional custom options
   registerOptions?: RegisterOptions<T>; // Optional custom validation rules
 }

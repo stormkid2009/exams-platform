@@ -2,7 +2,7 @@ import { PassageService } from "src/services/passage.service";
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   PassageFormData,
-  PassageSchema,
+  passageSchema,
 } from "src/shared/schemas/passage.schema";
 import {
   validateBodyMiddleware,
@@ -102,4 +102,4 @@ const handler: ValidatedApiHandler<PassageFormData> = async (
   }
 };
 // Export the handler wrapped with the validateBodyMiddleware
-export default validateBodyMiddleware(PassageSchema)(handler);
+export default validateBodyMiddleware(passageSchema)(handler);

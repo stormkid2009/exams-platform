@@ -6,6 +6,7 @@ interface OptionInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
   name: Path<T>; // The name of the input field
   label: string; // The label for the input
+  placeholder?: string; // Optional placeholder
   errorMessage?: string; // Optional error message
 }
 
