@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "src/store/authStore";
+import { useAuthStore } from "src/store/auth-store";
 import Link from "next/link";
-import fetcher from "src/helpers/fetcher";
+import fetcher from "src/utils/fetcher";
 
 interface RegisterResponse {
   user: any;

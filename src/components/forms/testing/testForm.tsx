@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import AnswerInput from "src/components/inputs/answerInput";
+import AnswerInput from "src/components/inputs/answer-input";
 
 export type FormData = {
   answer1: string;
@@ -26,10 +26,10 @@ const TestForm: React.FC<Props> = ({ handleSubmit }) => {
 
   const answerOptions = useMemo(
     () => [
-      { value: 'a', label: 'Option A' },
-      { value: 'b', label: 'Option B' },
-      { value: 'c', label: 'Option C' },
-      { value: 'd', label: 'Option D' },
+      { value: "a", label: "Option A" },
+      { value: "b", label: "Option B" },
+      { value: "c", label: "Option C" },
+      { value: "d", label: "Option D" },
     ],
     []
   );
@@ -40,7 +40,7 @@ const TestForm: React.FC<Props> = ({ handleSubmit }) => {
       await handleSubmit(data);
       reset(); // Reset form after successful submission
     } catch (error) {
-      console.error('Submission error:', error);
+      console.error("Submission error:", error);
     }
   };
 
@@ -50,8 +50,11 @@ const TestForm: React.FC<Props> = ({ handleSubmit }) => {
         Create content test
       </h2>
 
-      <form onSubmit={handleFormSubmitHook(handleFormSubmit)} className="space-y-4">
-        {(['answer1', 'answer2'] as const).map((answerField) => (
+      <form
+        onSubmit={handleFormSubmitHook(handleFormSubmit)}
+        className="space-y-4"
+      >
+        {(["answer1", "answer2"] as const).map((answerField) => (
           <AnswerInput
             key={answerField}
             register={register}
@@ -69,7 +72,7 @@ const TestForm: React.FC<Props> = ({ handleSubmit }) => {
             disabled={isSubmitting}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? 'Submitting...' : 'Create Question'}
+            {isSubmitting ? "Submitting..." : "Create Question"}
           </button>
         </div>
       </form>

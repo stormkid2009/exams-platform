@@ -1,68 +1,76 @@
-import React, { useState,useMemo } from "react";
-import { useForm ,Path} from "react-hook-form";
+import React, { useState, useMemo } from "react";
+import { useForm, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "src/components/ui/Toast";
-import { situationSchema , type SituationFormData} from 'src/shared/schemas/situation.schema';
-import ContentInput from 'src/components/inputs/contentInput';
-import OptionInput from 'src/components/inputs/optionInput';
-import AnswerInput from 'src/components/inputs/answerInput';
+import {
+  situationSchema,
+  type SituationFormData,
+} from "src/shared/schemas/situation.schema";
+import ContentInput from "src/components/inputs/content-input";
+import OptionInput from "src/components/inputs/option-input";
+import AnswerInput from "src/components/inputs/answer-input";
 
-
-const OPTIONS = ['a', 'b', 'c', 'd', 'e'] as const;
-const ANSWERS = ['firstAnswer','secondAnswer'];
-
+const OPTIONS = ["a", "b", "c", "d", "e"] as const;
+const ANSWERS = ["firstAnswer", "secondAnswer"];
 
 interface Props {
   handleSubmit: (data: SituationFormData) => void;
 }
 
-
 const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
-  const [toast, setToast] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [toast, setToast] = useState<{
+    type: "success" | "error";
+    text: string;
+  } | null>(null);
   const {
     register,
     handleSubmit: formSubmit,
     formState: { errors },
-    reset
+    reset,
   } = useForm<SituationFormData>({
     resolver: zodResolver(situationSchema),
     defaultValues: {
-      content: '',
-      a: '',
-      b: '',
-      c: '',
-      d: '',
-      e: '',
-     firstAnswer:'a',
-     secondAnswer:'b',    
-    }
+      content: "",
+      a: "",
+      b: "",
+      c: "",
+      d: "",
+      e: "",
+      firstAnswer: "a",
+      secondAnswer: "b",
+    },
   });
   const answerOptions = useMemo(
     () => [
-      { value: 'a', label: 'Option A' },
-      { value: 'b', label: 'Option B' },
-      { value: 'c', label: 'Option C' },
-      { value: 'd', label: 'Option D' },
-      { value: 'e', label: 'Option E' },
+      { value: "a", label: "Option A" },
+      { value: "b", label: "Option B" },
+      { value: "c", label: "Option C" },
+      { value: "d", label: "Option D" },
+      { value: "e", label: "Option E" },
     ],
     []
   );
 
   const onSubmit = async (data: SituationFormData) => {
-	// console.log("formData : ", data);
+    // console.log("formData : ", data);
     try {
       await handleSubmit(data);
-      setToast({ type: 'success', text: 'Question created successfully!' });
+      setToast({ type: "success", text: "Question created successfully!" });
       reset();
     } catch (error) {
-      setToast({ type: 'error', text: 'Failed to create question. Please try again.' });
+      setToast({
+        type: "error",
+        text: "Failed to create question. Please try again.",
+      });
     }
   };
 
   return (
     <div className="max-w-2xl mx-auto p-4 overflow-y-auto max-h-[calc(100vh-2rem)]">
-      <h2 className="text-xl font-bold text-center mb-6">Create Situation Question</h2>
-      
+      <h2 className="text-xl font-bold text-center mb-6">
+        Create Situation Question
+      </h2>
+
       {toast && (
         <Toast
           message={toast.text}
@@ -71,14 +79,10 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
           duration={3000}
         />
       )}
-      
-      <form onSubmit={formSubmit(onSubmit)}
 
-
- className="space-y-4">
-        
+      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
         {/* Content Input */}
-        
+
         <ContentInput
           register={register}
           placeholder="Enter question content"
@@ -89,7 +93,7 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
 
         {/** Options Inputs */}
 
-{OPTIONS.map((option) => (
+        {OPTIONS.map((option) => (
           <OptionInput<SituationFormData>
             key={option}
             register={register}
@@ -101,14 +105,14 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
 
         {/** Right Answers Inputs */}
 
-{ANSWERS.map((answer) => (
+        {ANSWERS.map((answer) => (
           <AnswerInput<SituationFormData>
             key={answer}
             register={register}
             name={answer as Path<SituationFormData>}
             maxOptions={OPTIONS.length}
             options={answerOptions}
-            errorMessage={errors[answer as keyof SituationFormData ]?.message}
+            errorMessage={errors[answer as keyof SituationFormData]?.message}
           />
         ))}
 

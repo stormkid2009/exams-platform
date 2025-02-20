@@ -1,7 +1,7 @@
 import React from "react";
-import PassageForm from "src/components/forms/question/passageForm";
-import {type PassageFormData } from "src/shared/schemas/passage.schema";
-import fetcher from "src/helpers/fetcher";
+import PassageForm from "src/components/forms/question/passage-form";
+import { type PassageFormData } from "src/shared/schemas/passage.schema";
+import fetcher from "src/utils/fetcher";
 
 export default function DashBoard() {
   const path = `/api/questions/category/passage`;

@@ -1,44 +1,41 @@
-
-import {Situation} from "src/models/questions/situation.model";
-import {SituationFormData} from "src/shared/schemas/situation.schema";
-import { logError } from "src/helpers/logger";
-import connectToDB from "src/lib/mongooseClient";
+import { Situation } from "src/models/questions/situation.model";
+import { SituationFormData } from "src/shared/schemas/situation.schema";
+import { logError } from "src/utils/logger";
+import connectToDB from "src/lib/mongoose-client";
 
 export interface SituationServiceResponse {
-    success: boolean;
-    error?: {
-        message: string;
-        code: number;
-        details?: string;
-    };
+  success: boolean;
+  error?: {
+    message: string;
+    code: number;
+    details?: string;
+  };
 }
 
-
 export class SituationService {
-    static async createQuestion(
-        data: SituationFormData,
-        contextInfo: { path: string; method: string }
-    ): Promise<SituationServiceResponse> {
-        try {
-            const {a, b, c, d, e,content, firstAnswer, secondAnswer} = data;
-            
-            // Create the question object
-            const question = new Situation({
-                type: "Multi-MCQ",
-                content,
-                options: [a, b, c, d, e],
-                rightAnswers: [firstAnswer, secondAnswer],
-            });
+  static async createQuestion(
+    data: SituationFormData,
+    contextInfo: { path: string; method: string }
+  ): Promise<SituationServiceResponse> {
+    try {
+      const { a, b, c, d, e, content, firstAnswer, secondAnswer } = data;
 
-            await connectToDB();
-            await question.save();
+      // Create the question object
+      const question = new Situation({
+        type: "Multi-MCQ",
+        content,
+        options: [a, b, c, d, e],
+        rightAnswers: [firstAnswer, secondAnswer],
+      });
 
-            return {
-                success: true,
-            };
+      await connectToDB();
+      await question.save();
 
-        } catch (error) {
-            // Log the error for debugging
+      return {
+        success: true,
+      };
+    } catch (error) {
+      // Log the error for debugging
       await logError(
         "Failed to create Situation question",
         error instanceof Error ? error : new Error("Unknown error")
@@ -52,6 +49,6 @@ export class SituationService {
           details: error instanceof Error ? error.message : "Unknown error",
         },
       };
-        }
     }
+  }
 }

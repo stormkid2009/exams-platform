@@ -1,19 +1,16 @@
-
-import {Passage} from "src/models/questions/passage.model";
-import {PassageFormData} from "src/shared/schemas/passage.schema";
-import { logError } from "src/helpers/logger";
-import connectToDB from "src/lib/mongooseClient";
+import { Passage } from "src/models/questions/passage.model";
+import { PassageFormData } from "src/shared/schemas/passage.schema";
+import { logError } from "src/utils/logger";
+import connectToDB from "src/lib/mongoose-client";
 
 export interface PassageServiceResponse {
-    success: boolean;
-    error?: {
-        message: string;
-        code: number;
-        details?: string;
-    };
+  success: boolean;
+  error?: {
+    message: string;
+    code: number;
+    details?: string;
+  };
 }
-
-
 
 export class PassageService {
   static async createQuestion(

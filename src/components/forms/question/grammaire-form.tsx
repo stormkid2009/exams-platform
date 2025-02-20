@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useForm, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "src/components/ui/Toast";
-import ContentInput from "src/components/inputs/contentInput";
-import OptionInput from "src/components/inputs/optionInput";
-import AnswerInput from "src/components/inputs/answerInput";
+import ContentInput from "src/components/inputs/content-input";
+import OptionInput from "src/components/inputs/option-input";
+import AnswerInput from "src/components/inputs/answer-input";
 import {
   grammaireSchema,
   type GrammaireFormData,
@@ -36,7 +36,6 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
   });
 
   const onSubmit = async (data: GrammaireFormData) => {
-    
     try {
       // Call the handleSubmit with the modified data
       await handleSubmit(data);
@@ -77,12 +76,12 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
         />
 
         {/* Option Inputs */}
-        {['a', 'b', 'c', 'd'].map((option,index) => (
+        {["a", "b", "c", "d"].map((option, index) => (
           <OptionInput<GrammaireFormData>
             key={index}
             register={register}
             name={`${option}` as Path<GrammaireFormData>}
-            label={`Option:  ${option}`} 
+            label={`Option:  ${option}`}
             errorMessage={
               errors[`options.${index}` as keyof typeof errors]?.message
             } // Use type assertion
@@ -106,7 +105,6 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
           </button>
         </div>
       </form>
-      
     </div>
   );
 };

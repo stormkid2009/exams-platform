@@ -1,8 +1,8 @@
 import React from "react";
 import { useFormContext, Path } from "react-hook-form";
-import ContentInput from "src/components/inputs/contentInput";
-import OptionInput from "src/components/inputs/optionInput";
-import AnswerInput from "src/components/inputs/answerInput";
+import ContentInput from "src/components/inputs/content-input";
+import OptionInput from "src/components/inputs/option-input";
+import AnswerInput from "src/components/inputs/answer-input";
 import { PassageFormData } from "src/shared/schemas/passage.schema";
 
 interface RelatedQuestionProps {
@@ -10,8 +10,14 @@ interface RelatedQuestionProps {
   onRemove: () => void;
 }
 
-const RelatedQuestionForm: React.FC<RelatedQuestionProps> = ({ index, onRemove }) => {
-  const { register, formState: { errors } } = useFormContext<PassageFormData>();
+const RelatedQuestionForm: React.FC<RelatedQuestionProps> = ({
+  index,
+  onRemove,
+}) => {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<PassageFormData>();
 
   // Define the type for relatedQuestionErrors
   type RelatedQuestionError = {
@@ -24,7 +30,9 @@ const RelatedQuestionForm: React.FC<RelatedQuestionProps> = ({ index, onRemove }
   };
 
   // Safely cast errors.relatedQuestions?.[index] to the correct type
-  const relatedQuestionErrors = errors.relatedQuestions?.[index] as RelatedQuestionError | undefined;
+  const relatedQuestionErrors = errors.relatedQuestions?.[index] as
+    | RelatedQuestionError
+    | undefined;
 
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6">
@@ -52,13 +60,18 @@ const RelatedQuestionForm: React.FC<RelatedQuestionProps> = ({ index, onRemove }
       {/* Option Inputs */}
       {["a", "b", "c", "d"].map((option) => {
         // Explicitly type `option` as a key of `RelatedQuestionError`
-        const optionKey = option as keyof Omit<RelatedQuestionError, "content" | "rightAnswer">;
+        const optionKey = option as keyof Omit<
+          RelatedQuestionError,
+          "content" | "rightAnswer"
+        >;
 
         return (
           <OptionInput
             key={option}
             register={register}
-            name={`relatedQuestions.${index}.${option}` as Path<PassageFormData>}
+            name={
+              `relatedQuestions.${index}.${option}` as Path<PassageFormData>
+            }
             label={`Option ${option.toUpperCase()}`}
             placeholder={`Enter option ${option.toUpperCase()}`}
             errorMessage={relatedQuestionErrors?.[optionKey]?.message}

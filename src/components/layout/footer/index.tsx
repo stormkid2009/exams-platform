@@ -1,5 +1,5 @@
 
-import CopyRights from './copyRights'
+import CopyRights from './copy-rights'
 
 function Footer() {
   return (

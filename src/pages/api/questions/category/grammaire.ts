@@ -7,9 +7,9 @@ import {
 import {
   validateBodyMiddleware,
   type ValidatedApiHandler,
-} from "src/middleware/validateBodyMiddleware";
+} from "src/middleware/validate-body-middleware";
 import { ApiResponse, Messages } from "src/types/common";
-import { logApiError } from "src/helpers/logger"; // Import the logging utility
+import { logApiError } from "src/utils/logger"; // Import the logging utility
 
 // Response messages
 const msg: Messages = {
@@ -28,16 +28,12 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
 
   if (req.method !== "POST") {
     // Log the error for debugging
-    await logApiError(
-      "Invalid request method",
-      new Error(msg.wrongMethod),
-      {
-        path,
-        method,
-        statusCode: 405,
-        requestBody: req.body,
-      }
-    );
+    await logApiError("Invalid request method", new Error(msg.wrongMethod), {
+      path,
+      method,
+      statusCode: 405,
+      requestBody: req.body,
+    });
     return res.status(405).json({
       status: "error",
       message: msg.wrongMethod,
@@ -45,59 +41,58 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
       details: "Only POST method is allowed",
     });
   }
-try{
+  try {
+    const result = await GrammaireService.createQuestion(req.body, {
+      path,
+      method,
+    });
 
-  const result = await GrammaireService.createQuestion(req.body, {
-    path,
-    method,
-  });
-  
-  if (!result.success) {
-    // Log the error for debugging
+    if (!result.success) {
+      // Log the error for debugging
+      await logApiError(
+        "Failed to create grammaire question",
+        new Error(result.error!.message),
+        {
+          path,
+          method,
+          statusCode: result.error!.code,
+          requestBody: req.body,
+        }
+      );
+
+      return res.status(result.error!.code).json({
+        status: "error",
+        message: result.error!.message,
+        data: null,
+        details: result.error!.details,
+      });
+    }
+
+    return res.status(200).json({
+      status: "success",
+      message: msg.success,
+      data: null,
+    });
+  } catch (error) {
+    // Log unexpected errors
     await logApiError(
-      "Failed to create grammaire question",
-      new Error(result.error!.message),
+      "Unexpected error in grammaire handler",
+      error instanceof Error ? error : new Error("Unknown error"),
       {
         path,
         method,
-        statusCode: result.error!.code,
+        statusCode: 500,
         requestBody: req.body,
       }
     );
 
-    return res.status(result.error!.code).json({
+    return res.status(500).json({
       status: "error",
-      message: result.error!.message,
+      message: "Internal Server Error",
       data: null,
-      details: result.error!.details,
+      details: "An unexpected error occurred",
     });
   }
-  
-  return res.status(200).json({
-    status: "success",
-    message: msg.success,
-    data: null,
-  });
-}catch(error){
-  // Log unexpected errors
-  await logApiError(
-    "Unexpected error in grammaire handler",
-    error instanceof Error ? error : new Error("Unknown error"),
-    {
-      path,
-      method,
-      statusCode: 500,
-      requestBody: req.body,
-    }
-  );
-
-  return res.status(500).json({
-    status: "error",
-    message: "Internal Server Error",
-    data: null,
-    details: "An unexpected error occurred",
-  });
-}
 };
 
 export default validateBodyMiddleware(grammaireSchema)(handler);

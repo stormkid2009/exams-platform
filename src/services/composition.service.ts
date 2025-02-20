@@ -1,6 +1,6 @@
-import connectToDB from "src/lib/mongooseClient";
+import connectToDB from "src/lib/mongoose-client";
 import { Composition } from "src/models/questions/composition.model";
-import { logError } from "src/helpers/logger";
+import { logError } from "src/utils/logger";
 import { CompositionFormData } from "src/shared/schemas/composition.schema";
 
 export interface CompositionServiceResponse {

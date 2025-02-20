@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Intro from "src/components/introduction";
-import LoginForm from "src/components/forms/user/loginForm";
+import LoginForm from "src/components/forms/user/login-form";
 
 export default function Home() {
   return (

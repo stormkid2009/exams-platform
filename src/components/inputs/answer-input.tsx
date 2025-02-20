@@ -1,6 +1,11 @@
-import React from 'react';
-import { UseFormRegister, FieldValues, Path, RegisterOptions } from 'react-hook-form';
-import BaseInput from './baseInput'; // Import the BaseInput component
+import React from "react";
+import {
+  UseFormRegister,
+  FieldValues,
+  Path,
+  RegisterOptions,
+} from "react-hook-form";
+import BaseInput from "./base-input"; // Import the BaseInput component
 
 interface AnswerInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;

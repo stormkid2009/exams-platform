@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Toast from "src/components/ui/Toast";
-import RelatedQuestionForm from "./relatedQuestionForm";
-import ContentInput from "src/components/inputs/contentInput";
+import RelatedQuestionForm from "./related-question-form";
+import ContentInput from "src/components/inputs/content-input";
 import {
   passageSchema,
   type PassageFormData,

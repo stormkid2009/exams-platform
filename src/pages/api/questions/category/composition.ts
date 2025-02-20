@@ -7,9 +7,9 @@ import {
 import {
   validateBodyMiddleware,
   type ValidatedApiHandler,
-} from "src/middleware/validateBodyMiddleware";
+} from "src/middleware/validate-body-middleware";
 import { ApiResponse, Messages } from "src/types/common";
-import { logApiError } from "src/helpers/logger"; // Import the logging utility
+import { logApiError } from "src/utils/logger"; // Import the logging utility
 
 // Response messages
 const msg: Messages = {

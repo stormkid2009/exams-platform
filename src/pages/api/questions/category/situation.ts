@@ -3,7 +3,7 @@
 import {
   validateBodyMiddleware,
   type ValidatedApiHandler,
-} from "src/middleware/validateBodyMiddleware";
+} from "src/middleware/validate-body-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Messages, ApiResponse } from "src/types/common";
 import {
@@ -11,7 +11,7 @@ import {
   type SituationFormData,
 } from "src/shared/schemas/situation.schema";
 import { SituationService } from "src/services/situation.service";
-import { logApiError } from "src/helpers/logger"; // Import the logging utility
+import { logApiError } from "src/utils/logger"; // Import the logging utility
 
 const msg: Messages = {
   success: "Success to create new question",
@@ -29,16 +29,12 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
 
   if (req.method !== "POST") {
     // Log the error for debugging
-    await logApiError(
-      "Invalid request method",
-      new Error(msg.wrongMethod),
-      {
-        path,
-        method,
-        statusCode: 405,
-        requestBody: req.body,
-      }
-    );
+    await logApiError("Invalid request method", new Error(msg.wrongMethod), {
+      path,
+      method,
+      statusCode: 405,
+      requestBody: req.body,
+    });
     return res.status(405).json({
       status: "error",
       message: msg.wrongMethod,
@@ -48,12 +44,11 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
   }
 
   try {
-    
     const result = await SituationService.createQuestion(req.body, {
       path,
       method,
     });
-    
+
     if (!result.success) {
       // Log the error for debugging
       await logApiError(
@@ -74,7 +69,7 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
         details: result.error!.details,
       });
     }
-    
+
     return res.status(200).json({
       status: "success",
       message: msg.success,
@@ -100,7 +95,6 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
       details: "An unexpected error occurred",
     });
   }
-  
-  };
+};
 
 export default validateBodyMiddleware(situationSchema)(handler);

@@ -7,9 +7,9 @@ import {
 import {
   validateBodyMiddleware,
   ValidatedApiHandler,
-} from "src/middleware/validateBodyMiddleware";
+} from "src/middleware/validate-body-middleware";
 import { Messages, ApiResponse } from "src/types/common";
-import { logApiError } from "src/helpers/logger"; // Import the logging utility
+import { logApiError } from "src/utils/logger"; // Import the logging utility
 
 // Response messages
 const msg: Messages = {
@@ -18,7 +18,6 @@ const msg: Messages = {
   wrongMethod: "This method is not allowed",
   invalidData: "Invalid request data",
 } as const;
-
 
 const handler: ValidatedApiHandler<PassageFormData> = async (
   req: NextApiRequest,
@@ -29,16 +28,12 @@ const handler: ValidatedApiHandler<PassageFormData> = async (
 
   if (req.method !== "POST") {
     // Log the error for debugging
-    await logApiError(
-      "Invalid request method",
-      new Error(msg.wrongMethod),
-      {
-        path,
-        method,
-        statusCode: 405,
-        requestBody: req.body,
-      }
-    );
+    await logApiError("Invalid request method", new Error(msg.wrongMethod), {
+      path,
+      method,
+      statusCode: 405,
+      requestBody: req.body,
+    });
 
     return res.status(405).json({
       status: "error",
