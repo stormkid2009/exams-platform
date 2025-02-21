@@ -1,11 +1,16 @@
-import 'tailwindcss/tailwind.css'
+import { memo } from "react";
 
-function CopyRights() {
-  return (
-    <div className=" p-4 text-center">
-      ©2023 ANWAR AHMED
-    </div>
-  )
+interface CopyRightsProps {
+  className?: string;
 }
 
-export default CopyRights
+const CopyRights = memo(function CopyRights({ className = "" }: CopyRightsProps) {
+  const currentYear = new Date().getFullYear();
+  return (
+    <div className={`text-center ${className}`}>
+      ©{currentYear} ANWAR AHMED
+    </div>
+  );
+});
+
+export default CopyRights;
