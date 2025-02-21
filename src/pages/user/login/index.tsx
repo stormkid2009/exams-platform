@@ -1,7 +1,7 @@
 import LoginForm from "src/components/forms/user/login-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "../src/store/authStore";
+import { useAuthStore } from "src/store/auth-store";
 
 export default function LoginPage() {
   const router = useRouter();

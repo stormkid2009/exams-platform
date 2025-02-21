@@ -1,7 +1,7 @@
 import RegisterForm from "src/components/forms/user/register-form";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "../src/store/authStore";
+import { useAuthStore } from "src/store/auth-store";
 
 export default function RegisterPage() {
   const router = useRouter();

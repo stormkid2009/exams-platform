@@ -1,6 +1,12 @@
 import { useEffect } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "../src/store/authStore";
+import { useAuthStore } from "src/store/auth-store";
+
+//user dashboard has 2 sections
+//1. user profile
+//2. user work area which contains two sections
+//  a. user nav to create questions
+//  b. user nav to exams generator
 
 export default function Dashboard() {
   const router = useRouter();
