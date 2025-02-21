@@ -5,7 +5,7 @@ import PlatformTitle from "./platform-title";
 
 function Header() {
   return (
-    <header className="flex items-center justify-between bg-blue-500 text-white p-4 md:p-6">
+    <header className="w-full rounded-t-lg flex items-center justify-between bg-slate-700 text-white p-4 md:p-6">
       <div className="flex-shrink-0">
         <Logo />
       </div>
