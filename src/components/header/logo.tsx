@@ -1,20 +1,21 @@
-//display the logo of our platform
+import Image from "next/image";
+import { memo } from "react";
 
-
-import Image from 'next/image'
-
-function Logo() {
-  return (
-    <div className=' '>
-        <Image
-          src="/platformLogo.jpg"
-          alt="Platform Logo" 
-          width={30}
-          height={30}
-        />
-
-    </div>
-  )
+interface LogoProps {
+  className?: string;
 }
 
-export default Logo
+const Logo = memo(function Logo({ className = "" }: LogoProps) {
+  return (
+    <div className={className}>
+      <Image
+        src="/platformLogo.jpg"
+        alt="Platform Logo"
+        width={30}
+        height={30}
+      />
+    </div>
+  );
+});
+
+export default Logo;
