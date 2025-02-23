@@ -77,84 +77,69 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
-      <header className="bg-blue-600 text-white py-4 px-6 shadow-md">
-        <h1 className="text-3xl font-bold">Create Passage Questions</h1>
-      </header>
-
-      <div className="flex flex-1">
-        {/* Side Navigation */}
-        <aside className="w-64 bg-white shadow p-4 space-y-4 overflow-y-auto">
-          <h3 className="text-xl font-semibold border-b pb-2">Questions</h3>
-          <div className="space-y-2">
-            {fields.map((field, index) => (
-              <button
-                key={field.id}
-                onClick={() => removeQuestion(index)}
-                className="w-full text-left px-3 py-2 border rounded hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                Question {index + 1}
-              </button>
-            ))}
-          </div>
-          <div className="border-t pt-4">
+    <div className="flex gap-4">
+      {/* Sidebar */}
+      <div className="w-64 bg-white shadow-lg rounded-lg p-4">
+        <h3 className="text-lg font-semibold mb-4 pb-2 border-b">Questions</h3>
+        <div className="space-y-2 mb-4">
+          {fields.map((field, index) => (
             <button
-              onClick={addQuestion}
-              className="w-full px-4 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+              key={field.id}
+              onClick={() => removeQuestion(index)}
+              className="w-full text-left px-3 py-2 border rounded hover:bg-gray-100"
             >
-              + Add Question
+              Question {index + 1}
             </button>
-          </div>
-        </aside>
-
-        {/* Main Form */}
-        <main className="flex-1 p-8 overflow-y-auto">
-          <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(onSubmit)}
-              className="space-y-8"
-            >
-              {/* Passage Text */}
-              <div className="bg-white p-6 shadow rounded">
-                <ContentInput
-                  register={methods.register}
-                  name="passage"
-                  label="Passage Text"
-                  placeholder="Enter the passage text here..."
-                  errorMessage={methods.formState.errors.passage?.message}
-                />
-              </div>
-
-              {/* Related Questions */}
-              <div className="space-y-8">
-                {fields.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="bg-white p-6 shadow rounded border"
-                  >
-                    <RelatedQuestionForm
-                      index={index}
-                      onRemove={() => removeQuestion(index)}
-                    />
-                  </div>
-                ))}
-              </div>
-
-              {/* Submit Button */}
-              <div className="flex justify-end">
-                <button
-                  type="submit"
-                  className="px-6 py-3 bg-blue-500 text-white font-medium rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                  Create Passage Questions
-                </button>
-              </div>
-            </form>
-          </FormProvider>
-        </main>
+          ))}
+        </div>
+        <button
+          onClick={addQuestion}
+          className="w-full px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          + Add Question
+        </button>
       </div>
 
-      {/* Toast Notification */}
+      {/* Main Form */}
+      <div className="flex-1">
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="bg-white p-6 shadow-lg rounded-lg">
+              <ContentInput
+                register={methods.register}
+                name="passage"
+                label="Passage Text"
+                placeholder="Enter the passage text here..."
+                errorMessage={methods.formState.errors.passage?.message}
+              />
+            </div>
+
+            <div className="space-y-6">
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="bg-white p-6 shadow-lg rounded-lg"
+                >
+                  <RelatedQuestionForm
+                    index={index}
+                    onRemove={() => removeQuestion(index)}
+                  />
+                </div>
+              ))}
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                className="px-6 py-3 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+              >
+                Create Passage Questions
+              </button>
+            </div>
+          </form>
+        </FormProvider>
+      </div>
+
       {toast && (
         <div className="fixed bottom-4 right-4">
           <Toast

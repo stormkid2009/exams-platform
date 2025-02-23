@@ -15,9 +15,5 @@ export default function DashBoard() {
     }
   };
 
-  return (
-    <div>
-      <PassageForm handleSubmit={handleSubmit} />
-    </div>
-  );
+  return <PassageForm handleSubmit={handleSubmit} />;
 }
