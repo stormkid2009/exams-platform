@@ -7,7 +7,7 @@ interface PlatformTitleProps {
 const PlatformTitle = memo(function PlatformTitle({ className = "" }: PlatformTitleProps) {
   return (
     <div className={`py-4 ${className}`}>
-      <h2 className="text-3xl font-bold text-center">Online Tests Generator</h2>
+      <h2 className="text-lg font-bold text-center">Tests Generator</h2>
     </div>
   );
 });

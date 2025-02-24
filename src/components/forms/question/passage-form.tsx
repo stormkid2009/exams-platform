@@ -80,13 +80,13 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
     <div className="flex gap-4">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4 pb-2 border-b">Questions</h3>
+        <h3 className="text-lg font-semibold mb-4 pb-2 border-b">Passage Questions</h3>
         <div className="space-y-2 mb-4">
           {fields.map((field, index) => (
             <button
               key={field.id}
               onClick={() => removeQuestion(index)}
-              className="w-full text-left px-3 py-2 border rounded hover:bg-gray-100"
+              className="w-full text-left px-3 py-2  border rounded hover:bg-gray-100"
             >
               Question {index + 1}
             </button>

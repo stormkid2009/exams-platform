@@ -42,9 +42,9 @@ const RelatedQuestionForm: React.FC<RelatedQuestionProps> = ({
         <button
           type="button"
           onClick={onRemove}
-          className="text-red-500 hover:text-red-700"
+          className="bg-red-500 text-white p-2  rounded hover:text-red-700"
         >
-          Remove Question
+          - Remove Question
         </button>
       </div>
 
