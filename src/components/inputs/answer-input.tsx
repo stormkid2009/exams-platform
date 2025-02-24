@@ -23,7 +23,7 @@ const AnswerInput = <T extends FieldValues>({
   name,
   errorMessage,
   maxOptions,
-  label = "Correct Answer", // Default label
+  label = "Answer", // Default label
   options: customOptions, // Custom options
   registerOptions = { required: true }, // Default validation rules
 }: AnswerInputProps<T>) => {

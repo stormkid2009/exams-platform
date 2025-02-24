@@ -26,7 +26,7 @@ export interface BaseInputProps<T extends FieldValues> {
 }
 
 const inputClass =
-  "w-full p-2 border border-gray-300 rounded focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-colors";
+  "w-full p-2 border border-gray-300 bg-slate-200 rounded focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-colors";
 
 const BaseInput = <T extends FieldValues>({
   register,
