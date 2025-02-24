@@ -97,7 +97,7 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
           <OptionInput<SituationFormData>
             key={option}
             register={register}
-            label={option.toUpperCase()}
+            label={`${option.toUpperCase()}`}
             name={option as Path<SituationFormData>}
             errorMessage={errors[option]?.message}
           />

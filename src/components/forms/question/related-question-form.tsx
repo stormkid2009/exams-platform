@@ -72,7 +72,7 @@ const RelatedQuestionForm: React.FC<RelatedQuestionProps> = ({
             name={
               `relatedQuestions.${index}.${option}` as Path<PassageFormData>
             }
-            label={`Option ${option.toUpperCase()}`}
+            label={`${option.toUpperCase()}`}
             placeholder={`Enter option ${option.toUpperCase()}`}
             errorMessage={relatedQuestionErrors?.[optionKey]?.message}
           />

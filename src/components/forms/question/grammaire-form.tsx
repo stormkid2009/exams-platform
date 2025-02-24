@@ -53,7 +53,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
   return (
     <div className="max-w-2xl mx-auto p-4 overflow-y-auto max-h-[calc(100vh-2rem)]">
       <h2 className="text-xl font-bold text-center mb-6">
-        Create Grammar Question
+        Grammar Question
       </h2>
 
       {toast && (
@@ -81,7 +81,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
             key={index}
             register={register}
             name={`${option}` as Path<GrammaireFormData>}
-            label={`Option:  ${option}`}
+            label={`${option.toUpperCase()}`}
             errorMessage={
               errors[`options.${index}` as keyof typeof errors]?.message
             } // Use type assertion

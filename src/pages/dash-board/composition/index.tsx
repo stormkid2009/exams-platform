@@ -1,5 +1,5 @@
 import React from "react";
-import CompositionForm from "src/components/forms/question/composition";
+import CompositionForm from "src/components/forms/question/composition-form";
 import fetcher from "src/utils/fetcher";
 import { type CompositionFormData } from "src/shared/schemas/composition.schema";
 
