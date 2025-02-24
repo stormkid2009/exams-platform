@@ -22,6 +22,7 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
     type: "success" | "error";
     text: string;
   } | null>(null);
+
   const {
     register,
     handleSubmit: formSubmit,
@@ -40,6 +41,7 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
       secondAnswer: "b",
     },
   });
+
   const answerOptions = useMemo(
     () => [
       { value: "a", label: "Option A" },
@@ -52,7 +54,6 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
   );
 
   const onSubmit = async (data: SituationFormData) => {
-    // console.log("formData : ", data);
     try {
       await handleSubmit(data);
       setToast({ type: "success", text: "Question created successfully!" });
@@ -66,9 +67,9 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 overflow-y-auto max-h-[calc(100vh-2rem)]">
-      <h2 className="text-xl font-bold text-center mb-6">
-        Create Situation Question
+    <div className="max-w-2xl mx-auto p-6 bg-gray-50 shadow rounded overflow-y-auto max-h-[calc(100vh-2rem)]">
+      <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
+        Situation Question
       </h2>
 
       {toast && (
@@ -80,46 +81,53 @@ const SituationForm: React.FC<Props> = ({ handleSubmit }) => {
         />
       )}
 
-      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={formSubmit(onSubmit)} className="space-y-6">
         {/* Content Input */}
-
-        <ContentInput
-          register={register}
-          placeholder="Enter question content"
-          name="content"
-          label="Content"
-          errorMessage={errors.content?.message}
-        />
-
-        {/** Options Inputs */}
-
-        {OPTIONS.map((option) => (
-          <OptionInput<SituationFormData>
-            key={option}
+        <div className="bg-white p-4 rounded-lg shadow">
+          <ContentInput
             register={register}
-            label={`${option.toUpperCase()}`}
-            name={option as Path<SituationFormData>}
-            errorMessage={errors[option]?.message}
+            placeholder="Enter question content"
+            name="content"
+            label="Content"
+            errorMessage={errors.content?.message}
           />
-        ))}
+        </div>
 
-        {/** Right Answers Inputs */}
+        {/* Options Inputs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {OPTIONS.map((option) => (
+            <div key={option} className="bg-white p-4 rounded-lg shadow">
+              <OptionInput<SituationFormData>
+                register={register}
+                label={option.toUpperCase()}
+                name={option as Path<SituationFormData>}
+                errorMessage={errors[option]?.message}
+              />
+            </div>
+          ))}
+        </div>
 
-        {ANSWERS.map((answer) => (
-          <AnswerInput<SituationFormData>
-            key={answer}
-            register={register}
-            name={answer as Path<SituationFormData>}
-            maxOptions={OPTIONS.length}
-            options={answerOptions}
-            errorMessage={errors[answer as keyof SituationFormData]?.message}
-          />
-        ))}
+        {/* Answer Inputs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {ANSWERS.map((answer) => (
+            <div key={answer} className="bg-white p-4 rounded-lg shadow">
+              <AnswerInput<SituationFormData>
+                register={register}
+                name={answer as Path<SituationFormData>}
+                maxOptions={OPTIONS.length}
+                options={answerOptions}
+                errorMessage={
+                  errors[answer as keyof SituationFormData]?.message
+                }
+              />
+            </div>
+          ))}
+        </div>
 
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 hover:bg-blue-600 transition-colors text-white px-4 py-2 rounded"
           >
             Create Question
           </button>
