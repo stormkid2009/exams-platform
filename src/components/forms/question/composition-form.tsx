@@ -19,6 +19,7 @@ const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
     type: "success" | "error";
     text: string;
   } | null>(null);
+
   const {
     register,
     handleSubmit: formSubmit,
@@ -27,7 +28,7 @@ const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
   } = useForm<CompositionFormData>({
     resolver: zodResolver(compositionSchema),
     defaultValues: {
-      a: "", // Initialize each option field
+      a: "",
       b: "",
       answer: "",
     },
@@ -35,9 +36,7 @@ const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
 
   const onSubmit = async (data: CompositionFormData) => {
     try {
-      // Call the handleSubmit with the modified data
       await handleSubmit(data);
-      //console.log(data);
       setToast({ type: "success", text: "Question created successfully!" });
       reset();
     } catch (error) {
@@ -63,40 +62,47 @@ const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
         />
       )}
 
-      <form onSubmit={formSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={formSubmit(onSubmit)} className="space-y-6">
         {/* Content Input */}
-        <ContentInput<CompositionFormData>
-          register={register}
-          name="content"
-          label="Question Content"
-          placeholder="Enter question content"
-          errorMessage={errors.content?.message}
-        />
+        <div className="bg-white p-4 rounded shadow">
+          <ContentInput<CompositionFormData>
+            register={register}
+            name="content"
+            label="Question Content"
+            placeholder="Enter question content"
+            errorMessage={errors.content?.message}
+          />
+        </div>
 
         {/* Option Inputs */}
-        {["a", "b"].map((option, index) => (
-          <OptionInput<CompositionFormData>
-            key={index}
-            register={register}
-            name={`${option}` as Path<CompositionFormData>}
-            label={`${option.toUpperCase()}`}
-            errorMessage={
-              errors[`options.${index}` as keyof typeof errors]?.message
-            } // Use type assertion
-          />
-        ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {["a", "b"].map((option, index) => (
+            <div key={index} className="bg-white p-4 rounded shadow">
+              <OptionInput<CompositionFormData>
+                register={register}
+                name={`${option}` as Path<CompositionFormData>}
+                label={option.toUpperCase()}
+                errorMessage={
+                  errors[`options.${index}` as keyof typeof errors]?.message
+                }
+              />
+            </div>
+          ))}
+        </div>
 
         {/* Answer Input */}
-        <OpenAnswerInput<CompositionFormData>
-          register={register}
-          name="answer"
-          errorMessage={errors.answer?.message}
-        />
+        <div className="bg-white p-4 rounded shadow">
+          <OpenAnswerInput<CompositionFormData>
+            register={register}
+            name="answer"
+            errorMessage={errors.answer?.message}
+          />
+        </div>
 
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
           >
             Create Question
           </button>
