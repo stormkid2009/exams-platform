@@ -11,13 +11,13 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      router.push("/login");
+      router.push("/user/login");
     }
   }, [isAuthenticated, router]);
 
   const handleLogout = () => {
     logout();
-    router.push("/login");
+    router.push("/user/login");
   };
 
   if (!isAuthenticated || !user) {
@@ -30,7 +30,7 @@ export default function Dashboard() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-semibold">Dashboard</h1>
+              <h1 className="text-xl font-semibold">Dash board</h1>
             </div>
             <UserProfile email={user.email} onLogout={handleLogout} />
           </div>

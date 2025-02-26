@@ -9,7 +9,7 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      router.push("/dashboard"); // or wherever you want to redirect authenticated users
+      router.push("/dash-board"); // or wherever you want to redirect authenticated users
     }
   }, [isAuthenticated, router]);
 
