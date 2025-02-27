@@ -5,6 +5,7 @@ import Toast from "src/components/ui/Toast";
 import ContentInput from "src/components/inputs/content-input";
 import OptionInput from "src/components/inputs/option-input";
 import OpenAnswerInput from "src/components/inputs/open-answer-input";
+import HomeBtn from "src/components/buttons/home";
 import {
   compositionSchema,
   type CompositionFormData,
@@ -99,7 +100,9 @@ const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
           />
         </div>
 
-        <div className="flex justify-end">
+        {/* Button container with HomeBtn */}
+        <div className="flex justify-end space-x-4">
+          <HomeBtn />
           <button
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"

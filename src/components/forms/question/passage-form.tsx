@@ -8,6 +8,7 @@ import {
   passageSchema,
   type PassageFormData,
 } from "src/shared/schemas/passage.schema";
+import HomeBtn from "src/components/buttons/home";
 
 interface Props {
   handleSubmit: (data: PassageFormData) => void;
@@ -128,12 +129,13 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
               ))}
             </div>
 
-            <div className="flex justify-end">
+            <div className="flex justify-end space-x-4">
+              <HomeBtn />
               <button
                 type="submit"
-                className="px-6 py-3 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
+                className="px-6 py-2 bg-blue-500 text-white font-medium rounded hover:bg-blue-600"
               >
-                Create Passage Questions
+                Create Question
               </button>
             </div>
           </form>

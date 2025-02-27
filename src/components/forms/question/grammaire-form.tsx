@@ -5,6 +5,7 @@ import Toast from "src/components/ui/Toast";
 import ContentInput from "src/components/inputs/content-input";
 import OptionInput from "src/components/inputs/option-input";
 import AnswerInput from "src/components/inputs/answer-input";
+import HomeBtn from "src/components/buttons/home";
 import {
   grammaireSchema,
   type GrammaireFormData,
@@ -100,7 +101,8 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-end space-x-4">
+          <HomeBtn />
           <button
             type="submit"
             className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition-colors"
