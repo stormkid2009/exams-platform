@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Toast from "src/components/ui/Toast";
+import Toast from "src/components/ui/toast";
 import ContentInput from "src/components/inputs/content-input";
 import OptionInput from "src/components/inputs/option-input";
 import OpenAnswerInput from "src/components/inputs/open-answer-input";

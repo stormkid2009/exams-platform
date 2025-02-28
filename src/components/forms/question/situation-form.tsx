@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { useForm, Path } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Toast from "src/components/ui/Toast";
+import Toast from "src/components/ui/toast";
 import {
   situationSchema,
   type SituationFormData,

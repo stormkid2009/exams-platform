@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Toast from "src/components/ui/Toast";
+import Toast from "src/components/ui/toast";
 import RelatedQuestionForm from "./related-question-form";
 import ContentInput from "src/components/inputs/content-input";
 import {
@@ -81,7 +81,9 @@ const PassageForm: React.FC<Props> = ({ handleSubmit }) => {
     <div className="flex gap-4">
       {/* Sidebar */}
       <div className="w-64 bg-white shadow-lg rounded-lg p-4">
-        <h3 className="text-lg font-semibold mb-4 pb-2 border-b">Passage Questions</h3>
+        <h3 className="text-lg font-semibold mb-4 pb-2 border-b">
+          Passage Questions
+        </h3>
         <div className="space-y-2 mb-4">
           {fields.map((field, index) => (
             <button
