@@ -1,11 +1,11 @@
 import Image from "next/image";
-import { memo } from "react";
+import  React  from "react";
 
 interface LogoProps {
   className?: string;
 }
 
-const Logo = memo(function Logo({ className = "" }: LogoProps) {
+const Logo = React.memo(function Logo({ className = "" }: LogoProps) {
   return (
     <div className={className}>
       <Image

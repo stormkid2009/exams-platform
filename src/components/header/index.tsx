@@ -1,3 +1,4 @@
+import React from "react";
 import "tailwindcss/tailwind.css";
 import DateDisplay from "./date-display";
 import Logo from "./logo";

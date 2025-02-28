@@ -1,3 +1,4 @@
+import React from "react";
 import CopyRights from "./copy-rights";
 
 function Footer() {
