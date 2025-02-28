@@ -17,7 +17,7 @@ export interface BaseInputProps<T extends FieldValues> {
   max?: number;
   placeholder?: string;
   options?: { value: string; label: string }[];
-  registerOptions?: RegisterOptions<T>;
+  registerOptions?: RegisterOptions<T, Path<T>>;
   onChange?: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -95,4 +95,4 @@ const BaseInput = <T extends FieldValues>({
   );
 };
 
-export default React.memo(BaseInput) as typeof BaseInput;
+export default React.memo(BaseInput) as <T extends FieldValues>(props: BaseInputProps<T>) => React.ReactElement;

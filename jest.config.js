@@ -1,10 +1,18 @@
 module.exports = {
-  preset: 'ts-jest',
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect'],
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
-  transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
-  },
-  testMatch: ['**/?(*.)+(spec|test).[jt]s?(x)'],
+testEnvironment: 'jsdom',
+setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
+transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
+},
+moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+},
+moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+coverageDirectory: 'coverage',
+collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',
+    '!src/**/*.d.ts',
+],
 };
+
