@@ -57,4 +57,5 @@ const AnswerInput = <T extends FieldValues>({
   );
 };
 
-export default React.memo(AnswerInput) as typeof AnswerInput;
+ export default React.memo(AnswerInput) as typeof AnswerInput;
+//export default React.memo(AnswerInput) as <T extends FieldValues>(props: AnswerInputProps<T>) => React.ReactElement;
