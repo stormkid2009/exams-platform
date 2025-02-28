@@ -1,3 +1,4 @@
+import React from "react";
 import { NavigateBtn } from "src/components/buttons/navigate";
 
 export const NewQuestionNav = () => (

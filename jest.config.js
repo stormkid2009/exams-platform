@@ -6,6 +6,7 @@ transform: {
 },
 moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    "^src/(.*)$": "<rootDir>/src/$1",
 },
 moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
