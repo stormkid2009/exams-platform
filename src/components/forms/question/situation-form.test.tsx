@@ -37,7 +37,7 @@ test("onSubmit calls handleSubmit and sets success toast on successful submissio
     const mockReset = jest.fn();
     
     // Create a function similar to the component's onSubmit function
-    const onSubmit = async (data) => {
+    const onSubmit = async (data:unknown) => {
     try {
         await mockHandleSubmit(data);
         mockSetToast({ type: "success", text: "Question created successfully!" });
@@ -74,7 +74,7 @@ test("onSubmit sets error toast and doesn't reset form on failed submission", as
     const mockReset = jest.fn();
     
     // Create a function similar to the component's onSubmit function
-    const onSubmit = async (data) => {
+    const onSubmit = async (data:unknown) => {
     try {
         await mockHandleSubmit(data);
         mockSetToast({ type: "success", text: "Question created successfully!" });
