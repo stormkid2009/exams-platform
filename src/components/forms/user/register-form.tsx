@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React ,{ useState } from "react";
 import { useRouter } from "next/router";
 import { useAuthStore } from "src/store/auth-store";
 import Link from "next/link";
@@ -26,8 +26,17 @@ function RegisterForm() {
       setError("");
 
       // Client-side validation
-      if (!email || !password || !confirmPassword) {
-        throw new Error("Please fill in all required fields");
+      // if (!email || !password || !confirmPassword) {
+      //   throw new Error("all fields are required");
+      // }
+      if(!password){
+        throw new Error("password is required");
+      }
+      if(!confirmPassword){
+        throw new Error("confirm password is required");
+      }
+      if(!email){
+        throw new Error("email is required");
       }
 
       if (password !== confirmPassword) {
