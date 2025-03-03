@@ -170,5 +170,5 @@ function RegisterForm() {
     </div>
   );
 }
-
+RegisterForm.displayName = "RegisterForm";
 export default RegisterForm;

@@ -1,53 +1,92 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { useRouter } from 'next/router';
+import { useRouter, NextRouter } from 'next/router';
 import RegisterForm from './register-form';
 import { useAuthStore } from 'src/store/auth-store';
 import fetcher from 'src/utils/fetcher';
 
+// Define types for mocks
+interface AuthState {
+  login: (user: { id: string; email: string }, token: string) => void;
+}
+
+interface FetcherResponse {
+  data: { user: { id: string; email: string }; token: string } | null;
+  error: string | null;
+  status: number;
+}
+
+// Before your test, add a more flexible type
+type AnyFunction = (...args: any[]) => any;
+
 // Mock dependencies
+jest.mock('next/link', () => {
+  return ({ children, href }: { children: React.ReactNode; href: string }) => {
+    return <a href={href}>{children}</a>;
+  };
+});
+
 jest.mock('next/router', () => ({
   useRouter: jest.fn(),
 }));
 
+// Update the mock for useAuthStore
 jest.mock('src/store/auth-store', () => ({
   useAuthStore: jest.fn(),
 }));
 
 jest.mock('src/utils/fetcher', () => ({
   __esModule: true,
-  default: jest.fn(),
+  default: jest.fn() as jest.MockedFunction<typeof fetcher>,
 }));
 
-// Mock Next/Link
-jest.mock('next/link', () => {
-  return ({ children, href }) => {
-    return <a href={href}>{children}</a>;
-  };
-});
-
 describe('RegisterForm Component', () => {
-  // Setup common mocks
   const mockPush = jest.fn();
   const mockLogin = jest.fn();
-  
+  const mockResponse: FetcherResponse = {
+    data: { user: { id: '123', email: 'test@example.com' }, token: 'test-token' },
+    error: null,
+    status: 200,
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
-    
-    // Mock router
-    (useRouter).mockReturnValue({
-      push: mockPush,
-    });
-    
-    // Mock auth store
-    (useAuthStore).mockImplementation((selector) => {
-      return selector({ login: mockLogin });
-    });
+
+    // Mock useRouter with all necessary properties
+    // Mock useRouter with all necessary properties
+(useRouter as jest.MockedFunction<typeof useRouter>).mockReturnValue({
+  push: mockPush,
+  query: {},
+  pathname: '',
+  asPath: '',
+  route: '',
+  basePath: '',
+  isReady: true,
+  isFallback: false,
+  events: { on: jest.fn(), off: jest.fn(), emit: jest.fn() },
+  replace: jest.fn(),
+  prefetch: jest.fn().mockResolvedValue(undefined),
+  back: jest.fn(),
+  beforePopState: jest.fn(),
+  reload: jest.fn(),
+  isLocaleDomain: false,
+  // Add the missing properties
+  forward: jest.fn(),
+  isPreview: false
+} as NextRouter);
+
+// Use a type assertion to bypass TypeScript's strict checking
+((useAuthStore as unknown) as jest.Mock<any>).mockImplementation(
+  (selector: (state: AuthState) => any) => {
+    return selector({ login: mockLogin });
+  }
+);
+    // Mock fetcher
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockResolvedValue(mockResponse);
   });
 
   test('renders register form with all fields', () => {
     render(<RegisterForm />);
-    
     expect(screen.getByPlaceholderText('username@example.com')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Enter your password')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('Confirm your password')).toBeInTheDocument();
@@ -56,121 +95,78 @@ describe('RegisterForm Component', () => {
 
   test('shows error when email is empty', async () => {
     render(<RegisterForm />);
-    
-    // Fill password fields but leave email empty
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/email is required/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
-    
-    // Verify the API wasn't called
     expect(fetcher).not.toHaveBeenCalled();
   });
 
   test('shows error when password is empty', async () => {
     render(<RegisterForm />);
-    
-    // Fill email and confirm password fields but leave password empty
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/password is required/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('shows error when confirm password is empty', async () => {
     render(<RegisterForm />);
-    
-    // Fill email and password fields but leave confirm password empty
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/confirm password is required/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('shows error when passwords do not match', async () => {
     render(<RegisterForm />);
-    
-    // Fill all fields with non-matching passwords
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'differentpassword' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'differentpassword' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/passwords you entered don'?t match/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('handles successful registration', async () => {
-    // Mock successful response
-    const mockResponse = {
-      data: {
-        user: { id: '123', email: 'test@example.com' },
-        token: 'test-token'
-      },
-      error: null,
-      status: 200
-    };
-    
-    (fetcher).mockResolvedValue(mockResponse);
-    
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockResolvedValue(mockResponse);
     render(<RegisterForm />);
-    
-    // Fill all fields correctly
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use a single waitFor for all assertions since they’re related to the same async operation
     await waitFor(() => {
       expect(fetcher).toHaveBeenCalledWith(
         { email: 'test@example.com', password: 'password123' },
@@ -185,143 +181,103 @@ describe('RegisterForm Component', () => {
   });
 
   test('handles email already registered error', async () => {
-    // Mock error response for existing email
-    (fetcher).mockResolvedValue({
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockResolvedValue({
       data: null,
       error: 'Email already registered',
-      status: 409
+      status: 409,
     });
-    
     render(<RegisterForm />);
-    
-    // Fill all fields correctly
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'existing@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'existing@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/this email is already registered/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('handles bad request error', async () => {
-    // Mock error response for bad request
-    (fetcher).mockResolvedValue({
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockResolvedValue({
       data: null,
       error: 'Invalid email format',
-      status: 400
+      status: 400,
     });
-    
     render(<RegisterForm />);
-    
-    // Fill all fields
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'invalid-email' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'invalid-email' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/invalid email format/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('handles server error', async () => {
-    // Mock error response for server error
-    (fetcher).mockResolvedValue({
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockResolvedValue({
       data: null,
       error: 'Internal server error',
-      status: 500
+      status: 500,
     });
-    
     render(<RegisterForm />);
-    
-    // Fill all fields
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/technical difficulties/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('handles unexpected error during API call', async () => {
-    // Mock fetch to throw an error
-    (fetcher).mockRejectedValue(new Error('Network error'));
-    
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockRejectedValue(new Error('Network error'));
     render(<RegisterForm />);
-    
-    // Fill all fields
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/network error/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
 
   test('handles non-Error object thrown', async () => {
-    // Mock fetch to throw a non-Error object
-    (fetcher).mockRejectedValue('Something went wrong');
-    
+    (fetcher as jest.MockedFunction<typeof fetcher>).mockRejectedValue('Something went wrong');
     render(<RegisterForm />);
-    
-    // Fill all fields
-    fireEvent.change(screen.getByPlaceholderText('username@example.com'), { 
-      target: { value: 'test@example.com' } 
+    fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
+      target: { value: 'test@example.com' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Enter your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
+      target: { value: 'password123' },
     });
-    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), { 
-      target: { value: 'password123' } 
+    fireEvent.change(screen.getByPlaceholderText('Confirm your password'), {
+      target: { value: 'password123' },
     });
-    
-    // Get the form and submit directly
-    const form = screen.getByRole('button', { name: /register/i }).closest('form');
+    const form = screen.getByRole('button', { name: /register/i }).closest('form')!;
     fireEvent.submit(form);
-    
-    // Use case-insensitive regex for error message
     const errorMessage = await screen.findByText(/unexpected error/i, {}, { timeout: 3000 });
     expect(errorMessage).toBeInTheDocument();
   });
