@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2022",
+    "types": ["node","jest"],
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext"
+      "esnext",
+      "ES2015"
     ],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -27,7 +30,7 @@
     "**/*.tsx",
     "src/**/*",
     "tests/**/*",
-    "src"
+    "src/types/**/*"
   ],
   "exclude": [
     "node_modules"
