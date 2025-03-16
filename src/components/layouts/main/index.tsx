@@ -3,6 +3,22 @@ import React from "react";
 import Header from "src/components/header";
 import Footer from "src/components/footer";
 
+/**
+ * Layout Component
+ * 
+ * This component serves as a layout wrapper for the application, 
+ * providing a consistent structure that includes a header, 
+ * a scrollable main content area, and a footer.
+ * 
+ * Props:
+ * - children (React.ReactNode): The content to be rendered within the layout.
+ * 
+ * The layout is styled to fill the full height of the screen, 
+ * with a background color and text color that enhance readability.
+ * 
+ * The header and footer are sized to their content, 
+ * while the main content area is scrollable and avoids overlap.
+ */
 type LayoutProps = {
   children: React.ReactNode;
 };
