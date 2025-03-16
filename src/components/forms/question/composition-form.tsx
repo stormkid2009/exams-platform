@@ -10,6 +10,22 @@ import {
   compositionSchema,
   type CompositionFormData,
 } from "src/shared/schemas/composition.schema";
+/**
+ * CompositionForm Component
+ * 
+ * This component renders a form for creating a composition question. 
+ * It includes inputs for the question content, options, and an answer.
+ * 
+ * Props:
+ * - handleSubmit (function): A callback function that is called with the form data 
+ *   when the form is submitted successfully.
+ * 
+ * The form includes:
+ * - ContentInput for the question content.
+ * - OptionInput for two options (a and b).
+ * - OpenAnswerInput for the answer.
+ * - A submit button to create the question and a Home button for navigation.
+ */
 
 interface Props {
   handleSubmit: (data: CompositionFormData) => void;
