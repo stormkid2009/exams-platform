@@ -1,5 +1,31 @@
 import { CompositionQuestion, QuestionType } from "src/types/questions";
 import mongoose, { Schema } from "mongoose";
+/**
+ * compositionSchema
+ * 
+ * This schema defines the structure of a composition question in the MongoDB database.
+ * It includes fields for the question content, type, elements, and the correct answer.
+ * 
+ * Fields:
+ * - content (string): The main content of the question. This field is required.
+ * - type (string): The type of the question, which is currently restricted to "Open-Ended".
+ * - elements (string[]): An array of elements associated with the question. This field is required 
+ *   and must not be empty.
+ * - answer (string): The correct answer to the question. This field is required.
+ * 
+ * The schema includes validation rules to ensure that all required fields are provided 
+ * and that the elements array is not empty.
+ */
+
+/**
+ * Composition Model
+ * 
+ * This model represents the Composition question in the MongoDB database.
+ * It is created using the compositionSchema and is exported for use in the application.
+ * 
+ * The model ensures that we do not redefine it if it has already been declared in the 
+ * mongoose models.
+ */
 
 const MODEL_NAME = "Composition";
 
