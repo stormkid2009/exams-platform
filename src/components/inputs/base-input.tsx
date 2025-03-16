@@ -6,6 +6,29 @@ import {
   RegisterOptions,
 } from "react-hook-form";
 
+/**
+ * BaseInput Component
+ * 
+ * This component renders a customizable input field that can be used for various types of inputs,
+ * including text, textarea, number, and select. It integrates with react-hook-form for form handling.
+ * 
+ * Props:
+ * - register (function): The register function from react-hook-form for input registration.
+ * - name (string): The name of the input field.
+ * - label (string): The label for the input field.
+ * - errorMessage (string, optional): An optional error message to display below the input.
+ * - type (string, optional): The type of input (default is "text"). Can be "text", "textarea", "number", or "select".
+ * - rows (number, optional): The number of rows for textarea inputs.
+ * - min (number, optional): The minimum value for number inputs.
+ * - max (number, optional): The maximum value for number inputs.
+ * - placeholder (string, optional): An optional placeholder for the input.
+ * - options (array, optional): An optional array of options for select inputs.
+ * - registerOptions (object, optional): Custom validation rules for the input.
+ * - onChange (function, optional): A callback function to handle changes to the input value.
+ * 
+ * The component displays the label, input field, and any error messages, 
+ * and it is memoized to optimize performance by preventing unnecessary re-renders.
+ */
 export interface BaseInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
   name: Path<T>;
