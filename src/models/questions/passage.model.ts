@@ -2,6 +2,31 @@ import mongoose, { Schema } from "mongoose"; // Import mongoose for schema and m
 import { PassageQuestion, QuestionType } from "src/types/questions"; // Import TypeScript types for type safety
 import {grammaireSchema} from "./grammaire.model";
 
+/**
+ * passageSchema
+ * 
+ * This schema defines the structure of a passage question in the MongoDB database.
+ * It includes fields for the question type, passage content, and related questions.
+ * 
+ * Fields:
+ * - type (string): The type of the question, which is currently restricted to "RC".
+ * - passage (string): The main content of the passage. This field is required.
+ * - relatedQuestions (array): An array of related questions. This field is required 
+ *   and must contain at least one related question.
+ * 
+ * The schema includes validation rules to ensure that all required fields are provided 
+ * and that the relatedQuestions field meets its criteria.
+ */
+
+/**
+ * Passage Model
+ * 
+ * This model represents the Passage question in the MongoDB database.
+ * It is created using the passageSchema and is exported for use in the application.
+ * 
+ * The model ensures that we do not redefine it if it has already been declared in the 
+ * mongoose models.
+ */
 const MODEL_NAME = "Passage";
 
 
