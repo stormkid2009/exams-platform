@@ -1,6 +1,20 @@
 import React from "react";
 import { UseFormRegister, FieldValues, Path } from "react-hook-form";
 import BaseInput from "./base-input"; // Import the BaseInput component
+/**
+ * OpenAnswerInput Component
+ * 
+ * This component renders a textarea input for users to provide an open-ended answer. 
+ * It integrates with react-hook-form for form handling.
+ * 
+ * Props:
+ * - register (function): The register function from react-hook-form for input registration.
+ * - name (string): The name of the input field.
+ * - errorMessage (string, optional): An optional error message to display below the input.
+ * 
+ * The component uses the BaseInput component to render the textarea with a default label "Open Answer" 
+ * and a placeholder for user guidance.
+ */
 
 interface OpenAnswerInputProps<T extends FieldValues> {
   register: UseFormRegister<T>;
