@@ -5,6 +5,22 @@ import OptionInput from "src/components/inputs/option-input";
 import AnswerInput from "src/components/inputs/answer-input";
 import { PassageFormData } from "src/shared/schemas/passage.schema";
 
+/**
+ * RelatedQuestionForm Component
+ * 
+ * This component renders a form for a related question within a passage question form. 
+ * It includes inputs for the question text, options, and the correct answer. 
+ * Users can remove this question from the passage form.
+ * 
+ * Props:
+ * - index (number): The index of the related question in the list of questions.
+ * - onRemove (function): A callback function that is called when the remove button is clicked.
+ * 
+ * The form includes:
+ * - ContentInput for the question text.
+ * - OptionInput for four options (a, b, c, d).
+ * - AnswerInput for the correct answer.
+ */
 interface RelatedQuestionProps {
   index: number;
   onRemove: () => void;
