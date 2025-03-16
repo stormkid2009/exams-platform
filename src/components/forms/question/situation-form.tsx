@@ -11,6 +11,22 @@ import OptionInput from "src/components/inputs/option-input";
 import AnswerInput from "src/components/inputs/answer-input";
 import HomeBtn from "src/components/buttons/home";
 
+/**
+ * SituationForm Component
+ * 
+ * This component renders a form for creating a situation question. 
+ * It includes inputs for the question content, options, and the correct answers.
+ * 
+ * Props:
+ * - handleSubmit (function): A callback function that is called with the form data 
+ *   when the form is submitted successfully.
+ * 
+ * The form includes:
+ * - ContentInput for the question content.
+ * - OptionInput for five options (a, b, c, d, e).
+ * - AnswerInput for two correct answers.
+ * - A submit button to create the question and a Home button for navigation.
+ */
 const OPTIONS = ["a", "b", "c", "d", "e"] as const;
 const ANSWERS = ["firstAnswer", "secondAnswer"];
 
