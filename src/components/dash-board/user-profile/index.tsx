@@ -1,5 +1,15 @@
 import React from "react";
-import { useRouter } from "next/router";
+
+/**
+ * UserProfile Component
+ * 
+ * This component displays the user's email and provides a logout button.
+ * It accepts the following props:
+ * 
+ * Props:
+ * - email (string): The email address of the user.
+ * - onLogout (function): A callback function that is called when the logout button is clicked.
+ */
 
 interface UserProfileProps {
   email: string;
