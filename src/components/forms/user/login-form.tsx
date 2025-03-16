@@ -5,6 +5,20 @@ import { useAuthStore } from "src/store/auth-store";
 import Link from "next/link";
 import fetcher from "src/utils/fetcher";
 
+/**
+ * LoginForm Component
+ * 
+ * This component renders a login form for user authentication. 
+ * It allows users to enter their email and password to log in.
+ * 
+ * The form includes:
+ * - Input fields for email and password.
+ * - A submit button to initiate the login process.
+ * - Error handling to display any login errors.
+ * 
+ * The component uses the `useAuthStore` for managing authentication state 
+ * and redirects users to the dashboard upon successful login.
+ */
 function LoginForm() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
