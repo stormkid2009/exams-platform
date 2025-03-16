@@ -3,16 +3,23 @@ import { z } from "zod";
 import { logApiError } from "src/utils/logger";
 import { ApiResponse } from "src/types/common";
 
-/*
-
-
-interface ApiResponse<T = any> {
-  status: 'success' | 'error';
-  message: string;
-  data: T | null;
-  details: any;
-}
-*/
+/**
+ * validateBodyMiddleware Function
+ * 
+ * This middleware function validates the request body against a specified Zod schema.
+ * It is designed to be used in Next.js API routes to ensure that incoming request data
+ * meets the defined validation criteria.
+ * 
+ * The middleware:
+ * - Parses the request body using the provided Zod schema.
+ * - Attaches the validated data to the request object.
+ * - Handles validation errors by logging them and returning a 400 status response with error details.
+ * - Catches unexpected errors and logs them, returning a 500 status response.
+ * 
+ * @param schema - A Zod schema used for validating the request body.
+ * @returns A middleware function that takes a NextApiHandler and returns a new handler
+ *          that includes request body validation.
+ */
 
 export function validateBodyMiddleware(schema: z.ZodSchema) {
   return function (handler: NextApiHandler) {
