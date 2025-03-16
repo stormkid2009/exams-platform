@@ -1,5 +1,20 @@
 import React, { useEffect } from 'react';
 
+/**
+ * Toast Component
+ * 
+ * This component displays a temporary notification message to the user. 
+ * It can be used to indicate success or error messages.
+ * 
+ * Props:
+ * - message (string): The message to be displayed in the toast.
+ * - type (string): The type of toast, either 'success' or 'error'.
+ * - onDismiss (function): A callback function that is called when the toast should be dismissed.
+ * - duration (number, optional): The duration in milliseconds for which the toast is visible (default is 3000ms).
+ * 
+ * The component uses a timer to automatically dismiss the toast after the specified duration.
+ * It includes appropriate styling based on the toast type, with different colors for success and error messages.
+ */
 interface ToastProps {
   message: string;
   type: 'success' | 'error';
