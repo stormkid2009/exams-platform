@@ -1,3 +1,20 @@
+/**
+ * connectToDB Function
+ * 
+ * This function establishes a connection to the MongoDB database using Mongoose.
+ * It checks for an existing connection and reuses it to prevent multiple connections 
+ * from being opened during hot reloads in development.
+ * 
+ * It retrieves the MongoDB connection string from the environment variable `MONGODB_URI`.
+ * If the connection string is not defined, an error is thrown.
+ * 
+ * The function returns a promise that resolves to the Mongoose connection.
+ * 
+ * Caching is implemented using a global variable to maintain a single connection 
+ * across multiple calls, ensuring efficient resource usage.
+ * 
+ * @throws {Error} If the `MONGODB_URI` environment variable is not defined.
+ */
 import mongoose from "mongoose";
 
 // Get the MongoDB connection string from the environment variable.
