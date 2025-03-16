@@ -1,7 +1,32 @@
 import { GrammaireQuestion, QuestionType } from "src/types/questions"; // Import TypeScript definitions for type safety
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
+/**
+ * grammaireSchema
+ * 
+ * This schema defines the structure of a grammar question in the MongoDB database.
+ * It includes fields for the question type, content, possible answer options, and the correct answer.
+ * 
+ * Fields:
+ * - type (string): The type of the question, which is currently restricted to "MCQ".
+ * - content (string): The main content of the question. This field is required.
+ * - options (string[]): An array of possible answers. This field is required and must contain exactly 4 elements.
+ * - rightAnswer (string[]): An array containing the index of the correct answer. This field is required 
+ *   and must contain exactly 1 valid index from the options.
+ * 
+ * The schema includes validation rules to ensure that all required fields are provided 
+ * and that the options and rightAnswer fields meet their respective criteria.
+ */
 
+/**
+ * Grammaire Model
+ * 
+ * This model represents the Grammaire question in the MongoDB database.
+ * It is created using the grammaireSchema and is exported for use in the application.
+ * 
+ * The model ensures that we do not redefine it if it has already been declared in the 
+ * mongoose models.
+ */
 const MODEL_NAME = "Grammaire";
 const OPTIONS = ['a', 'b', 'c', 'd'];
 const VALID_OPTIONS_NUMBER = 4;
