@@ -9,7 +9,22 @@ import {
   type PassageFormData,
 } from "src/shared/schemas/passage.schema";
 import HomeBtn from "src/components/buttons/home";
-
+/**
+ * PassageForm Component
+ * 
+ * This component renders a form for creating a passage question, 
+ * which includes a passage text and related questions. 
+ * It allows users to add or remove related questions dynamically.
+ * 
+ * Props:
+ * - handleSubmit (function): A callback function that is called with the form data 
+ *   when the form is submitted successfully.
+ * 
+ * The form includes:
+ * - ContentInput for the passage text.
+ * - RelatedQuestionForm for managing related questions, allowing multiple questions to be added.
+ * - A submit button to create the passage question and a Home button for navigation.
+ */
 interface Props {
   handleSubmit: (data: PassageFormData) => void;
 }
