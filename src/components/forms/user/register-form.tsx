@@ -4,6 +4,20 @@ import { useAuthStore } from "src/store/auth-store";
 import Link from "next/link";
 import fetcher from "src/utils/fetcher";
 
+/**
+ * RegisterForm Component
+ * 
+ * This component renders a registration form for new users. 
+ * It allows users to enter their email, password, and confirm their password to create an account.
+ * 
+ * The form includes:
+ * - Input fields for email, password, and confirm password.
+ * - A submit button to initiate the registration process.
+ * - Error handling to display any registration errors.
+ * 
+ * The component uses the `useAuthStore` for managing authentication state 
+ * and redirects users to the dashboard upon successful registration.
+ */
 interface RegisterResponse {
   user: any;
   token: string;
