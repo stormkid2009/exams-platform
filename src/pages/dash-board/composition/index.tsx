@@ -3,10 +3,28 @@ import CompositionForm from "src/components/forms/question/composition-form";
 import fetcher from "src/utils/fetcher";
 import { type CompositionFormData } from "src/shared/schemas/composition.schema";
 
+/**
+ * Dashboard component for managing composition questions.
+ *
+ * This component renders a form for creating or managing a composition question.
+ * When the form is submitted, it sends the data to the API endpoint at `/api/questions/category/composition`.
+ *
+ * @returns {JSX.Element} The rendered Dashboard component.
+ */
 export default function DashBoard() {
   const path = `/api/questions/category/composition`;
 
-  const handleSubmit = async (formData: CompositionFormData) => {
+  /**
+   * Handle form submission for creating a composition question.
+   *
+   * This function transforms the form data to match the API's expected format and makes
+   * a request to the API endpoint using a custom fetcher utility. In case of an error,
+   * it logs the error details and propagates the error.
+   *
+   * @param {CompositionFormData} formData - The form data submitted by the user.
+   * @returns {Promise<void>} A promise that resolves when the API call is complete.
+   */
+  const handleSubmit = async (formData: CompositionFormData): Promise<void> => {
     try {
       // Transform form data to match the API's expected format
       const questionData = {
