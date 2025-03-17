@@ -3,6 +3,24 @@ import { User } from "src/models/user/user.model";
 import connectToDB from "src/lib/mongoose-client";
 import jwt from "jsonwebtoken";
 
+/**
+ * API handler for user login.
+ *
+ * @param {NextApiRequest} req - The HTTP request object containing user credentials.
+ * @param {NextApiResponse} res - The HTTP response object used to send responses.
+ *
+ * @returns {Promise<void>} - Returns a promise that resolves to void.
+ *
+ * @throws {Error} - Throws an error if there is an internal server issue.
+ *
+ * Possible responses:
+ * - 200: Login successful with token and user information.
+ * - 400: Bad request if email or password is missing.
+ * - 401: Unauthorized if credentials are invalid.
+ * - 405: Method not allowed if the request method is not POST.
+ * - 500: Internal server error if an unexpected error occurs.
+ */
+
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use environment variable in production
 
 export default async function handler(
