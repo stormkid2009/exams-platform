@@ -5,21 +5,37 @@ import { UserProfile } from "src/components/dash-board/user-profile";
 import { NewQuestionNav } from "src/components/dash-board/new-question-nav";
 import { NewTestNav } from "src/components/dash-board/new-test-nav";
 
+/**
+ * Dashboard component.
+ *
+ * This component renders a dashboard view for authenticated users.
+ * It handles redirection when the user is not authenticated and
+ * displays sections for question and exam management.
+ *
+ * @returns {JSX.Element | null} The dashboard view or null if the user is not authenticated.
+ */
 export default function Dashboard() {
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuthStore();
 
+  // Redirect unauthenticated users to the login page.
   useEffect(() => {
     if (!isAuthenticated) {
       router.push("/user/login");
     }
   }, [isAuthenticated, router]);
 
+  /**
+   * Handles the logout action.
+   *
+   * This method logs out the user and redirects them to the login page.
+   */
   const handleLogout = () => {
     logout();
     router.push("/user/login");
   };
 
+  // Prevent rendering if user data is not available.
   if (!isAuthenticated || !user) {
     return null;
   }
@@ -41,9 +57,7 @@ export default function Dashboard() {
         <div className="px-4 py-6 sm:px-0">
           <div className="border-4 border-dashed border-gray-200 rounded-lg p-4 space-y-8">
             <section>
-              <h2 className="text-2xl font-bold mb-4">
-                Question Management
-              </h2>
+              <h2 className="text-2xl font-bold mb-4">Question Management</h2>
               <p className="mb-4">
                 Create and manage different types of questions:
               </p>
@@ -51,12 +65,8 @@ export default function Dashboard() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4">
-                Exam Management
-              </h2>
-              <p className="mb-4">
-                Create and manage your exams:
-              </p>
+              <h2 className="text-2xl font-bold mb-4">Exam Management</h2>
+              <p className="mb-4">Create and manage your exams:</p>
               <NewTestNav />
             </section>
           </div>
