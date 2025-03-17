@@ -23,6 +23,18 @@ import jwt from "jsonwebtoken";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key"; // Use environment variable in production
 
+/**
+ * Connects to the database and handles user authentication.
+ *
+ * This function first checks if the request method is POST. If not, it returns a 405 error.
+ * It then validates the input and looks for the user in the database. If found, it verifies the password.
+ * On success, it generates a JWT token and returns it along with user information.
+ * In case of errors, appropriate status codes are returned.
+ *
+ * @param {NextApiRequest} req - The request object containing user credentials.
+ * @param {NextApiResponse} res - The response object used to send back the login result.
+ * @returns {Promise<void>} - A promise that resolves when the response has been sent.
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
