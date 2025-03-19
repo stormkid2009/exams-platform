@@ -113,8 +113,8 @@ function LoginForm() {
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
-          Don not have an account?{" "}
-          <Link href="/register" className="text-blue-500 hover:text-blue-700">
+          Do not have an account?{" "}
+          <Link href="/user/register" className="text-blue-500 hover:text-blue-700">
             Register here
           </Link>
         </p>

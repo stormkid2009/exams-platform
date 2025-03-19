@@ -91,7 +91,7 @@ function RegisterForm() {
       login(response.data.user, response.data.token);
 
       // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/dash-board");
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
