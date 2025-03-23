@@ -4,6 +4,7 @@ import Composition from "./composition";
 import Situation from "./situation";
 import Passage from "./passage";
 
+// exam component which render one question from all types
 export default function Exam(){
     return(
         <div>
