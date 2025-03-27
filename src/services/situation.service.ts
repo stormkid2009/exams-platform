@@ -2,12 +2,14 @@ import { Situation } from "src/models/questions/situation.model";
 import { SituationFormData } from "src/shared/schemas/situation.schema";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
-
+import { SituationQuestion } from "src/types/questions";
+import { FilterQuery } from "mongoose";
 /**
  * Represents the response structure for SituationService methods.
  */
-export interface SituationServiceResponse {
+export interface SituationServiceResponse <T = null>{
   success: boolean;
+  data?:T;
   error?: {
     message: string;
     code: number;
@@ -15,10 +17,58 @@ export interface SituationServiceResponse {
   };
 }
 
+
+export enum ServiceErrorCodes {
+  NOT_FOUND = 404,
+  INTERNAL_ERROR = 500
+}
 /**
  * SituationService handles operations related to Situation questions.
  */
 export class SituationService {
+  
+static async getRandomQuestion(
+    filter: FilterQuery<SituationQuestion> = {}
+  ): Promise<SituationServiceResponse<SituationQuestion>> {
+    try {
+      await connectToDB();
+
+      // Use MongoDB aggregation for efficient random selection
+      const [randomQuestion] = await Situation.aggregate([
+        { $match: filter },
+        { $sample: { size: 1 } }
+      ]);
+
+      if (!randomQuestion) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND
+          }
+        };
+      }
+
+      return {
+        success: true,
+        data: randomQuestion
+      };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve random Situation question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
   /**
    * Creates a new Situation question.
    *
