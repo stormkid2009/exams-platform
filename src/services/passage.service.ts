@@ -2,12 +2,21 @@ import { Passage } from "src/models/questions/passage.model";
 import { PassageFormData } from "src/shared/schemas/passage.schema";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
-
+import { FilterQuery } from "mongoose";
+import { PassageQuestion } from "src/types/questions";
 /**
  * Represents the response structure for PassageService methods.
  */
-export interface PassageServiceResponse {
+
+// Enum for error codes for more structured error handling
+export enum ServiceErrorCodes {
+  NOT_FOUND = 404,
+  INTERNAL_ERROR = 500
+};
+
+export interface PassageServiceResponse<T = null>{
   success: boolean;
+  data?:T;
   error?: {
     message: string;
     code: number;
@@ -19,6 +28,52 @@ export interface PassageServiceResponse {
  * PassageService handles operations related to Passage questions.
  */
 export class PassageService {
+  /**
+   * Get a random Grammaire question with optional filtering using aggregation
+   */
+  static async getRandomQuestion(
+    filter: FilterQuery<PassageQuestion> = {}
+  ): Promise<PassageServiceResponse<PassageQuestion>> {
+    try {
+      await connectToDB();
+
+      // Use MongoDB aggregation for efficient random selection
+      const [randomQuestion] = await Passage.aggregate([
+        { $match: filter },
+        { $sample: { size: 1 } }
+      ]);
+
+      if (!randomQuestion) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND
+          }
+        };
+      }
+
+      return {
+        success: true,
+        data: randomQuestion
+      };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve random Passage question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+  
   /**
    * Creates a new Passage question.
    *
