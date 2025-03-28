@@ -2,12 +2,21 @@ import connectToDB from "src/lib/mongoose-client";
 import { Composition } from "src/models/questions/composition.model";
 import { logError } from "src/utils/logger";
 import { CompositionFormData } from "src/shared/schemas/composition.schema";
+import { CompositionQuestion } from "src/types/questions";
+import { FilterQuery } from "mongoose";
+
+// Enum for error codes for more structured error handling
+export enum ServiceErrorCodes {
+  NOT_FOUND = 404,
+  INTERNAL_ERROR = 500
+};
 
 /**
  * Represents the response structure for CompositionService methods.
  */
-export interface CompositionServiceResponse {
+export interface CompositionServiceResponse<T = null> {
   success: boolean;
+  data?:T;
   error?: {
     message: string;
     code: number;
@@ -19,6 +28,52 @@ export interface CompositionServiceResponse {
  * CompositionService handles operations related to Composition questions.
  */
 export class CompositionService {
+
+  /**
+   * Get a random Grammaire question with optional filtering using aggregation
+   */
+  static async getRandomQuestion(
+    filter: FilterQuery<CompositionQuestion> = {}
+  ): Promise<CompositionServiceResponse<CompositionQuestion>> {
+    try {
+      await connectToDB();
+
+      // Use MongoDB aggregation for efficient random selection
+      const [randomQuestion] = await Composition.aggregate([
+        { $match: filter },
+        { $sample: { size: 1 } }
+      ]);
+
+      if (!randomQuestion) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND
+          }
+        };
+      }
+
+      return {
+        success: true,
+        data: randomQuestion
+      };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve random Composition question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
   /**
    * Creates a new Composition question.
    *
