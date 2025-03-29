@@ -11,7 +11,7 @@ import fetcher from "src/utils/fetcher";
  */
 export default function DashBoard() {
   // API endpoint path for Passage questions
-  const path = `/api/questions/category/passage`;
+  const path = `/api/questions/passage/new`;
 
   /**
    * Handles the form submission.

@@ -10,7 +10,7 @@ import { type GrammaireFormData } from "src/shared/schemas/grammaire.schema";
  * sending the form data to the API endpoint for creating Grammaire questions.
  */
 export default function DashBoard() {
-  const path = `/api/questions/category/grammaire`;
+  const path = `/api/questions/grammaire/new`;
 
   /**
    * Handles the form submission by transforming the form data and sending

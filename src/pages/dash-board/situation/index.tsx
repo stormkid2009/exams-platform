@@ -11,7 +11,7 @@ import { type SituationFormData } from "src/shared/schemas/situation.schema";
  */
 export default function DashBoard() {
   // API endpoint for Situation questions.
-  const path = `/api/questions/category/situation`;
+  const path = `/api/questions/situation/new`;
 
   /**
    * Handles the form submission by preparing data and sending it to the API.

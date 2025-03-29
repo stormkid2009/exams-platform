@@ -46,7 +46,7 @@ function LoginForm() {
       login(response.data.user, response.data.token);
 
       // Redirect to dashboard
-      router.push("/dashboard");
+      router.push("/dash-board");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");
     } finally {

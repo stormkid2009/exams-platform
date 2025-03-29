@@ -12,7 +12,7 @@ import { type CompositionFormData } from "src/shared/schemas/composition.schema"
  * @returns {JSX.Element} The rendered Dashboard component.
  */
 export default function DashBoard() {
-  const path = `/api/questions/category/composition`;
+  const path = `/api/questions/composition/new`;
 
   /**
    * Handle form submission for creating a composition question.
