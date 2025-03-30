@@ -4,11 +4,6 @@ import { GrammaireService } from "src/services/grammaire.service";
 import { ApiResponse, Messages } from "src/types/common";
 import { logApiError } from "src/utils/logger"; // Assuming you have this utility
 
-/**
- * Constant response messages used for API responses.
- *
- * @constant {Messages}
- */
 const msg: Messages = {
   success: "Successfully retrieved random grammar question",
   failure: "Failed to retrieve random grammar question",
@@ -16,23 +11,6 @@ const msg: Messages = {
   invalidData: "Invalid request data provided",
 } as const;
 
-/**
- * API handler for retrieving a random grammar question.
- *
- * This endpoint accepts only GET requests and processes the request in the following steps:
- *
- * 1. Validates that the request method is GET. If not, logs the error and returns a 405 response.
- * 2. Calls the GrammaireService.getRandomQuestion function to retrieve a random question.
- * 3. If the service returns an unsuccessful result, logs the error and responds with the relevant error details.
- * 4. If successful, returns a 200 response with the question data.
- * 5. Catches and logs any unexpected errors, returning a 500 Internal Server Error response.
- *
- * @async
- * @function handler
- * @param {NextApiRequest} req - The API request object.
- * @param {NextApiResponse<ApiResponse>} res - The API response object for sending back results.
- * @returns {Promise<void>} A promise that resolves when the API response is sent.
- */
 const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
@@ -58,14 +36,7 @@ const handler = async (
   }
 
   try {
-    // Extract any query parameters if needed for filtering
-    const filters = req.query;
-    
-    // Call the GrammaireService to get a random question
-    const result = await GrammaireService.getRandomQuestion(filters, {
-      path,
-      method,
-    });
+    const result = await GrammaireService.getRandomQuestion({});
 
     if (!result.success) {
       // Log the error details returned from the service
