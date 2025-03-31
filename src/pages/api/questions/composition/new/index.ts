@@ -53,7 +53,7 @@ const handler: ValidatedApiHandler<CompositionFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ): Promise<void> => {
-  const path = req.url || "/api/questions/category/openEnded";
+  const path = req.url || "/api/questions/composition/new";
   const method = req.method || "UNKNOWN";
 
   if (req.method !== "POST") {
