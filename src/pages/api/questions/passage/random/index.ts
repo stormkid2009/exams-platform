@@ -7,8 +7,8 @@ import { logApiError } from "src/utils/logger";
 
 
 const msg:Messages = {
-  success:"successfully retrieve random grammaire question  ",
-  failure:"failed to retrieve random grammaire question",
+  success:"successfully retrieve random passage question  ",
+  failure:"failed to retrieve random passage question",
   wrongMethod:"the method is not valid",
   invalidData:"the data is not valid",
 } as const;

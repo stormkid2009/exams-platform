@@ -5,8 +5,8 @@ import { logApiError } from "src/utils/logger";
 
 
 const msg:Messages = {
-  success:"successfully retrieve random grammaire question  ",
-  failure:"failed to retrieve random grammaire question",
+  success:"successfully retrieve random composition question  ",
+  failure:"failed to retrieve random composition question",
   wrongMethod:"the method is not valid",
   invalidData:"the data is not valid",
 } as const;
@@ -73,7 +73,7 @@ try {
   // log any unexpected errors using the logging utility
   await logApiError(
 
-    "Unexpected error in random grammar question handler",
+    "Unexpected error in random composition question handler",
       error instanceof Error ? error : new Error("Unknown error"),
       {
         path,

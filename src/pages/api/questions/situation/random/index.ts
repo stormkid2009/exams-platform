@@ -71,7 +71,7 @@ const handler=async(
   } catch (error) {
     // log any unexpected errros using the logging utility
     logApiError(
-     "unexpected error in random grammaire question handler",
+     "unexpected error in random situation question handler",
       error instanceof Error ? error : new Error("Unknown error"),
       {
         path,
