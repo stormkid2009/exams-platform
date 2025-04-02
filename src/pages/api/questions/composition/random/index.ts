@@ -30,7 +30,7 @@ const handler=async(
       }
     );
     // Return a 405 method Not allowed response
-    return res.status(400).json({
+    return res.status(405).json({
       status:"error",
       message:msg.wrongMethod,
       data:null,
@@ -46,11 +46,11 @@ try {
       // log the error details returned from the service
       await logApiError(
         "Failed to retrieve random composition question",
-        new Error (rsult.error? .message || msg.failure),
+        new Error (result.error?.message || msg.failure),
         {
           path,
           method,
-          statusCode:result.error? .code || 500,
+          statusCode:result.error?.code || 500,
         }
       );
       //Respond with the appropriate error code , message ,and details

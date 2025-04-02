@@ -32,7 +32,7 @@ const handler = async(
       }
     );
     //return a 405 Method not allowed response
-    return res.status(400).json({
+    return res.status(405).json({
       status:"error",
       message:msg.wrongMethod,
       data:null,
@@ -56,8 +56,17 @@ const handler = async(
           statusCode:result.error?.code || 500,
         }
       );
-  }
+      
   // Respond with the appropriate error code , message , and details  
+      return res.status(result.error?.code || 500).json({
+         status: "error",
+        message: result.error?.message || msg.failure,
+        data: null,
+        details: result.error?.details || "Could not retrieve a random question",
+      });
+  }
+    
+    // On success , respond with a 200 status and the question data
   res.status(200).json(
       {
         status:"success",
@@ -78,8 +87,8 @@ const handler = async(
       }
     );
   res.status(500).json({
-    status:"error",
-    message:"Internal Server Error",
+      status:"error",
+      message:"Internal Server Error",
       data:null,
       details:"An unexpected error occured",
     }
