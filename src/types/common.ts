@@ -1,9 +1,9 @@
 
 // src/types/common.ts
-export interface ApiResponse {
+export interface ApiResponse <T = unknown>{
     status: 'success' | 'error';
     message: string;
-    data: unknown;  // Using unknown is safer than any
+    data: T;  // Using unknown is safer than any
     details?: string; // Made optional with ? instead of | null | undefined
   }
   
