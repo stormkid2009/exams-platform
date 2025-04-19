@@ -93,7 +93,7 @@ static async getRandomQuestion(
         type: "Multi-MCQ",
         content,
         options: [a, b, c, d, e],
-        rightAnswers: [firstAnswer, secondAnswer],
+        rightAnswer: [firstAnswer, secondAnswer],
       });
 
       // Establish a connection to the database.

@@ -63,7 +63,7 @@ const situationSchema = new Schema<SituationQuestion>({
   },
 
   // Array containing indices of correct answers (must contain exactly 2 valid indices)
-  rightAnswers: {
+  rightAnswer: {
     type: [String],
     required: true,
     validate: {

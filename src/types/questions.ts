@@ -29,7 +29,7 @@ export interface BaseQuestion {
   export interface SituationQuestion extends BaseQuestion {
     type: typeof QuestionTypes.MULTI_MCQ;
     options: [string, string, string, string, string];
-    rightAnswers: [string, string];
+    rightAnswer: [string, string];
   }
   
   export interface CompositionQuestion extends BaseQuestion {
