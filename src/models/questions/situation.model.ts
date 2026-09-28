@@ -1,4 +1,4 @@
-import { SituationQuestion } from "src/types/questions"; // Import TypeScript definitions for type safety
+import { type SituationDoc } from "src/shared/schemas/situation.document";
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
 /**
@@ -39,7 +39,7 @@ const validateOptionsLength = (options: string[]): boolean =>
 const validateRightAnswers = (rightAnswers: string[]) => rightAnswers.length === 2 && rightAnswers.every(answer => OPTIONS_LABELS.includes(answer));
 
 // Schema for the situation question that matches the SituationQuestion interface
-const situationSchema = new Schema<SituationQuestion>({
+const situationSchema = new Schema<SituationDoc>({
   // The type of the question (currently only "Multi-MCQ" is supported)
   type: {
     type: String,
