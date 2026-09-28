@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { useExamContext } from 'src/pages/context';
+// import { useExamContext } from 'src/pages/context';
 
 interface AddToExamButtonProps {
   questionId?: string;
@@ -9,7 +9,8 @@ interface AddToExamButtonProps {
 }
 
 export default function AddToExamButton({ questionId, questionType, questionContent }: AddToExamButtonProps) {
-  const { addQuestion } = useExamContext();
+  // const { addQuestion } = useExamContext();
+  const addQuestion = (q: any) => console.log('Mock add to exam:', q);
 
   const handleAdd = () => {
     if (questionId && questionType && questionContent) {
