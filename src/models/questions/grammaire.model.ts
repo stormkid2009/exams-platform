@@ -1,4 +1,5 @@
-import { GrammaireQuestion, QuestionType } from "src/types/questions"; // Import TypeScript definitions for type safety
+import { type GrammaireDoc } from "src/shared/schemas/grammaire.document";
+import { type QuestionType } from "src/shared/schemas/question";
 import mongoose, { Schema } from "mongoose"; // Import mongoose for MongoDB schema and model management
 
 /**
@@ -37,7 +38,7 @@ const validateRightAnswer = (rightAnswer: string[]) => rightAnswer.length === 1 
 
 
 // Define the schema for grammaire question
-export const grammaireSchema = new Schema<GrammaireQuestion>({
+export const grammaireSchema = new Schema<GrammaireDoc>({
   // The type of the question (currently only "MCQ" is supported)
   type: {
     type: String,
