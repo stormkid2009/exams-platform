@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose"; // Import mongoose for schema and model management
-import { PassageQuestion, QuestionType } from "src/types/questions"; // Import TypeScript types for type safety
+import { type PassageDoc } from "src/shared/schemas/passage.document";
+import { type QuestionType } from "src/shared/schemas/question";
 import {grammaireSchema} from "./grammaire.model";
 
 /**
@@ -40,7 +41,7 @@ const relatedQuestionSchema = new Schema({
   ...grammaireSchema.obj, // Spread all fields from the grammaire schema
 });
 // Schema for the passage question document
-const passageSchema = new Schema<PassageQuestion>({
+const passageSchema = new Schema<PassageDoc>({
   type: {
     type: String,
     required: true,
