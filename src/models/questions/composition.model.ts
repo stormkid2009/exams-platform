@@ -1,4 +1,5 @@
-import { CompositionQuestion, QuestionType } from "src/types/questions";
+import { type CompositionDoc } from "src/shared/schemas/composition.document";
+import { type QuestionType } from "src/shared/schemas/question";
 import mongoose, { Schema } from "mongoose";
 /**
  * compositionSchema
@@ -33,7 +34,7 @@ const MODEL_NAME = "Composition";
 const validateElements = (elements: string[]): boolean => elements.length > 0;
 
 // Schema for open-ended questions
-export const compositionSchema = new Schema<CompositionQuestion>(
+export const compositionSchema = new Schema<CompositionDoc>(
   {
     // The main content of the question
     content: { type: String, required: [true, "Content is required"] },
