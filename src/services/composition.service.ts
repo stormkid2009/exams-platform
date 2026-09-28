@@ -2,7 +2,8 @@ import connectToDB from "src/lib/mongoose-client";
 import { Composition } from "src/models/questions/composition.model";
 import { logError } from "src/utils/logger";
 import { CompositionFormData } from "src/shared/schemas/composition.schema";
-import { CompositionQuestion } from "src/types/questions";
+import { type CompositionDoc } from "src/shared/schemas/composition.document";
+import { toCompositionDoc } from "src/shared/schemas/transforms";
 import { FilterQuery } from "mongoose";
 
 // Enum for error codes for more structured error handling
@@ -33,8 +34,8 @@ export class CompositionService {
    * Get a random Grammaire question with optional filtering using aggregation
    */
   static async getRandomQuestion(
-    filter: FilterQuery<CompositionQuestion> = {}
-  ): Promise<CompositionServiceResponse<CompositionQuestion>> {
+    filter: FilterQuery<CompositionDoc> = {}
+  ): Promise<CompositionServiceResponse<CompositionDoc>> {
     try {
       await connectToDB();
 
@@ -90,16 +91,11 @@ export class CompositionService {
     contextInfo: { path: string; method: string }
   ): Promise<CompositionServiceResponse> {
     try {
-      // Destructure the necessary fields from the form data.
-      const { content, a, b, answer } = data;
+      // Transform form data into the DB document shape.
+      const questionData = toCompositionDoc(data);
 
-      // Create a new Composition question instance with the provided data.
-      const question = new Composition({
-        type: "Open-Ended",
-        content,
-        elements: [a, b],
-        answer,
-      });
+      // Create a new Composition question instance.
+      const question = new Composition(questionData);
 
       // Establish a connection to the database.
       await connectToDB();
