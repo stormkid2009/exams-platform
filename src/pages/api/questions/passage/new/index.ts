@@ -1,3 +1,4 @@
+import { withAuth } from "src/middleware/auth-middleware";
 /**
  * @file passages.ts
  * @description API endpoint for creating new passage questions.
@@ -40,6 +41,9 @@ const handler: ValidatedApiHandler<PassageFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) => {
+  const user = await withAuth(req, res);
+  if (!user) return;
+
   const path = req.url || "/api/questions/category/passage";
   const method = req.method || "UNKNOWN";
 
