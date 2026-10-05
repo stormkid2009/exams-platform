@@ -1,3 +1,4 @@
+import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest,NextApiResponse } from "next";
 import { GrammaireService } from "src/services/grammaire.service";
 import { Messages,ApiResponse } from "src/types/common";
@@ -17,6 +18,9 @@ const handler = async(
   req:NextApiRequest,
   res:NextApiResponse<ApiResponse>
 ):Promise<void> =>{
+  const user = await withAuth(req, res);
+  if (!user) return;
+
   const path = req.url || "/api/questions/grammaire/random";
   const method = req.method || "UNKNOWN";
 
