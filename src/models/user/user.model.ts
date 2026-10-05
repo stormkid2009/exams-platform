@@ -1,6 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import bcrypt from "bcryptjs";
-import { IUserModel } from "src/types/auth";
+import { type AuthFormData } from "src/shared/schemas/auth.schema";
 
 /**
  * userSchema
@@ -28,7 +28,7 @@ import { IUserModel } from "src/types/auth";
  * mongoose models.
  */
 const MODEL_NAME = "User";
-const userSchema: Schema<IUserModel> = new Schema({
+const userSchema: Schema<AuthFormData & { createdAt: Date }> = new Schema({
   email: {
     type: String,
     required: true,
