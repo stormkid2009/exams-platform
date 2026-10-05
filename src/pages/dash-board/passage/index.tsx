@@ -3,6 +3,8 @@ import PassageForm from "src/components/forms/question/passage-form";
 import { type PassageFormData } from "src/shared/schemas/passage.schema";
 import fetcher from "src/utils/fetcher";
 
+import { submitQuestion } from "src/utils/submit-question";
+
 /**
  * DashBoard page for the Passage questions category.
  *
@@ -22,12 +24,7 @@ export default function DashBoard() {
    * @returns A promise resolving to the API response.
    */
   const handleSubmit = async (data: PassageFormData) => {
-    try {
-      const response = await fetcher(data, path);
-      console.log("Passage question created successfully:", response);
-    } catch (error) {
-      console.error("Error creating passage question:", error);
-    }
+    await submitQuestion(path, data);
   };
 
   // Render the PassageForm component and pass the handleSubmit function as a prop

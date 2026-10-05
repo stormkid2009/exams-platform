@@ -1,3 +1,4 @@
+import { withAuth } from "src/middleware/auth-middleware";
 //test for grammaire random question with best practice [validation and error logs]
 import { NextApiRequest, NextApiResponse } from "next";
 import { GrammaireService } from "src/services/grammaire.service";
@@ -15,6 +16,9 @@ const handler = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ): Promise<void> => {
+  const user = await withAuth(req, res);
+  if (!user) return;
+
   const path = req.url || "/api/questions/grammaire/random";
   const method = req.method || "UNKNOWN";
 

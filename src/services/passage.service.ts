@@ -1,9 +1,10 @@
 import { Passage } from "src/models/questions/passage.model";
 import { PassageFormData } from "src/shared/schemas/passage.schema";
+import { type PassageDoc } from "src/shared/schemas/passage.document";
+import { toPassageDoc } from "src/shared/schemas/transforms";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
 import { FilterQuery } from "mongoose";
-import { PassageQuestion } from "src/types/questions";
 /**
  * Represents the response structure for PassageService methods.
  */
@@ -32,8 +33,8 @@ export class PassageService {
    * Get a random Grammaire question with optional filtering using aggregation
    */
   static async getRandomQuestion(
-    filter: FilterQuery<PassageQuestion> = {}
-  ): Promise<PassageServiceResponse<PassageQuestion>> {
+    filter: FilterQuery<PassageDoc> = {}
+  ): Promise<PassageServiceResponse<PassageDoc>> {
     try {
       await connectToDB();
 
@@ -90,23 +91,11 @@ export class PassageService {
     contextInfo: { path: string; method: string }
   ): Promise<PassageServiceResponse> {
     try {
-      // Destructure the necessary fields from the passage form data.
-      const { passage, relatedQuestions } = data;
+      // Transform form data into the DB document shape.
+      const questionData = toPassageDoc(data);
 
-      // Transform the relatedQuestions to match the expected schema.
-      const transformedQuestions = relatedQuestions.map((question) => ({
-        type: "MCQ", // Set the type to MCQ for multiple-choice questions.
-        content: question.content,
-        options: [question.a, question.b, question.c, question.d], // Create the options array from individual options.
-        rightAnswer: question.rightAnswer, // Keep the correct answer as provided in the form.
-      }));
-
-      // Create a new instance of a Passage question with the provided data.
-      const question = new Passage({
-        type: "RC", // RC denotes Reading Comprehension type question.
-        passage,
-        relatedQuestions: transformedQuestions,
-      });
+      // Create a new instance of a Passage question.
+      const question = new Passage(questionData);
 
       // Establish a connection to the database.
       await connectToDB();

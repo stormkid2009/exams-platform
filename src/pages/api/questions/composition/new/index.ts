@@ -1,3 +1,4 @@
+import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
 import { CompositionService } from "src/services/composition.service";
 import {
@@ -53,6 +54,9 @@ const handler: ValidatedApiHandler<CompositionFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ): Promise<void> => {
+  const user = await withAuth(req, res);
+  if (!user) return;
+
   const path = req.url || "/api/questions/composition/new";
   const method = req.method || "UNKNOWN";
 

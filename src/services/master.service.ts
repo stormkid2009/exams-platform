@@ -1,4 +1,4 @@
-import { GrammaireQuestion } from "src/types/questions";
+import { type GrammaireDoc } from "src/shared/schemas/grammaire.document";
 import { Grammaire } from "src/models/questions/grammaire.model";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
@@ -25,8 +25,8 @@ export class GrammaireService {
    * Get a random Grammaire question with optional filtering using aggregation
    */
   static async getRandomQuestion(
-    filter: FilterQuery<GrammaireQuestion> = {}
-  ): Promise<GrammaireServiceResponse<GrammaireQuestion>> {
+    filter: FilterQuery<GrammaireDoc> = {}
+  ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
     try {
       await connectToDB();
 

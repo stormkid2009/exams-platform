@@ -1,8 +1,9 @@
 import { Situation } from "src/models/questions/situation.model";
 import { SituationFormData } from "src/shared/schemas/situation.schema";
+import { type SituationDoc } from "src/shared/schemas/situation.document";
+import { toSituationDoc } from "src/shared/schemas/transforms";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
-import { SituationQuestion } from "src/types/questions";
 import { FilterQuery } from "mongoose";
 /**
  * Represents the response structure for SituationService methods.
@@ -28,8 +29,8 @@ export enum ServiceErrorCodes {
 export class SituationService {
   
 static async getRandomQuestion(
-    filter: FilterQuery<SituationQuestion> = {}
-  ): Promise<SituationServiceResponse<SituationQuestion>> {
+    filter: FilterQuery<SituationDoc> = {}
+  ): Promise<SituationServiceResponse<SituationDoc>> {
     try {
       await connectToDB();
 
@@ -85,16 +86,11 @@ static async getRandomQuestion(
     contextInfo: { path: string; method: string }
   ): Promise<SituationServiceResponse> {
     try {
-      // Destructure form data for easier access to values.
-      const { a, b, c, d, e, content, firstAnswer, secondAnswer } = data;
+      // Transform form data into the DB document shape.
+      const questionData = toSituationDoc(data);
 
-      // Create the Situation question object using provided form data.
-      const question = new Situation({
-        type: "Multi-MCQ",
-        content,
-        options: [a, b, c, d, e],
-        rightAnswer: [firstAnswer, secondAnswer],
-      });
+      // Create the Situation question object.
+      const question = new Situation(questionData);
 
       // Establish a connection to the database.
       await connectToDB();

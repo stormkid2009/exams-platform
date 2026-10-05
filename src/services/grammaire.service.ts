@@ -1,6 +1,7 @@
 import { FilterQuery } from "mongoose";
-import { GrammaireQuestion } from "src/types/questions";
+import { type GrammaireDoc } from "src/shared/schemas/grammaire.document";
 import { GrammaireFormData } from "src/shared/schemas/grammaire.schema";
+import { toGrammaireDoc } from "src/shared/schemas/transforms";
 import { Grammaire } from "src/models/questions/grammaire.model";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
@@ -33,8 +34,8 @@ export class GrammaireService {
      * Get a random Grammaire question with optional filtering using aggregation
      */
     static async getRandomQuestion(
-      filter: FilterQuery<GrammaireQuestion> = {}
-    ): Promise<GrammaireServiceResponse<GrammaireQuestion>> {
+      filter: FilterQuery<GrammaireDoc> = {}
+    ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
       try {
         await connectToDB();
   
@@ -90,17 +91,10 @@ export class GrammaireService {
     contextInfo: { path: string; method: string }
   ): Promise<GrammaireServiceResponse> {
     try {
-      // Convert the right answer into an array format.
-      const answer = [data.rightAnswer];
-      // Destructure the form data to extract options and content.
-      const { a, b, c, d, content } = data;
-      // Create a new instance of a Grammaire question using the provided form data.
-      const question = new Grammaire({
-        type: "MCQ",
-        content,
-        options: [a, b, c, d],
-        rightAnswer: answer,
-      });
+      // Transform form data into the DB document shape.
+      const questionData = toGrammaireDoc(data);
+      // Create a new instance of a Grammaire question.
+      const question = new Grammaire(questionData);
 
       // Establish a connection to the database.
       await connectToDB();

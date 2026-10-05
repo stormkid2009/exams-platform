@@ -1,3 +1,4 @@
+import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest,NextApiResponse } from "next";
 import { SituationService } from "src/services/situation.service";
 import { Messages,ApiResponse } from "src/types/common";
@@ -15,8 +16,11 @@ const handler=async(
   res:NextApiResponse<ApiResponse>
 ):Promise<void> =>{
 
+  const user = await withAuth(req, res);
+  if (!user) return;
+
   const path = req.url || "/api/questions/situation/random";
-  const method = req.method || "UNKOWN";
+  const method = req.method || "UNKNOWN";
   if(method !== "GET"){
     // log the error if the request method is invalid
     await logApiError(
