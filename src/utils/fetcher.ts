@@ -36,12 +36,21 @@ const fetcher = async <T>(
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   try {
+    // Retrieve token from auth store
+    const { useAuthStore } = require("src/store/auth-store");
+    const token = useAuthStore.getState().token;
+    
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    }
+
     // Execute the fetch request with POST method, JSON headers, and stringified body.
     const response = await fetch(path, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(data),
       signal: controller.signal,
     });
