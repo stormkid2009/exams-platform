@@ -3,6 +3,8 @@ import SituationForm from "src/components/forms/question/situation-form";
 import fetcher from "src/utils/fetcher";
 import { type SituationFormData } from "src/shared/schemas/situation.schema";
 
+import { submitQuestion } from "src/utils/submit-question";
+
 /**
  * DashBoard page for the Situation questions category.
  *
@@ -25,27 +27,8 @@ export default function DashBoard() {
    * @throws Propagates any errors encountered during the API call.
    */
   const handleSubmit = async (formData: SituationFormData) => {
-    try {
-      // Copy form data into a new object; transformation logic can be added here if needed.
-      const questionData: SituationFormData = {
-        ...formData,
-      };
-      // Call the API endpoint with the prepared question data.
-      const response = await fetcher(questionData, path);
-      console.log(response);
-    } catch (error: unknown) {
-      console.error("Error creating question:", error);
-      if (error instanceof Error) {
-        // Log the error message if the error is an instance of Error.
-        console.error("Error message:", error.message);
-      }
-      if (error && typeof error === "object" && "response" in error) {
-        // Log the detailed API response error if available.
-        console.error("API Response:", (error as any).response.data);
-      }
-      // Propagate the error to allow further handling (e.g., display feedback in the form).
-      throw error;
-    }
+    const questionData: SituationFormData = { ...formData };
+    await submitQuestion(path, questionData);
   };
 
   /**
