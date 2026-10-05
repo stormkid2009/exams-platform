@@ -3,6 +3,8 @@ import GrammaireForm from "src/components/forms/question/grammaire-form";
 import fetcher from "src/utils/fetcher";
 import { type GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 
+import { submitQuestion } from "src/utils/submit-question";
+
 /**
  * DashBoard page for the Grammaire questions category.
  *
@@ -21,24 +23,8 @@ export default function DashBoard() {
    * @throws Rethrows error from API call for further handling.
    */
   const handleSubmit = async (formData: GrammaireFormData) => {
-    try {
-      // Transform form data to match the API's expected format
-      const questionData = {
-        ...formData,
-      };
-      const response = await fetcher(questionData, path);
-      console.log(response);
-    } catch (error: unknown) {
-      console.error("Error creating question:", error);
-      if (error instanceof Error) {
-        // If error is an instance of Error, log the message
-        console.error("Error message:", error.message);
-      }
-      if (error && typeof error === "object" && "response" in error) {
-        console.error("API Response:", (error as any).response.data); // Log the error response from the API
-      }
-      throw error; // Propagate error to form
-    }
+    const questionData = { ...formData };
+    await submitQuestion(path, questionData);
   };
 
   return (
