@@ -1,3 +1,4 @@
+import { withAuth } from "src/middleware/auth-middleware";
 /**
  * @file situation.ts
  * @description API endpoint for creating new situation questions.
@@ -44,6 +45,9 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
   req: NextApiRequest,
   res: NextApiResponse<ApiResponse>
 ) => {
+  const user = await withAuth(req, res);
+  if (!user) return;
+
   const path = req.url || "/api/questions/category/situation";
   const method = req.method || "UNKNOWN";
 
