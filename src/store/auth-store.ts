@@ -5,7 +5,8 @@ import { persist } from "zustand/middleware";
  * Interface representing a user.
  */
 interface User {
-  id: string;
+  id?: string;
+  userId: string;
   email: string;
 }
 
