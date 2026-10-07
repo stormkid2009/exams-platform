@@ -1,49 +1,47 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import { type AuthFormData } from "src/shared/schemas/auth.schema";
 
 /**
- * userSchema
- * 
- * This schema defines the structure of a user document in the MongoDB database.
- * It includes fields for the user's email, password, and the date of account creation.
- * 
- * Fields:
- * - email (string): The user's email address. This field is required, must be unique, 
- *   trimmed, and converted to lowercase.
- * - password (string): The user's password. This field is required.
- * - createdAt (Date): The date when the user account was created. Defaults to the current date.
- * 
- * The schema includes a pre-save hook to hash the password before saving it to the database, 
- * ensuring that passwords are stored securely.
+ * IUserDocument interface representing User document fields and methods.
  */
+export interface IUserDocument extends Document {
+  email: string;
+  password: string;
+  createdAt: Date;
+  userId: string;
+  comparePassword(candidatePassword: string): Promise<boolean>;
+}
 
-/**
- * User Model
- * 
- * This model represents the User in the MongoDB database.
- * It is created using the userSchema and is exported for use in the application.
- * 
- * The model ensures that we do not redefine it if it has already been declared in the 
- * mongoose models.
- */
 const MODEL_NAME = "User";
-const userSchema: Schema<AuthFormData & { createdAt: Date }> = new Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    trim: true,
-    lowercase: true,
+
+const userSchema = new Schema<IUserDocument>(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Virtual getter for userId
+userSchema.virtual("userId").get(function (this: IUserDocument) {
+  return this._id.toString();
 });
 
 // Hash password before saving
@@ -66,5 +64,6 @@ userSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-export const User = 
-mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, userSchema);
+export const User: Model<IUserDocument> =
+  mongoose.models[MODEL_NAME] || mongoose.model<IUserDocument>(MODEL_NAME, userSchema);
+
