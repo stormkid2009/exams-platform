@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { User } from "src/models/user/user.model";
-import connectToDB from "src/lib/mongoose-client";
-import jwt from "jsonwebtoken";
 import { validateBodyMiddleware } from "src/middleware/validate-body-middleware";
 import { authSchema } from "src/shared/schemas/auth.schema";
 import { checkRateLimit } from "src/utils/rate-limit";
+import { AuthService } from "src/services/auth.service";
 
 const isValidPassword = (password: string): boolean => {
   return (
@@ -22,60 +20,25 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     return res.status(429).json({ message: "Too many requests, please try again later." });
   }
 
-  if (!process.env.JWT_SECRET) {
-    console.error("JWT_SECRET is not defined");
-    return res.status(500).json({ message: "Internal server error" });
-  }
-
-  try {
-    await connectToDB();
-
-    const { email, password } = req.body;
-
-    if (!isValidPassword(password)) {
-      return res.status(400).json({
-        message:
-          "Password must be at least 8 characters long and contain both letters and numbers",
-      });
-    }
-
-    const existingUser = await User.findOne({ email: email.toLowerCase() });
-    if (existingUser) {
-      return res.status(409).json({
-        message: "Email already registered",
-      });
-    }
-
-    const user = new User({
-      email: email.toLowerCase(),
-      password,
-    });
-
-    await user.save();
-
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      process.env.JWT_SECRET,
-      { expiresIn: "24h" }
-    );
-
-    res.status(201).json({
-      message: "Registration successful",
-      token,
-      user: {
-        email: user.email,
-        id: user._id,
-      },
-    });
-  } catch (error: any) {
-    if (error.code === 11000) {
-      return res.status(409).json({ message: "Email already registered" });
-    }
-    console.error("Registration error:", error);
-    res.status(500).json({
-      message: "Internal server error",
+  if (!isValidPassword(req.body.password)) {
+    return res.status(400).json({
+      message:
+        "Password must be at least 8 characters long and contain both letters and numbers",
     });
   }
+
+  const result = await AuthService.register(req.body);
+
+  if (!result.success) {
+    return res.status(result.statusCode).json({ message: result.message });
+  }
+
+  res.status(201).json({
+    message: "Registration successful",
+    token: result.token,
+    user: result.user,
+  });
 }
 
 export default validateBodyMiddleware(authSchema)(handler);
+
