@@ -1,3 +1,4 @@
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest,NextApiResponse } from "next";
 import { PassageService } from "src/services/passage.service";
@@ -93,4 +94,5 @@ const handler=async(
   }
 }
 
-export default handler;
+export default withDbMiddleware(handler);
+
