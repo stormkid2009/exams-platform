@@ -37,7 +37,7 @@ export class GrammaireService {
       filter: FilterQuery<GrammaireDoc> = {}
     ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
       try {
-        await connectToDB();
+        //await connectToDB();
   
         // Use MongoDB aggregation for efficient random selection
         const [randomQuestion] = await Grammaire.aggregate([
