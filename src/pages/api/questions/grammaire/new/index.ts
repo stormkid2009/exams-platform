@@ -1,3 +1,4 @@
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
 import { GrammaireService } from "src/services/grammaire.service";
@@ -134,4 +135,5 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
 };
 
 // Export the handler wrapped with a middleware that validates the request body against the grammaire schema.
-export default validateBodyMiddleware(grammaireSchema)(handler);
+export default withDbMiddleware(validateBodyMiddleware(grammaireSchema)(handler as any));
+
