@@ -1,3 +1,4 @@
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest,NextApiResponse } from "next";
 import { CompositionService } from "src/services/composition.service";
@@ -96,4 +97,5 @@ try {
 }
 }
 
-export default handler;
+export default withDbMiddleware(handler);
+
