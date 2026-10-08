@@ -1,3 +1,4 @@
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 /**
  * @file situation.ts
@@ -129,4 +130,5 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
  *
  * The middleware applies the situationSchema to validate incoming request bodies.
  */
-export default validateBodyMiddleware(situationSchema)(handler);
+export default withDbMiddleware(validateBodyMiddleware(situationSchema)(handler as any));
+
