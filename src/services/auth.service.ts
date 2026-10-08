@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     try {
-      await connectToDB();
+      //await connectToDB();
 
       const user = await User.findOne({ email: data.email.toLowerCase() });
       if (!user) {
