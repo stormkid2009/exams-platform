@@ -1,3 +1,4 @@
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
 import { CompositionService } from "src/services/composition.service";
@@ -126,4 +127,5 @@ const handler: ValidatedApiHandler<CompositionFormData> = async (
 
 // Export the handler wrapped with a middleware that validates the request body
 // against the composition schema.
-export default validateBodyMiddleware(compositionSchema)(handler);
+export default withDbMiddleware(validateBodyMiddleware(compositionSchema)(handler as any));
+
