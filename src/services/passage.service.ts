@@ -36,7 +36,7 @@ export class PassageService {
     filter: FilterQuery<PassageDoc> = {}
   ): Promise<PassageServiceResponse<PassageDoc>> {
     try {
-      await connectToDB();
+      //await connectToDB();
 
       // Use MongoDB aggregation for efficient random selection
       const [randomQuestion] = await Passage.aggregate([
