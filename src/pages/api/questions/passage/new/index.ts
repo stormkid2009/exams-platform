@@ -1,3 +1,4 @@
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 /**
  * @file passages.ts
@@ -122,4 +123,5 @@ const handler: ValidatedApiHandler<PassageFormData> = async (
 };
 
 // Export the handler wrapped with the validateBodyMiddleware to validate incoming request bodies.
-export default validateBodyMiddleware(passageSchema)(handler);
+export default withDbMiddleware(validateBodyMiddleware(passageSchema)(handler as any));
+
