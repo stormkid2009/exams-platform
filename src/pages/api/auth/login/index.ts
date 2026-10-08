@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { validateBodyMiddleware } from "src/middleware/validate-body-middleware";
+import { withDbMiddleware } from "src/middleware/db-middleware";
 import { authSchema } from "src/shared/schemas/auth.schema";
 import { checkRateLimit } from "src/utils/rate-limit";
 import { AuthService } from "src/services/auth.service";
@@ -30,5 +31,6 @@ async function handler(
   });
 }
 
-export default validateBodyMiddleware(authSchema)(handler);
+export default withDbMiddleware(validateBodyMiddleware(authSchema)(handler));
+
 
