@@ -32,7 +32,7 @@ static async getRandomQuestion(
     filter: FilterQuery<SituationDoc> = {}
   ): Promise<SituationServiceResponse<SituationDoc>> {
     try {
-      await connectToDB();
+      //await connectToDB();
 
       // Use MongoDB aggregation for efficient random selection
       const [randomQuestion] = await Situation.aggregate([
