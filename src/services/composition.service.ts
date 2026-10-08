@@ -37,7 +37,7 @@ export class CompositionService {
     filter: FilterQuery<CompositionDoc> = {}
   ): Promise<CompositionServiceResponse<CompositionDoc>> {
     try {
-      await connectToDB();
+      //await connectToDB();
 
       // Use MongoDB aggregation for efficient random selection
       const [randomQuestion] = await Composition.aggregate([
