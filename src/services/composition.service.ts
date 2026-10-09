@@ -98,7 +98,7 @@ export class CompositionService {
       const question = new Composition(questionData);
 
       // Establish a connection to the database.
-      await connectToDB();
+      //await connectToDB();
 
       // Save the newly created question to the database.
       await question.save();
