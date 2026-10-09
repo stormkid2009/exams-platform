@@ -76,7 +76,7 @@ export class AuthService {
     }
 
     try {
-      await connectToDB();
+      //await connectToDB();
 
       const existingUser = await User.findOne({ email: data.email.toLowerCase() });
       if (existingUser) {
