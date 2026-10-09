@@ -98,7 +98,7 @@ export class PassageService {
       const question = new Passage(questionData);
 
       // Establish a connection to the database.
-      await connectToDB();
+      //await connectToDB();
 
       // Save the newly created Passage question to the database.
       await question.save();
