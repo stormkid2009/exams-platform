@@ -93,7 +93,7 @@ static async getRandomQuestion(
       const question = new Situation(questionData);
 
       // Establish a connection to the database.
-      await connectToDB();
+      //await connectToDB();
       // Save the newly created question record to the database.
       await question.save();
 
