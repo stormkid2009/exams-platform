@@ -97,7 +97,7 @@ export class GrammaireService {
       const question = new Grammaire(questionData);
 
       // Establish a connection to the database.
-      await connectToDB();
+      //await connectToDB();
       // Save the newly created question document to the database.
       await question.save();
 
