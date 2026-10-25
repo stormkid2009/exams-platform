@@ -60,6 +60,9 @@ const passageSchema = new Schema<PassageDoc>({
       message: "A passage must have at least one related question", // Error message if validation fails
     },
   },
+
+  // The MongoDB ObjectId (as string) of the user who created this question
+  authorId: { type: String, required: true },
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields  
 
 
