@@ -69,6 +69,9 @@ export const grammaireSchema = new Schema<GrammaireDoc>({
       message: "RightAnswer must be from ['a','b','c','d'] ", // Error message if validation fails
     },
   },
+
+  // The MongoDB ObjectId (as string) of the user who created this question
+  authorId: { type: String, required: true },
 },
 {
   timestamps: true,
