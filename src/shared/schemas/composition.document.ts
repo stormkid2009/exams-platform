@@ -14,6 +14,7 @@ export const compositionDocSchema = z.object({
   content: z.string().min(1),
   elements: z.tuple([z.string(), z.string()]),
   answer: z.string().min(1),
+  authorId: z.string(),
 });
 
 /**
