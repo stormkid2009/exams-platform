@@ -73,6 +73,9 @@ const situationSchema = new Schema<SituationDoc>({
         "Situation question must have exactly 2 right answers from ['a','b','c','d','e'] ", // Error message if validation fails
     },
   },
+
+  // The MongoDB ObjectId (as string) of the user who created this question
+  authorId: { type: String, required: true },
 },
 {
   timestamps: true,
