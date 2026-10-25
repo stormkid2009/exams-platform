@@ -14,6 +14,7 @@ export const situationDocSchema = z.object({
   content: z.string().min(1),
   options: z.tuple([z.string(), z.string(), z.string(), z.string(), z.string()]),
   rightAnswer: z.tuple([z.string(), z.string()]),
+  authorId: z.string(),
 });
 
 /**
