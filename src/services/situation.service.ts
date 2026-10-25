@@ -5,6 +5,7 @@ import { toSituationDoc } from "src/shared/schemas/transforms";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
 import { FilterQuery } from "mongoose";
+
 /**
  * Represents the response structure for SituationService methods.
  */
@@ -21,14 +22,16 @@ export interface SituationServiceResponse <T = null>{
 
 export enum ServiceErrorCodes {
   NOT_FOUND = 404,
+  FORBIDDEN = 403,
   INTERNAL_ERROR = 500
 }
+
 /**
  * SituationService handles operations related to Situation questions.
  */
 export class SituationService {
   
-static async getRandomQuestion(
+  static async getRandomQuestion(
     filter: FilterQuery<SituationDoc> = {}
   ): Promise<SituationServiceResponse<SituationDoc>> {
     try {
@@ -70,24 +73,22 @@ static async getRandomQuestion(
       };
     }
   }
+
   /**
-   * Creates a new Situation question.
+   * Creates a new Situation question, storing the authorId from the JWT.
    *
-   * This method converts the provided Situation form data into a Situation question entity,
-   * connects to the database, and attempts to save the newly created question record.
-   * If an error occurs, it logs the error and returns a failure response.
-   *
-   * @param data - The form data required to create a Situation question.
-   * @param contextInfo - Additional context such as API path and method.
-   * @returns A promise that resolves to a SituationServiceResponse indicating success or error details.
+   * @param data - The validated form data for the question.
+   * @param contextInfo - API path and method for logging.
+   * @param authorId - The MongoDB ObjectId (as string) of the authenticated user.
    */
   static async createQuestion(
     data: SituationFormData,
-    contextInfo: { path: string; method: string }
+    contextInfo: { path: string; method: string },
+    authorId: string
   ): Promise<SituationServiceResponse> {
     try {
-      // Transform form data into the DB document shape.
-      const questionData = toSituationDoc(data);
+      // Transform form data into the DB document shape, embedding authorId.
+      const questionData = toSituationDoc(data, authorId);
 
       // Create the Situation question object.
       const question = new Situation(questionData);
@@ -114,6 +115,96 @@ static async getRandomQuestion(
         error: {
           message: "Failed to create question",
           code: 500,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Updates a Situation question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   * @param data - The validated form data with updated values.
+   */
+  static async updateQuestion(
+    id: string,
+    authorId: string,
+    data: SituationFormData
+  ): Promise<SituationServiceResponse<SituationDoc>> {
+    try {
+      const updateData = toSituationDoc(data, authorId);
+
+      const updated = await Situation.findOneAndUpdate(
+        { _id: id, authorId },
+        { $set: updateData },
+        { new: true, runValidators: true }
+      );
+
+      if (!updated) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true, data: updated.toObject() as SituationDoc };
+    } catch (error) {
+      await logError(
+        "Failed to update Situation question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to update question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Deletes a Situation question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   */
+  static async deleteQuestion(
+    id: string,
+    authorId: string
+  ): Promise<SituationServiceResponse> {
+    try {
+      const result = await Situation.deleteOne({ _id: id, authorId });
+
+      if (result.deletedCount === 0) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true };
+    } catch (error) {
+      await logError(
+        "Failed to delete Situation question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to delete question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
       };
