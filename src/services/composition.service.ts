@@ -9,6 +9,7 @@ import { FilterQuery } from "mongoose";
 // Enum for error codes for more structured error handling
 export enum ServiceErrorCodes {
   NOT_FOUND = 404,
+  FORBIDDEN = 403,
   INTERNAL_ERROR = 500
 };
 
@@ -31,7 +32,7 @@ export interface CompositionServiceResponse<T = null> {
 export class CompositionService {
 
   /**
-   * Get a random Grammaire question with optional filtering using aggregation
+   * Get a random Composition question with optional filtering using aggregation
    */
   static async getRandomQuestion(
     filter: FilterQuery<CompositionDoc> = {}
@@ -75,24 +76,22 @@ export class CompositionService {
       };
     }
   }
+
   /**
-   * Creates a new Composition question.
+   * Creates a new Composition question, storing the authorId from the JWT.
    *
-   * This method transforms the provided form data into a Composition question entity,
-   * connects to the database, and attempts to save the new question record.
-   * If an error occurs during processing, it logs the error and returns a failure response.
-   *
-   * @param data - The form data for creating a Composition question.
-   * @param contextInfo - Additional context information such as API path and method.
-   * @returns A promise that resolves to a CompositionServiceResponse indicating success or error details.
+   * @param data - The validated form data for the question.
+   * @param contextInfo - API path and method for logging.
+   * @param authorId - The MongoDB ObjectId (as string) of the authenticated user.
    */
   static async createQuestion(
     data: CompositionFormData,
-    contextInfo: { path: string; method: string }
+    contextInfo: { path: string; method: string },
+    authorId: string
   ): Promise<CompositionServiceResponse> {
     try {
-      // Transform form data into the DB document shape.
-      const questionData = toCompositionDoc(data);
+      // Transform form data into the DB document shape, embedding authorId.
+      const questionData = toCompositionDoc(data, authorId);
 
       // Create a new Composition question instance.
       const question = new Composition(questionData);
@@ -120,6 +119,96 @@ export class CompositionService {
         error: {
           message: "Failed to create question",
           code: 500,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Updates a Composition question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   * @param data - The validated form data with updated values.
+   */
+  static async updateQuestion(
+    id: string,
+    authorId: string,
+    data: CompositionFormData
+  ): Promise<CompositionServiceResponse<CompositionDoc>> {
+    try {
+      const updateData = toCompositionDoc(data, authorId);
+
+      const updated = await Composition.findOneAndUpdate(
+        { _id: id, authorId },
+        { $set: updateData },
+        { new: true, runValidators: true }
+      );
+
+      if (!updated) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true, data: updated.toObject() as CompositionDoc };
+    } catch (error) {
+      await logError(
+        "Failed to update Composition question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to update question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Deletes a Composition question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   */
+  static async deleteQuestion(
+    id: string,
+    authorId: string
+  ): Promise<CompositionServiceResponse> {
+    try {
+      const result = await Composition.deleteOne({ _id: id, authorId });
+
+      if (result.deletedCount === 0) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true };
+    } catch (error) {
+      await logError(
+        "Failed to delete Composition question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to delete question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
       };
