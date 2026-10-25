@@ -74,7 +74,7 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
     const result = await SituationService.createQuestion(req.body, {
       path,
       method,
-    });
+    }, user.userId);
 
     // If the creation did not succeed, log the error and return the appropriate response.
     if (!result.success) {
