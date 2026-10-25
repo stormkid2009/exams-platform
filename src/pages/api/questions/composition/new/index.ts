@@ -84,7 +84,7 @@ const handler: ValidatedApiHandler<CompositionFormData> = async (
     const result = await CompositionService.createQuestion(req.body, {
       path,
       method,
-    });
+    }, user.userId);
 
     if (!result.success) {
       // Log and return the error if the service did not succeed.
