@@ -13,6 +13,7 @@ import connectToDB from "src/lib/mongoose-client";
 // Enum for error codes for more structured error handling
 export enum ServiceErrorCodes {
   NOT_FOUND = 404,
+  FORBIDDEN = 403,
   INTERNAL_ERROR = 500
 }
 export interface GrammaireServiceResponse<T = null> {
@@ -31,68 +32,66 @@ export interface GrammaireServiceResponse<T = null> {
 export class GrammaireService {
 
   /**
-     * Get a random Grammaire question with optional filtering using aggregation
-     */
-    static async getRandomQuestion(
-      filter: FilterQuery<GrammaireDoc> = {}
-    ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
-      try {
-        //await connectToDB();
-  
-        // Use MongoDB aggregation for efficient random selection
-        const [randomQuestion] = await Grammaire.aggregate([
-          { $match: filter },
-          { $sample: { size: 1 } }
-        ]);
-  
-        if (!randomQuestion) {
-          return {
-            success: false,
-            error: {
-              message: "No questions found",
-              code: ServiceErrorCodes.NOT_FOUND
-            }
-          };
-        }
-  
-        return {
-          success: true,
-          data: randomQuestion
-        };
-      } catch (error) {
-        await logError(
-          "Failed to retrieve random Grammaire question",
-          error instanceof Error ? error : new Error("Unknown error")
-        );
-  
+   * Get a random Grammaire question with optional filtering using aggregation
+   */
+  static async getRandomQuestion(
+    filter: FilterQuery<GrammaireDoc> = {}
+  ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
+    try {
+      //await connectToDB();
+
+      // Use MongoDB aggregation for efficient random selection
+      const [randomQuestion] = await Grammaire.aggregate([
+        { $match: filter },
+        { $sample: { size: 1 } }
+      ]);
+
+      if (!randomQuestion) {
         return {
           success: false,
           error: {
-            message: "Failed to retrieve random question",
-            code: ServiceErrorCodes.INTERNAL_ERROR,
-            details: error instanceof Error ? error.message : "Unknown error",
-          },
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND
+          }
         };
       }
+
+      return {
+        success: true,
+        data: randomQuestion
+      };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve random Grammaire question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
     }
+  }
+
   /**
-   * Creates a new Grammaire question.
+   * Creates a new Grammaire question, storing the authorId from the JWT.
    *
-   * This method transforms the provided form data into a Grammaire question entity,
-   * establishes a connection to the database, and attempts to save the new question record.
-   * It returns a response indicating whether the operation was successful or if an error occurred.
-   *
-   * @param data - The form data for creating a Grammaire question.
-   * @param contextInfo - Additional context information such as API path and method.
-   * @returns A promise that resolves to a GrammaireServiceResponse indicating success or error details.
+   * @param data - The validated form data for the question.
+   * @param contextInfo - API path and method for logging.
+   * @param authorId - The MongoDB ObjectId (as string) of the authenticated user.
    */
   static async createQuestion(
     data: GrammaireFormData,
-    contextInfo: { path: string; method: string }
+    contextInfo: { path: string; method: string },
+    authorId: string
   ): Promise<GrammaireServiceResponse> {
     try {
-      // Transform form data into the DB document shape.
-      const questionData = toGrammaireDoc(data);
+      // Transform form data into the DB document shape, embedding authorId.
+      const questionData = toGrammaireDoc(data, authorId);
       // Create a new instance of a Grammaire question.
       const question = new Grammaire(questionData);
 
@@ -117,7 +116,100 @@ export class GrammaireService {
         success: false,
         error: {
           message: "Failed to create question",
-          code: 500,
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Updates a Grammaire question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   * @param data - The validated form data with updated values.
+   */
+  static async updateQuestion(
+    id: string,
+    authorId: string,
+    data: GrammaireFormData
+  ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
+    try {
+      const updateData = toGrammaireDoc(data, authorId);
+
+      // findOneAndUpdate with authorId in the filter enforces ownership at DB level.
+      const updated = await Grammaire.findOneAndUpdate(
+        { _id: id, authorId },
+        { $set: updateData },
+        { new: true, runValidators: true }
+      );
+
+      if (!updated) {
+        // Either the document doesn't exist or belongs to a different author.
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true, data: updated.toObject() as GrammaireDoc };
+    } catch (error) {
+      await logError(
+        "Failed to update Grammaire question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to update question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Deletes a Grammaire question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   */
+  static async deleteQuestion(
+    id: string,
+    authorId: string
+  ): Promise<GrammaireServiceResponse> {
+    try {
+      // deleteOne with authorId in the filter enforces ownership at DB level.
+      const result = await Grammaire.deleteOne({ _id: id, authorId });
+
+      if (result.deletedCount === 0) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true };
+    } catch (error) {
+      await logError(
+        "Failed to delete Grammaire question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to delete question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
       };
