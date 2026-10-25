@@ -5,6 +5,7 @@ import { toPassageDoc } from "src/shared/schemas/transforms";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
 import { FilterQuery } from "mongoose";
+
 /**
  * Represents the response structure for PassageService methods.
  */
@@ -12,6 +13,7 @@ import { FilterQuery } from "mongoose";
 // Enum for error codes for more structured error handling
 export enum ServiceErrorCodes {
   NOT_FOUND = 404,
+  FORBIDDEN = 403,
   INTERNAL_ERROR = 500
 };
 
@@ -30,7 +32,7 @@ export interface PassageServiceResponse<T = null>{
  */
 export class PassageService {
   /**
-   * Get a random Grammaire question with optional filtering using aggregation
+   * Get a random Passage question with optional filtering using aggregation
    */
   static async getRandomQuestion(
     filter: FilterQuery<PassageDoc> = {}
@@ -76,23 +78,20 @@ export class PassageService {
   }
   
   /**
-   * Creates a new Passage question.
+   * Creates a new Passage question, storing the authorId from the JWT.
    *
-   * This method transforms the provided Passage form data into a Passage question entity,
-   * sets up the related questions with appropriate schema transformations, connects to the database,
-   * and attempts to save the created question record.
-   *
-   * @param data - The form data for creating a Passage question.
-   * @param contextInfo - Additional context information such as API path and method.
-   * @returns A promise that resolves to a PassageServiceResponse indicating success or error details.
+   * @param data - The validated form data for the question.
+   * @param contextInfo - API path and method for logging.
+   * @param authorId - The MongoDB ObjectId (as string) of the authenticated user.
    */
   static async createQuestion(
     data: PassageFormData,
-    contextInfo: { path: string; method: string }
+    contextInfo: { path: string; method: string },
+    authorId: string
   ): Promise<PassageServiceResponse> {
     try {
-      // Transform form data into the DB document shape.
-      const questionData = toPassageDoc(data);
+      // Transform form data into the DB document shape, embedding authorId.
+      const questionData = toPassageDoc(data, authorId);
 
       // Create a new instance of a Passage question.
       const question = new Passage(questionData);
@@ -120,6 +119,96 @@ export class PassageService {
         error: {
           message: "Failed to create question",
           code: 500,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Updates a Passage question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   * @param data - The validated form data with updated values.
+   */
+  static async updateQuestion(
+    id: string,
+    authorId: string,
+    data: PassageFormData
+  ): Promise<PassageServiceResponse<PassageDoc>> {
+    try {
+      const updateData = toPassageDoc(data, authorId);
+
+      const updated = await Passage.findOneAndUpdate(
+        { _id: id, authorId },
+        { $set: updateData },
+        { new: true, runValidators: true }
+      );
+
+      if (!updated) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true, data: updated.toObject() as PassageDoc };
+    } catch (error) {
+      await logError(
+        "Failed to update Passage question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to update question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Deletes a Passage question, only if the caller is the original author.
+   *
+   * @param id - The MongoDB document _id of the question.
+   * @param authorId - The userId from the JWT; must match the stored authorId.
+   */
+  static async deleteQuestion(
+    id: string,
+    authorId: string
+  ): Promise<PassageServiceResponse> {
+    try {
+      const result = await Passage.deleteOne({ _id: id, authorId });
+
+      if (result.deletedCount === 0) {
+        return {
+          success: false,
+          error: {
+            message: "Forbidden: you are not the author of this question",
+            code: ServiceErrorCodes.FORBIDDEN,
+          },
+        };
+      }
+
+      return { success: true };
+    } catch (error) {
+      await logError(
+        "Failed to delete Passage question",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to delete question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
       };
