@@ -83,7 +83,7 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
     const result = await GrammaireService.createQuestion(req.body, {
       path,
       method,
-    });
+    }, user.userId);
 
     if (!result.success) {
       // Log the error details returned from the service.
