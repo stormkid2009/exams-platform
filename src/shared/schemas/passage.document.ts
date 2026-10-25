@@ -13,6 +13,7 @@ export const passageDocSchema = z.object({
   type: z.literal("RC"),
   passage: z.string().min(1),
   relatedQuestions: z.array(grammaireDocSchema).nonempty(),
+  authorId: z.string(),
 });
 
 /**
