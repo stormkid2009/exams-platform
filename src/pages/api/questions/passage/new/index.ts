@@ -71,7 +71,7 @@ const handler: ValidatedApiHandler<PassageFormData> = async (
     const result = await PassageService.createQuestion(req.body, {
       path,
       method,
-    });
+    }, user.userId);
 
     // If the creation did not succeed, log the error and return the appropriate response.
     if (!result.success) {
