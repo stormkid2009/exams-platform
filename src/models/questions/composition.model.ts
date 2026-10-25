@@ -59,6 +59,9 @@ export const compositionSchema = new Schema<CompositionDoc>(
 
     // The correct answer to the question
     answer: { type: String, required: [true, "Answer is required"] },
+
+    // The MongoDB ObjectId (as string) of the user who created this question
+    authorId: { type: String, required: [true, "Author ID is required"] },
   },
   { timestamps: true }
 );
