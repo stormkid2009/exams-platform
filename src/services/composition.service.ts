@@ -4,10 +4,11 @@ import { logError } from "src/utils/logger";
 import { CompositionFormData } from "src/shared/schemas/composition.schema";
 import { type CompositionDoc } from "src/shared/schemas/composition.document";
 import { toCompositionDoc } from "src/shared/schemas/transforms";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 
 // Enum for error codes for more structured error handling
 export enum ServiceErrorCodes {
+  BAD_REQUEST = 400,
   NOT_FOUND = 404,
   FORBIDDEN = 403,
   INTERNAL_ERROR = 500
@@ -70,6 +71,56 @@ export class CompositionService {
         success: false,
         error: {
           message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Get a single Composition question by its MongoDB `_id`.
+   *
+   * @param id - The document `_id` as a string.
+   * @returns `400` for a malformed ObjectId, `404` when no document matches.
+   */
+  static async getQuestionById(
+    id: string
+  ): Promise<CompositionServiceResponse<CompositionDoc>> {
+    if (!isValidObjectId(id)) {
+      return {
+        success: false,
+        error: {
+          message: "Invalid question id",
+          code: ServiceErrorCodes.BAD_REQUEST,
+        },
+      };
+    }
+
+    try {
+      const question = await Composition.findById(id).lean<CompositionDoc>();
+
+      if (!question) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND,
+          },
+        };
+      }
+
+      return { success: true, data: question };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve Composition question by id",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve question",
           code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
