@@ -1,4 +1,4 @@
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 import { type GrammaireDoc } from "src/shared/schemas/grammaire.document";
 import { GrammaireFormData } from "src/shared/schemas/grammaire.schema";
 import { toGrammaireDoc } from "src/shared/schemas/transforms";
@@ -12,6 +12,7 @@ import connectToDB from "src/lib/mongoose-client";
 
 // Enum for error codes for more structured error handling
 export enum ServiceErrorCodes {
+  BAD_REQUEST = 400,
   NOT_FOUND = 404,
   FORBIDDEN = 403,
   INTERNAL_ERROR = 500
@@ -70,6 +71,56 @@ export class GrammaireService {
         success: false,
         error: {
           message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Get a single Grammaire question by its MongoDB `_id`.
+   *
+   * @param id - The document `_id` as a string.
+   * @returns `400` for a malformed ObjectId, `404` when no document matches.
+   */
+  static async getQuestionById(
+    id: string
+  ): Promise<GrammaireServiceResponse<GrammaireDoc>> {
+    if (!isValidObjectId(id)) {
+      return {
+        success: false,
+        error: {
+          message: "Invalid question id",
+          code: ServiceErrorCodes.BAD_REQUEST,
+        },
+      };
+    }
+
+    try {
+      const question = await Grammaire.findById(id).lean<GrammaireDoc>();
+
+      if (!question) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND,
+          },
+        };
+      }
+
+      return { success: true, data: question };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve Grammaire question by id",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve question",
           code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
