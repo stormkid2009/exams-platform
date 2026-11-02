@@ -39,6 +39,16 @@ const LOG_FILE_PATH = path.join(LOG_DIR, "api-errors.log");
 const MAX_LOG_SIZE = Number(process.env.MAX_LOG_SIZE) || 10 * 1024 * 1024; // 10MB default
 const ROTATION_CHECK_INTERVAL = 1000 * 60 * 5; // Check rotation every 5 minutes
 
+// Field names whose values must never be persisted to logs.
+const SENSITIVE_FIELDS = new Set([
+  "password",
+  "confirmpassword",
+  "token",
+  "authorization",
+  "jwt",
+]);
+const REDACTED_VALUE = "[REDACTED]";
+
 // Track last log rotation check and maintain a write queue for sequential file writes.
 let lastRotationCheck = Date.now();
 let writeQueue: Promise<void> = Promise.resolve();
@@ -104,6 +114,49 @@ async function safeAppendToLog(data: string) {
 }
 
 /**
+ * Recursively replaces values of sensitive fields (passwords, tokens) with a redaction marker.
+ *
+ * @param value - Arbitrary request data that may contain credentials.
+ * @returns A structurally identical value with sensitive fields masked.
+ */
+function redactSensitive(value: unknown): unknown {
+  if (Array.isArray(value)) {
+    return value.map(redactSensitive);
+  }
+
+  if (value !== null && typeof value === "object") {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, nested]) => [
+        key,
+        SENSITIVE_FIELDS.has(key.toLowerCase())
+          ? REDACTED_VALUE
+          : redactSensitive(nested),
+      ])
+    );
+  }
+
+  return value;
+}
+
+/**
+ * Writes a log entry to the platform log stream in production, or to the local
+ * rotating log file outside production. Serverless filesystems are often
+ * read-only or ephemeral, so production must never depend on `fs`.
+ *
+ * @param entry - The structured log entry to persist.
+ */
+async function writeLogEntry(entry: LogEntry): Promise<void> {
+  const serialized = JSON.stringify(entry);
+
+  if (process.env.NODE_ENV === "production") {
+    console.error(serialized);
+    return;
+  }
+
+  await safeAppendToLog(serialized);
+}
+
+/**
  * Creates a log entry object with the given level, message, and optional error data.
  *
  * @param level - The log level (e.g., ERROR, INFO).
@@ -129,7 +182,8 @@ function createLogEntry(
 }
 
 /**
- * Logs an API error with context details to the log file.
+ * Logs an API error with context details. In production the entry goes to
+ * `console.error`; otherwise it is appended to the local rotating log file.
  *
  * @param message - Custom message describing the error context.
  * @param error - The caught error from the API.
@@ -150,10 +204,10 @@ export async function logApiError(
     errorName: error.name,
     errorMessage: error.message,
     stack: error.stack,
-    requestBody: context.requestBody,
+    requestBody: redactSensitive(context.requestBody),
   });
 
-  await safeAppendToLog(JSON.stringify(logEntry));
+  await writeLogEntry(logEntry);
 }
 
 /**
@@ -169,5 +223,5 @@ export async function logError(message: string, error: Error): Promise<void> {
     stack: error.stack,
   });
 
-  await safeAppendToLog(JSON.stringify(logEntry));
+  await writeLogEntry(logEntry);
 }
