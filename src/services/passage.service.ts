@@ -4,7 +4,7 @@ import { type PassageDoc } from "src/shared/schemas/passage.document";
 import { toPassageDoc } from "src/shared/schemas/transforms";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 
 /**
  * Represents the response structure for PassageService methods.
@@ -12,6 +12,7 @@ import { FilterQuery } from "mongoose";
 
 // Enum for error codes for more structured error handling
 export enum ServiceErrorCodes {
+  BAD_REQUEST = 400,
   NOT_FOUND = 404,
   FORBIDDEN = 403,
   INTERNAL_ERROR = 500
@@ -77,6 +78,56 @@ export class PassageService {
     }
   }
   
+  /**
+   * Get a single Passage question by its MongoDB `_id`.
+   *
+   * @param id - The document `_id` as a string.
+   * @returns `400` for a malformed ObjectId, `404` when no document matches.
+   */
+  static async getQuestionById(
+    id: string
+  ): Promise<PassageServiceResponse<PassageDoc>> {
+    if (!isValidObjectId(id)) {
+      return {
+        success: false,
+        error: {
+          message: "Invalid question id",
+          code: ServiceErrorCodes.BAD_REQUEST,
+        },
+      };
+    }
+
+    try {
+      const question = await Passage.findById(id).lean<PassageDoc>();
+
+      if (!question) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND,
+          },
+        };
+      }
+
+      return { success: true, data: question };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve Passage question by id",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
   /**
    * Creates a new Passage question, storing the authorId from the JWT.
    *
