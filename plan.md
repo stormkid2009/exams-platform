@@ -48,7 +48,7 @@ Login/register mint a 24h JWT and store it in Zustand + localStorage. `fetcher.t
   - `src/pages/api/auth/register/index.ts`
 - Add `JWT_SECRET` to `modules.d.ts` `ProcessEnv`.
 - Create `src/middleware/auth-middleware.ts` for Pages API: read `Authorization: Bearer`, verify with `jsonwebtoken`, return 401, attach `{ userId, email }` to the request.
-- Protect **all write routes** (`.../new`) and **auth-only reads** (`.../random`, `full-exam`).
+- Protect **all write routes** (`.../new`), **auth-only reads** (`.../random`, `full-exam`), and the new `GET .../[id]` read routes.
 - Attach the token in `fetcher` from `useAuthStore.getState().token`.
 
 Do **not** rely on `src/pages/dash-board/index.tsx` `useEffect` redirects. Question pages (`grammaire`, `situation`, `composition`, `passage`) have **no auth check**. Client redirects are UX, not security.
@@ -298,6 +298,12 @@ Phase 0 — Stop the bleeding (P0)
   Delete or quarantine broken add-to-exam / refresh
   JWT_SECRET required; auth middleware on write APIs; fetcher sends Bearer
   Rate-limit auth; Zod auth schema; duplicate-key 409
+  Add GET-by-id read routes (new — /random routes stay untouched)
+    GET /api/questions/{grammaire|situation|composition|passage}/[id]
+    Service: getQuestionById(id) in each *.service.ts
+      invalid ObjectId -> 400 BAD_REQUEST; no document -> 404 NOT_FOUND
+    Auth: same as /random (any authenticated user); raw doc incl. authorId
+    New files: src/pages/api/questions/{type}/[id]/index.ts
 
 Phase 1 — Cleanup (P1)
   Delete dead files and unused deps
@@ -343,6 +349,7 @@ Phase 3 — Data & polish (P3)
 | `src/pages/api/auth/login/index.ts` | MODIFY — no fallback secret, Zod, rate limit |
 | `src/pages/api/auth/register/index.ts` | Same + duplicate-key handling |
 | `src/pages/api/questions/**` | MODIFY — auth + factory |
+| `src/pages/api/questions/{grammaire,situation,composition,passage}/[id]/index.ts` | CREATE (Phase 0) — GET one question by id |
 | `src/pages/api/questions/full-exam/index.ts` | FIX or rename — not a full exam today |
 | `src/lib/mongoose-client.ts` | MODIFY — typed cache |
 | `src/types/auth.ts` | MODIFY — `comparePassword` |
@@ -362,7 +369,7 @@ Phase 3 — Data & polish (P3)
 | `next.config.js` | poweredByHeader |
 | `.eslintrc.json` | stricter TS/hooks |
 | `README.md` | Env + real routes |
-| Four `*.service.ts` | Thin wrappers (Phase 2) |
+| Four `*.service.ts` | ADD `getQuestionById` (Phase 0); thin wrappers (Phase 2) |
 
 ---
 
