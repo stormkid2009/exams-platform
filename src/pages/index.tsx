@@ -1,12 +1,12 @@
 import Head from "next/head";
+import Link from "next/link";
 import Intro from "src/components/introduction";
-import LoginForm from "src/components/forms/user/login-form";
 
 /**
  * Home component serves as the landing page for the application.
  *
  * It sets up the page header with meta information and renders the introduction
- * and login form components as the main content.
+ * plus a link to the dedicated login page (rather than a second login form).
  *
  * @returns {JSX.Element} The rendered home page component.
  */
@@ -22,8 +22,15 @@ export default function Home() {
       </Head>
       {/* Display the introduction component */}
       <Intro />
-      {/* Display the login form */}
-      <LoginForm />
+      {/* Direct users to the single login page instead of duplicating the form */}
+      <div className="flex justify-center pb-8">
+        <Link
+          href="/user/login"
+          className="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600"
+        >
+          Log in
+        </Link>
+      </div>
     </>
   );
 }
