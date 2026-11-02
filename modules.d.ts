@@ -3,6 +3,7 @@ declare namespace NodeJS {
       HOST: string;
       MONGODB_URI: string;
       DB_NAME?: string;
+      JWT_SECRET: string;
     }
   }
   
