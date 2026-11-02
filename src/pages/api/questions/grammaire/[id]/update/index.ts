@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -69,7 +71,7 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
   } catch (error) {
     await logApiError(
       "Unexpected error in grammaire update handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       { path: req.url ?? "", method: req.method ?? "", statusCode: 500, requestBody: req.body }
     );
     return res.status(500).json({

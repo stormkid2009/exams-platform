@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { FilterQuery, isValidObjectId } from "mongoose";
 import { type GrammaireDoc } from "src/shared/schemas/grammaire.document";
 import { GrammaireFormData } from "src/shared/schemas/grammaire.schema";
@@ -64,7 +66,7 @@ export class GrammaireService {
     } catch (error) {
       await logError(
         "Failed to retrieve random Grammaire question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -114,7 +116,7 @@ export class GrammaireService {
     } catch (error) {
       await logError(
         "Failed to retrieve Grammaire question by id",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -159,7 +161,7 @@ export class GrammaireService {
       // Log the error using the logger utility for debugging purposes.
       await logError(
         "Failed to create Grammaire question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       // Return a failure response with error details for further handling.
@@ -211,7 +213,7 @@ export class GrammaireService {
     } catch (error) {
       await logError(
         "Failed to update Grammaire question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -253,7 +255,7 @@ export class GrammaireService {
     } catch (error) {
       await logError(
         "Failed to delete Grammaire question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {

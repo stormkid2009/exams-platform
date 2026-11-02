@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import type { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 import connectToDB from "src/lib/mongoose-client";
 import { logApiError } from "src/utils/logger";
@@ -26,7 +28,7 @@ export function withDbMiddleware(handler: NextApiHandler) {
 
       await logApiError(
         "Database connection error in API route",
-        error instanceof Error ? error : new Error("Failed to connect to database"),
+        ensureError(error, "Failed to connect to database"),
         {
           path,
           method,

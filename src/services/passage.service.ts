@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { Passage } from "src/models/questions/passage.model";
 import { PassageFormData } from "src/shared/schemas/passage.schema";
 import { type PassageDoc } from "src/shared/schemas/passage.document";
@@ -64,7 +66,7 @@ export class PassageService {
     } catch (error) {
       await logError(
         "Failed to retrieve random Passage question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -114,7 +116,7 @@ export class PassageService {
     } catch (error) {
       await logError(
         "Failed to retrieve Passage question by id",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -161,7 +163,7 @@ export class PassageService {
       // Log any error encountered during the process for debugging.
       await logError(
         "Failed to create Passage question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       // Return a failure response with the error details.
@@ -211,7 +213,7 @@ export class PassageService {
     } catch (error) {
       await logError(
         "Failed to update Passage question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -252,7 +254,7 @@ export class PassageService {
     } catch (error) {
       await logError(
         "Failed to delete Passage question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {

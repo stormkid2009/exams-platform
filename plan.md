@@ -291,8 +291,7 @@ Gaps:
 ## Suggested execution order
 
 ```
-Phase 0 — Stop the bleeding (P0)
-  Fix fetcher error handling + passage toast false success
+Phase 0 — Stop the bleeding (P0) [DONE] 
   Fix /login link
   Hide exam nav or add 404-safe placeholder pages
   Delete or quarantine broken add-to-exam / refresh
@@ -305,7 +304,7 @@ Phase 0 — Stop the bleeding (P0)
     Auth: same as /random (any authenticated user); raw doc incl. authorId
     New files: src/pages/api/questions/{type}/[id]/index.ts
 
-Phase 1 — Cleanup (P1)
+Phase 1 — Cleanup (P1)  [DONE]
   Delete dead files and unused deps
   Fix global.d.ts fetch types
   ensureError + mongoose global type + tsconfig typeRoots

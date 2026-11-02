@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { Situation } from "src/models/questions/situation.model";
 import { SituationFormData } from "src/shared/schemas/situation.schema";
 import { type SituationDoc } from "src/shared/schemas/situation.document";
@@ -61,7 +63,7 @@ export class SituationService {
     } catch (error) {
       await logError(
         "Failed to retrieve random Situation question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -111,7 +113,7 @@ export class SituationService {
     } catch (error) {
       await logError(
         "Failed to retrieve Situation question by id",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -157,7 +159,7 @@ export class SituationService {
       // Log the error for debugging purposes.
       await logError(
         "Failed to create Situation question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       // Return a response indicating failure along with error details.
@@ -207,7 +209,7 @@ export class SituationService {
     } catch (error) {
       await logError(
         "Failed to update Situation question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -248,7 +250,7 @@ export class SituationService {
     } catch (error) {
       await logError(
         "Failed to delete Situation question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {

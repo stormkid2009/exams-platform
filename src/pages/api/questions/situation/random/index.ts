@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest,NextApiResponse } from "next";
@@ -77,7 +79,7 @@ const handler=async(
     // log any unexpected errros using the logging utility
     logApiError(
      "unexpected error in random situation question handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       {
         path,
         method,

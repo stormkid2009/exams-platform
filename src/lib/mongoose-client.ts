@@ -29,18 +29,25 @@ if (!MONGODB_URI) {
 }
 
 declare global {
-  var mongoose: any; // This must be a `var` and not a `let / const`
+  var mongoose: MongooseCache | undefined; // Must be `var` to survive hot reloads
 }
+
+/** Shape of the cached Mongoose connection stored on `global`. */
+interface MongooseCache {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+}
+
 /**
  * Global is used here to maintain a cached connection across hot reloads
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-let cached = global.mongoose;
-
-if (!cached) {
-  cached = global.mongoose = { conn: null, promise: null };
-}
+const cached: MongooseCache = global.mongoose ?? {
+  conn: null,
+  promise: null,
+};
+global.mongoose = cached;
 
 
 

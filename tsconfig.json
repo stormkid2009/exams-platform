@@ -8,12 +8,10 @@
     "lib": [
       "dom",
       "dom.iterable",
-      "esnext",
-      "ES2015"
+      "esnext"
     ],
     "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
+      "./node_modules/@types"
     ],
     "allowJs": true,
     "skipLibCheck": true,

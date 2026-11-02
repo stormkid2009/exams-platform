@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withAuth } from "src/middleware/auth-middleware";
 //test for grammaire random question with best practice [validation and error logs]
 import { NextApiRequest, NextApiResponse } from "next";
@@ -73,7 +75,7 @@ const handler = async (
     // Log any unexpected errors using the logging utility
     await logApiError(
       "Unexpected error in random grammar question handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       {
         path,
         method,

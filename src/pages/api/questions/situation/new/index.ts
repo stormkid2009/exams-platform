@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 /**
@@ -107,7 +109,7 @@ const handler: ValidatedApiHandler<SituationFormData> = async (
     // Log unexpected errors
     await logApiError(
       "Unexpected error in situation handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       {
         path,
         method,

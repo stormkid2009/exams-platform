@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -107,7 +109,7 @@ const handler: ValidatedApiHandler<CompositionFormData> = async (
     // Log unexpected errors and return an internal server error response.
     await logApiError(
       "Unexpected error in composition handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       {
         path,
         method,

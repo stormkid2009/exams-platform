@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -82,7 +84,7 @@ const handler = async (
   } catch (error) {
     await logApiError(
       "unexpected error in grammaire by-id handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       {
         path,
         method,

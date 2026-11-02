@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import { withDbMiddleware } from "src/middleware/db-middleware";
 import { withAuth } from "src/middleware/auth-middleware";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -116,7 +118,7 @@ const handler: ValidatedApiHandler<GrammaireFormData> = async (
     // Log any unexpected errors using the logging utility.
     await logApiError(
       "Unexpected error in grammaire handler",
-      error instanceof Error ? error : new Error("Unknown error"),
+      ensureError(error),
       {
         path,
         method,

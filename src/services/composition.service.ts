@@ -1,3 +1,5 @@
+import { ensureError } from "src/utils/ensure-error";
+
 import connectToDB from "src/lib/mongoose-client";
 import { Composition } from "src/models/questions/composition.model";
 import { logError } from "src/utils/logger";
@@ -64,7 +66,7 @@ export class CompositionService {
     } catch (error) {
       await logError(
         "Failed to retrieve random Composition question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -114,7 +116,7 @@ export class CompositionService {
     } catch (error) {
       await logError(
         "Failed to retrieve Composition question by id",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -161,7 +163,7 @@ export class CompositionService {
       // Log the error using the logger utility for debugging purposes.
       await logError(
         "Failed to create Composition question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       // Return a failure response with error details.
@@ -211,7 +213,7 @@ export class CompositionService {
     } catch (error) {
       await logError(
         "Failed to update Composition question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
@@ -252,7 +254,7 @@ export class CompositionService {
     } catch (error) {
       await logError(
         "Failed to delete Composition question",
-        error instanceof Error ? error : new Error("Unknown error")
+        ensureError(error)
       );
 
       return {
