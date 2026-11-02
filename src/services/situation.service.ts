@@ -4,7 +4,7 @@ import { type SituationDoc } from "src/shared/schemas/situation.document";
 import { toSituationDoc } from "src/shared/schemas/transforms";
 import { logError } from "src/utils/logger";
 import connectToDB from "src/lib/mongoose-client";
-import { FilterQuery } from "mongoose";
+import { FilterQuery, isValidObjectId } from "mongoose";
 
 /**
  * Represents the response structure for SituationService methods.
@@ -21,6 +21,7 @@ export interface SituationServiceResponse <T = null>{
 
 
 export enum ServiceErrorCodes {
+  BAD_REQUEST = 400,
   NOT_FOUND = 404,
   FORBIDDEN = 403,
   INTERNAL_ERROR = 500
@@ -67,6 +68,56 @@ export class SituationService {
         success: false,
         error: {
           message: "Failed to retrieve random question",
+          code: ServiceErrorCodes.INTERNAL_ERROR,
+          details: error instanceof Error ? error.message : "Unknown error",
+        },
+      };
+    }
+  }
+
+  /**
+   * Get a single Situation question by its MongoDB `_id`.
+   *
+   * @param id - The document `_id` as a string.
+   * @returns `400` for a malformed ObjectId, `404` when no document matches.
+   */
+  static async getQuestionById(
+    id: string
+  ): Promise<SituationServiceResponse<SituationDoc>> {
+    if (!isValidObjectId(id)) {
+      return {
+        success: false,
+        error: {
+          message: "Invalid question id",
+          code: ServiceErrorCodes.BAD_REQUEST,
+        },
+      };
+    }
+
+    try {
+      const question = await Situation.findById(id).lean<SituationDoc>();
+
+      if (!question) {
+        return {
+          success: false,
+          error: {
+            message: "No questions found",
+            code: ServiceErrorCodes.NOT_FOUND,
+          },
+        };
+      }
+
+      return { success: true, data: question };
+    } catch (error) {
+      await logError(
+        "Failed to retrieve Situation question by id",
+        error instanceof Error ? error : new Error("Unknown error")
+      );
+
+      return {
+        success: false,
+        error: {
+          message: "Failed to retrieve question",
           code: ServiceErrorCodes.INTERNAL_ERROR,
           details: error instanceof Error ? error.message : "Unknown error",
         },
