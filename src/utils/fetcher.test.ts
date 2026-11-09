@@ -53,6 +53,36 @@ describe("fetcher", () => {
     });
   });
 
+  it("should send a bodyless GET request when asked", async () => {
+    const successResponse: SuccessResponse = { result: "success" };
+
+    const mockFetch = jest.fn().mockImplementation(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({ success: true, data: successResponse }),
+    }));
+    global.fetch = mockFetch;
+
+    const response = await fetcher<SuccessResponse>(null, mockPath, {
+      method: "GET",
+    });
+
+    expect(mockFetch).toHaveBeenCalledWith(
+      mockPath,
+      expect.objectContaining({
+        method: "GET",
+        headers: {},
+        body: undefined,
+        signal: expect.any(AbortSignal),
+      })
+    );
+    expect(response).toEqual({
+      data: successResponse,
+      error: null,
+      status: 200,
+    });
+  });
+
   it("should handle HTTP errors", async () => {
     const errorResponse: ErrorResponse = { message: "Not Found" };
     

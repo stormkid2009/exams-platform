@@ -12,20 +12,33 @@ export interface FetcherResponse<T> {
 }
 
 /**
- * A utility function to make POST requests with a JSON payload.
+ * Options controlling the HTTP request issued by {@link fetcher}.
+ */
+export interface FetcherOptions {
+  /** HTTP method to use; defaults to `POST`. */
+  method?: "GET" | "POST";
+}
+
+/**
+ * A utility function to call the JSON API.
  *
  * It uses the Fetch API with a configurable timeout (10 seconds), attaches the
  * bearer token from the auth store, and unwraps the unified `ApiResponse`
  * envelope exactly once. Callers receive `{ data, error, status }` and never
  * need to inspect `success`/`error.code` themselves.
  *
- * @param data - The payload to be sent in the request body.
+ * `GET` requests omit the body and the `Content-Type` header; `data` is ignored
+ * for them, so pass `null` (or anything) as the first argument.
+ *
+ * @param data - The payload to be sent in the request body (POST only).
  * @param path - The URL path to which the request is sent.
+ * @param options - Request options; only `method` is supported today.
  * @returns A promise that resolves to a FetcherResponse containing either the data or an error.
  */
 const fetcher = async <T>(
   data: unknown,
-  path: string
+  path: string,
+  { method = "POST" }: FetcherOptions = {}
 ): Promise<FetcherResponse<T>> => {
   // Create an AbortController to allow for request cancellation on timeout.
   const controller = new AbortController();
@@ -36,18 +49,19 @@ const fetcher = async <T>(
     // Retrieve token from auth store.
     const token = useAuthStore.getState().token;
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-    };
+    const headers: Record<string, string> = {};
+    if (method !== "GET") {
+      headers["Content-Type"] = "application/json";
+    }
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    // Execute the fetch request with POST method, JSON headers, and stringified body.
+    // Execute the request; GET has no body, POST sends the JSON payload.
     const response = await fetch(path, {
-      method: "POST",
+      method,
       headers,
-      body: JSON.stringify(data),
+      body: method === "GET" ? undefined : JSON.stringify(data),
       signal: controller.signal,
     });
 

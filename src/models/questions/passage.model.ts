@@ -66,9 +66,6 @@ const passageSchema = new Schema<PassageDoc>({
 }, { timestamps: true }); // Add timestamps for createdAt and updatedAt fields  
 
 
-// Add an index to the id field for faster queries (specific to this collection)
-passageSchema.index({ id: 1 });
-
 // Export the model, ensuring we don't redefine it if already declared
 export const Passage =
   mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, passageSchema);

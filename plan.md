@@ -310,7 +310,7 @@ Phase 1 — Cleanup (P1)  [DONE]
   ensureError + mongoose global type + tsconfig typeRoots
   poweredByHeader: false
 
-Phase 2 — Structure (P2)
+Phase 2 — Structure (P2) [DONE]
   BaseService + api-handlers
   Thin service/route files
   Unified ApiResponse + fetcher
@@ -318,12 +318,12 @@ Phase 2 — Structure (P2)
   Per-page layout (drop double chrome)
 
 Phase 3 — Data & polish (P3)
-  Drop bogus `id` indexes
-  Fix option error paths in forms
-  Logger: console in prod, redact bodies
-  GET support in fetcher
-  Service/API tests, ESLint, README env section
-  Only then: real exam generate/history + real full-exam aggregator
+  Drop bogus `id` indexes                                   [DONE]
+  Fix option error paths in forms                           [DONE]
+  Logger: console in prod, redact bodies                    [DONE — commit 874876c]
+  GET support in fetcher                                    [DONE]
+  Service/API tests, ESLint, README env section             [DONE]
+  Only then: real exam generate/history + real full-exam aggregator   [NEXT]
 ```
 
 ---

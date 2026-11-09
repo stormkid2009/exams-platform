@@ -100,7 +100,7 @@ const CompositionForm: React.FC<Props> = ({ handleSubmit }) => {
                 name={`${option}` as Path<CompositionFormData>}
                 label={option.toUpperCase()}
                 errorMessage={
-                  errors[`options.${index}` as keyof typeof errors]?.message
+                  errors[option as keyof CompositionFormData]?.message
                 }
               />
             </div>

@@ -99,7 +99,7 @@ const GrammaireForm: React.FC<Props> = ({ handleSubmit }) => {
                 name={`${option}` as Path<GrammaireFormData>}
                 label={option.toUpperCase()}
                 errorMessage={
-                  errors[`options.${index}` as keyof typeof errors]?.message
+                  errors[option as keyof GrammaireFormData]?.message
                 }
               />
             </div>

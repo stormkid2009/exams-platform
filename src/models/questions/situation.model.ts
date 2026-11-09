@@ -82,9 +82,6 @@ const situationSchema = new Schema<SituationDoc>({
 }
 );
 
-// Add an index to the id field for faster queries (specific to this collection)
-situationSchema.index({ id: 1 });
-
 // Export the model, ensuring we don't redefine it if already declared
 export const Situation =
   mongoose.models[MODEL_NAME] || mongoose.model(MODEL_NAME, situationSchema);
