@@ -1,4 +1,5 @@
 import LoginForm from "src/components/forms/user/login-form";
+import type { ReactElement } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuthStore } from "src/store/auth-store";
@@ -45,3 +46,11 @@ export default function LoginPage() {
     </div>
   );
 }
+
+/**
+ * Bare layout: the login page renders its own full-screen container.
+ *
+ * @param page - The rendered login page.
+ * @returns The page without the shared header/footer chrome.
+ */
+LoginPage.getLayout = (page: ReactElement) => page;

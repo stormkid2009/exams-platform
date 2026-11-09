@@ -1,71 +1,52 @@
-import React ,{ useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "src/store/auth-store";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "src/store/auth-store";
 import fetcher from "src/utils/fetcher";
+import {
+  registerFormSchema,
+  type RegisterFormValues,
+  type UserResponse,
+} from "src/shared/schemas/auth.schema";
+
+interface RegisterResponse {
+  token: string;
+  user: UserResponse;
+}
 
 /**
  * RegisterForm Component
- * 
- * This component renders a registration form for new users. 
- * It allows users to enter their email, password, and confirm their password to create an account.
- * 
- * The form includes:
- * - Input fields for email, password, and confirm password.
- * - A submit button to initiate the registration process.
- * - Error handling to display any registration errors.
- * 
- * The component uses the `useAuthStore` for managing authentication state 
- * and redirects users to the dashboard upon successful registration.
+ *
+ * Renders a react-hook-form registration form validated by the shared
+ * `registerSchema` plus a confirm-password rule. On success it stores the
+ * token/user in Zustand and redirects to the dashboard.
  */
-interface RegisterResponse {
-  user: any;
-  token: string;
-  message?: string;
-}
-
 function RegisterForm() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
+  const [apiError, setApiError] = useState("");
 
-  const handleRegister = async () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerFormSchema),
+  });
+
+  const onSubmit = handleSubmit(async (values) => {
+    setApiError("");
+
     try {
-      setLoading(true);
-      setError("");
-
-      // Client-side validation
-      // if (!email || !password || !confirmPassword) {
-      //   throw new Error("all fields are required");
-      // }
-      if(!password){
-        throw new Error("password is required");
-      }
-      if(!confirmPassword){
-        throw new Error("confirm password is required");
-      }
-      if(!email){
-        throw new Error("email is required");
-      }
-
-      if (password !== confirmPassword) {
-        throw new Error(
-          "The passwords you entered don't match. Please try again"
-        );
-      }
-
       const response = await fetcher<RegisterResponse>(
-        { email, password },
+        { email: values.email, password: values.password },
         "/api/auth/register"
       );
 
       if (response.error || !response.data) {
-        // Map HTTP status codes to user-friendly messages
+        // Map HTTP status codes to user-friendly messages.
         switch (response.status) {
           case 409:
             throw new Error(
@@ -87,32 +68,22 @@ function RegisterForm() {
         }
       }
 
-      // Update auth store
       login(response.data.user, response.data.token);
-
-      // Redirect to dashboard
-      router.push("/dash-board");
-    } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("We encountered an unexpected error. Please try again later");
-      }
-    } finally {
-      setLoading(false);
+      await router.push("/dash-board");
+    } catch (error) {
+      setApiError(
+        error instanceof Error
+          ? error.message
+          : "We encountered an unexpected error. Please try again later"
+      );
     }
-  };
-
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    handleRegister();
-  }
+  });
 
   return (
     <div className="h-full flex flex-col items-center border-2 p-4 m-4">
-      <form onSubmit={onSubmit} className="w-full max-w-md">
+      <form onSubmit={onSubmit} className="w-full max-w-md" noValidate>
         <div className="p-2 m-4 text-center">
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+          {apiError && <p className="text-red-500 mb-4">{apiError}</p>}
         </div>
 
         <div className="mb-4">
@@ -121,15 +92,15 @@ function RegisterForm() {
           </label>
           <input
             id="user-email"
-            name="email"
             type="email"
-            value={email}
-            required
             placeholder="username@example.com"
             aria-label="user-email"
             className="w-full p-2 border rounded"
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email")}
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -138,15 +109,17 @@ function RegisterForm() {
           </label>
           <input
             id="user-password"
-            name="password"
             type="password"
-            value={password}
-            required
             placeholder="Enter your password"
             aria-label="user-password"
             className="w-full p-2 border rounded"
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password")}
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-6">
@@ -155,23 +128,25 @@ function RegisterForm() {
           </label>
           <input
             id="confirm-password"
-            name="confirmPassword"
             type="password"
-            value={confirmPassword}
-            required
             placeholder="Confirm your password"
             aria-label="confirm-password"
             className="w-full p-2 border rounded"
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            {...register("confirmPassword")}
           />
+          {errors.confirmPassword && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.confirmPassword.message}
+            </p>
+          )}
         </div>
 
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading ? "Registering..." : "Register"}
+          {isSubmitting ? "Registering..." : "Register"}
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
@@ -184,5 +159,5 @@ function RegisterForm() {
     </div>
   );
 }
-RegisterForm.displayName = "RegisterForm";
+
 export default RegisterForm;

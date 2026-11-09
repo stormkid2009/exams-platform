@@ -64,7 +64,7 @@ describe('LoginForm', () => {
     });
 
     expect(mockLogin).toHaveBeenCalledWith(mockUser, mockToken);
-    expect(mockPush).toHaveBeenCalledWith('/dashboard');
+    expect(mockPush).toHaveBeenCalledWith('/dash-board');
   });
 
   it('displays error message on login failure', async () => {

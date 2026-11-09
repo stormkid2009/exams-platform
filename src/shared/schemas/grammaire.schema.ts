@@ -1,15 +1,5 @@
 import { z } from "zod";
-
-/**
- * Helper function to create a Zod string schema for a given option.
- *
- * This function enforces that the option value is a non-empty string.
- *
- * @param option - The option identifier (e.g., 'a', 'b', etc.).
- * @returns A Zod string schema that validates the option is non-empty.
- */
-const createOptionSchema = (option: string) =>
-  z.string().min(1, `Option ${option.toUpperCase()} cannot be empty`);
+import { createOptionSchema } from "./option";
 
 /**
  * Zod schema for validating Grammaire form data.

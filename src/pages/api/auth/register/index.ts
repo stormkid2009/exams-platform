@@ -1,33 +1,56 @@
-import type { NextApiRequest, NextApiResponse } from "next";
-import { validateBodyMiddleware } from "src/middleware/validate-body-middleware";
+import {
+  validateBodyMiddleware,
+  type ValidatedApiHandler,
+} from "src/middleware/validate-body-middleware";
 import { withDbMiddleware } from "src/middleware/db-middleware";
-import { registerSchema } from "src/shared/schemas/auth.schema";
+import {
+  registerSchema,
+  type RegisterFormData,
+} from "src/shared/schemas/auth.schema";
 import { checkRateLimit } from "src/utils/rate-limit";
 import { AuthService } from "src/services/auth.service";
 
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+/**
+ * POST /api/auth/register
+ *
+ * Returns `{ success: true, data: { token, user } }` on success and the
+ * unified `{ success: false, error }` envelope on failure.
+ */
+const handler: ValidatedApiHandler<RegisterFormData> = async (req, res) => {
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method not allowed" });
+    return res.status(405).json({
+      success: false,
+      error: { message: "Method not allowed", code: 405 },
+    });
   }
 
-  const ip = (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress || "unknown";
+  const ip =
+    (req.headers["x-forwarded-for"] as string) ||
+    req.socket.remoteAddress ||
+    "unknown";
   if (!checkRateLimit(ip)) {
-    return res.status(429).json({ message: "Too many requests, please try again later." });
+    return res.status(429).json({
+      success: false,
+      error: {
+        message: "Too many requests, please try again later.",
+        code: 429,
+      },
+    });
   }
 
   const result = await AuthService.register(req.body);
 
   if (!result.success) {
-    return res.status(result.statusCode).json({ message: result.message });
+    return res.status(result.statusCode).json({
+      success: false,
+      error: { message: result.message, code: result.statusCode },
+    });
   }
 
-  res.status(201).json({
-    message: "Registration successful",
-    token: result.token,
-    user: result.user,
+  return res.status(201).json({
+    success: true,
+    data: { token: result.token, user: result.user },
   });
-}
+};
 
 export default withDbMiddleware(validateBodyMiddleware(registerSchema)(handler));
-
-

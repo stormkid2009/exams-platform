@@ -1,4 +1,5 @@
 import RegisterForm from "src/components/forms/user/register-form";
+import type { ReactElement } from "react";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAuthStore } from "src/store/auth-store";
@@ -45,3 +46,11 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+/**
+ * Bare layout: the register page renders its own full-screen container.
+ *
+ * @param page - The rendered register page.
+ * @returns The page without the shared header/footer chrome.
+ */
+RegisterPage.getLayout = (page: ReactElement) => page;

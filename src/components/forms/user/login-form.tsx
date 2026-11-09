@@ -1,40 +1,47 @@
-
-import React,{ useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { useAuthStore } from "src/store/auth-store";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthStore } from "src/store/auth-store";
 import fetcher from "src/utils/fetcher";
+import {
+  authSchema,
+  type AuthFormData,
+  type UserResponse,
+} from "src/shared/schemas/auth.schema";
+
+interface LoginResponse {
+  token: string;
+  user: UserResponse;
+}
 
 /**
  * LoginForm Component
- * 
- * This component renders a login form for user authentication. 
- * It allows users to enter their email and password to log in.
- * 
- * The form includes:
- * - Input fields for email and password.
- * - A submit button to initiate the login process.
- * - Error handling to display any login errors.
- * 
- * The component uses the `useAuthStore` for managing authentication state 
- * and redirects users to the dashboard upon successful login.
+ *
+ * Renders a react-hook-form login form validated by the shared `authSchema`.
+ * On success it stores the token/user in Zustand and redirects to the
+ * dashboard. API/network failures are shown as a form-level error.
  */
 function LoginForm() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
-
   const router = useRouter();
   const login = useAuthStore((state) => state.login);
+  const [apiError, setApiError] = useState("");
 
-  const handleLogin = async () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AuthFormData>({
+    resolver: zodResolver(authSchema),
+  });
+
+  const onSubmit = handleSubmit(async (values) => {
+    setApiError("");
+
     try {
-      setLoading(true);
-      setError("");
-
-      const response = await fetcher<{ user: any; token: string }>(
-        { email, password },
+      const response = await fetcher<LoginResponse>(
+        values,
         "/api/auth/login"
       );
 
@@ -42,32 +49,18 @@ function LoginForm() {
         throw new Error(response.error || "Login failed");
       }
 
-      // Update auth store
       login(response.data.user, response.data.token);
-
-      // Redirect to dashboard
-      router.push("/dash-board");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Login failed");
-    } finally {
-      setLoading(false);
+      await router.push("/dash-board");
+    } catch (error) {
+      setApiError(error instanceof Error ? error.message : "Login failed");
     }
-  };
-
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Please enter both email and password");
-      return;
-    }
-    handleLogin();
-  }
+  });
 
   return (
     <div className="h-full flex flex-col items-center border-2 p-4 m-4">
-      <form onSubmit={onSubmit} className="w-full max-w-md">
+      <form onSubmit={onSubmit} className="w-full max-w-md" noValidate>
         <div className="p-2 m-4 text-center">
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+          {apiError && <p className="text-red-500 mb-4">{apiError}</p>}
         </div>
 
         <div className="mb-4">
@@ -76,15 +69,15 @@ function LoginForm() {
           </label>
           <input
             id="user-email"
-            name="email"
             type="email"
-            value={email}
-            required
             placeholder="username@example.com"
             aria-label="user-email"
             className="w-full p-2 border rounded"
-            onChange={(e) => setEmail(e.target.value)}
+            {...register("email")}
           />
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+          )}
         </div>
 
         <div className="mb-6">
@@ -93,28 +86,33 @@ function LoginForm() {
           </label>
           <input
             id="user-password"
-            name="password"
             type="password"
-            value={password}
-            required
             placeholder="Enter your password"
             aria-label="user-password"
             className="w-full p-2 border rounded"
-            onChange={(e) => setPassword(e.target.value)}
+            {...register("password")}
           />
+          {errors.password && (
+            <p className="text-red-500 text-sm mt-1">
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
         <button
           type="submit"
           className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-blue-300"
-          disabled={loading}
+          disabled={isSubmitting}
         >
-          {loading ? "Logging in..." : "Login"}
+          {isSubmitting ? "Logging in..." : "Login"}
         </button>
 
         <p className="mt-4 text-center text-sm text-gray-600">
           Do not have an account?{" "}
-          <Link href="/user/register" className="text-blue-500 hover:text-blue-700">
+          <Link
+            href="/user/register"
+            className="text-blue-500 hover:text-blue-700"
+          >
             Register here
           </Link>
         </p>

@@ -1,15 +1,5 @@
 import { z } from "zod";
-
-/**
- * Helper function to create a Zod string schema for a given option.
- *
- * This function ensures that the option's value is a non-empty string.
- *
- * @param option - The option identifier (e.g., 'a', 'b', etc.).
- * @returns A Zod schema that validates the option as a non-empty string.
- */
-const createOptionSchema = (option: string) =>
-  z.string().min(1, `Option ${option.toUpperCase()} cannot be empty`);
+import { createOptionSchema } from "./option";
 
 /**
  * Zod schema for validating Situation form data.

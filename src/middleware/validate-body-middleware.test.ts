@@ -87,10 +87,12 @@ describe('validateBodyMiddleware', () => {
   // Verify error response
   expect(mockRes.status).toHaveBeenCalledWith(400);
   expect(mockRes.json).toHaveBeenCalledWith({
-    status: 'error',
-    message: 'Validation failed',
-    data: null,
-    details: expect.any(String) // Change this line to be more flexible
+    success: false,
+    error: {
+      message: 'Validation failed',
+      code: 400,
+      details: expect.any(String),
+    },
   });
   
   // Verify error was logged
@@ -127,10 +129,12 @@ describe('validateBodyMiddleware', () => {
     // Verify error response
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({
-      status: 'error',
-      message: 'Internal server error',
-      data: null,
-      details: 'An unexpected error occurred during validation'
+      success: false,
+      error: {
+        message: 'Internal server error',
+        code: 500,
+        details: 'An unexpected error occurred during validation',
+      },
     });
     
     // Verify error was logged

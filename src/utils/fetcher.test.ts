@@ -33,7 +33,7 @@ describe("fetcher", () => {
     const mockFetch = jest.fn().mockImplementation(async () => ({
       ok: true,
       status: 200,
-      json: async () => successResponse
+      json: async () => ({ success: true, data: successResponse })
     }));
     global.fetch = mockFetch;
   
@@ -59,7 +59,10 @@ describe("fetcher", () => {
     const mockFetch = jest.fn().mockImplementation(async () => ({
       ok: false,
       status: 404,
-      json: async () => errorResponse
+      json: async () => ({
+        success: false,
+        error: { message: errorResponse.message, code: 404 },
+      })
     }));
     global.fetch = mockFetch;
 

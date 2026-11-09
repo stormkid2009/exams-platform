@@ -1,4 +1,4 @@
-import React from "react";
+import type { ReactElement } from "react";
 import { useAuthStore } from "src/store/auth-store";
 
 /**
@@ -53,3 +53,11 @@ export default function ProfilePage() {
     </div>
   );
 }
+
+/**
+ * Bare layout: the profile page provides its own page container.
+ *
+ * @param page - The rendered profile page.
+ * @returns The page without the shared header/footer chrome.
+ */
+ProfilePage.getLayout = (page: ReactElement) => page;

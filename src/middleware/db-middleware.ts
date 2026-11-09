@@ -37,10 +37,12 @@ export function withDbMiddleware(handler: NextApiHandler) {
       );
 
       return res.status(500).json({
-        status: "error",
-        message: "Internal server error",
-        data: null,
-        details: "Database connection failed",
+        success: false,
+        error: {
+          message: "Internal server error",
+          code: 500,
+          details: "Database connection failed",
+        },
       });
     }
   };

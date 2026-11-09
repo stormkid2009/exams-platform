@@ -26,13 +26,19 @@ export async function withAuth(
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    res.status(401).json({ success: false, message: "Unauthorized" });
+    res.status(401).json({
+      success: false,
+      error: { message: "Unauthorized", code: 401 },
+    });
     return null;
   }
 
   if (!process.env.JWT_SECRET) {
     console.error("JWT_SECRET is not defined");
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({
+      success: false,
+      error: { message: "Internal server error", code: 500 },
+    });
     return null;
   }
 
@@ -42,7 +48,10 @@ export async function withAuth(
     const decoded = jwt.verify(token, process.env.JWT_SECRET) as AuthUser;
     return decoded;
   } catch {
-    res.status(401).json({ success: false, message: "Invalid token" });
+    res.status(401).json({
+      success: false,
+      error: { message: "Invalid token", code: 401 },
+    });
     return null;
   }
 }

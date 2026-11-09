@@ -1,4 +1,6 @@
 // fetcher.ts
+import { useAuthStore } from "src/store/auth-store";
+import type { ApiResponse } from "src/types/common";
 
 /**
  * Interface representing the standardized response from the fetcher function.
@@ -10,17 +12,12 @@ export interface FetcherResponse<T> {
 }
 
 /**
- * Interface representing an error response returned by the API.
- */
-interface ErrorResponse {
-  message: string;
-}
-
-/**
  * A utility function to make POST requests with a JSON payload.
  *
- * It uses the Fetch API with a configurable timeout (10 seconds) and returns a uniform response
- * containing the parsed data, an error message if applicable, and the HTTP status code.
+ * It uses the Fetch API with a configurable timeout (10 seconds), attaches the
+ * bearer token from the auth store, and unwraps the unified `ApiResponse`
+ * envelope exactly once. Callers receive `{ data, error, status }` and never
+ * need to inspect `success`/`error.code` themselves.
  *
  * @param data - The payload to be sent in the request body.
  * @param path - The URL path to which the request is sent.
@@ -36,10 +33,9 @@ const fetcher = async <T>(
   const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   try {
-    // Retrieve token from auth store
-    const { useAuthStore } = require("src/store/auth-store");
+    // Retrieve token from auth store.
     const token = useAuthStore.getState().token;
-    
+
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -58,11 +54,11 @@ const fetcher = async <T>(
     // Clear the timeout if the request completes before the timeout deadline.
     clearTimeout(timeoutId);
 
-    let responseData: T | ErrorResponse;
+    let body: ApiResponse<T>;
     try {
       // Attempt to parse the JSON response.
-      responseData = (await response.json()) as T | ErrorResponse;
-    } catch (jsonError) {
+      body = (await response.json()) as ApiResponse<T>;
+    } catch {
       // Handle JSON parsing errors explicitly by returning a custom error response.
       return {
         data: null,
@@ -71,13 +67,17 @@ const fetcher = async <T>(
       };
     }
 
-    // Return a successful response if the HTTP status is ok; otherwise, return the error message.
+    if (!response.ok || !body.success) {
+      return {
+        data: null,
+        error: body.error?.message || `HTTP error! status: ${response.status}`,
+        status: response.status,
+      };
+    }
+
     return {
-      data: response.ok ? (responseData as T) : null,
-      error: response.ok
-        ? null
-        : (responseData as ErrorResponse).message ||
-          `HTTP error! status: ${response.status}`,
+      data: body.data ?? null,
+      error: null,
       status: response.status,
     };
   } catch (error) {

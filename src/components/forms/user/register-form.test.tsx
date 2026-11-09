@@ -176,7 +176,7 @@ describe('RegisterForm Component', () => {
         { id: '123', email: 'test@example.com' },
         'test-token'
       );
-      expect(mockPush).toHaveBeenCalledWith('/dashboard');
+      expect(mockPush).toHaveBeenCalledWith('/dash-board');
     }, { timeout: 3000 });
   });
 
@@ -210,7 +210,7 @@ describe('RegisterForm Component', () => {
     });
     render(<RegisterForm />);
     fireEvent.change(screen.getByPlaceholderText('username@example.com'), {
-      target: { value: 'invalid-email' },
+      target: { value: 'invalid@example.com' },
     });
     fireEvent.change(screen.getByPlaceholderText('Enter your password'), {
       target: { value: 'password123' },
